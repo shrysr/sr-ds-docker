@@ -84,6 +84,7 @@ RUN apt-get update -qq \
 	umap \
 	inspectdf \
 	DataExplorer \
+      glmnet  \
     && installGithub.r shrysr/sr-ds-docker/all_inclusive_latest
 #+END_SRC
 

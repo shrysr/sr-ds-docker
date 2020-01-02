@@ -42,4 +42,5 @@ RUN apt-get update -qq \
 	umap \
 	inspectdf \
 	DataExplorer \
-    && installGithub.r business-science/shinyauthr
+      glmnet  \
+    && installGithub.r shrysr/sr-ds-docker/all_inclusive_latest
