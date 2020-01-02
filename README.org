@@ -1,0 +1,123 @@
+* Introduction
+
+The starting point of this dockerfile is from [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] example file.
+
+** Overview
+
+I intend to try maintain all my dockerfiles within Org mode documents. i.e a single Readme.org is where I will be able to edit all the dockerfiles in this repository, which will be tangled into the dockerfiles when desired.
+
+The Org mode format can be leveraged to record comments and notes about each dockerfile and setup within the readme document itself.
+
+Since each template is under it's own Org heading, the specific heading can even be exported as an org file which can be externally tangled into these source files without needing the installation of Emacs. This makes the possibilities rather interesting. Down the line, further optimisations will be made
+
+** Running these files
+
+1. Copy the contents of the dockerfile and paste into your docker file.
+2. Alternately, this repo can be cloned, and the dockerfile can be specified with the =f= flag for example =docker build . -f ~/temp/testdocker=
+
+* Basic Template
+:PROPERTIES:
+:header-args: :tangle ./BasicDockerFile
+:ID:
+:END:
+
+Matt Dancho's template as of [2020-01-02 Thu], placed here for ready reference. This is not tangled.
+
+#+BEGIN_SRC dockerfile
+FROM rocker/shiny-verse:latest
+
+RUN apt-get update -qq \
+    && apt-get -y --no-install-recommends install \
+        lbzip2 \
+        libfftw3-dev \
+        libgdal-dev \
+        libgeos-dev \
+        libgsl0-dev \
+        libgl1-mesa-dev \
+        libglu1-mesa-dev \
+        libhdf4-alt-dev \
+        libhdf5-dev \
+        libjq-dev \
+        liblwgeom-dev \
+        libpq-dev \
+        libproj-dev \
+        libprotobuf-dev \
+        libnetcdf-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        libudunits2-dev \
+        netcdf-bin \
+        postgis \
+        protobuf-compiler \
+        sqlite3 \
+        tk-dev \
+        unixodbc-dev \
+        libsasl2-dev \
+        libv8-dev \
+        libsodium-dev \
+    && install2.r --error --deps TRUE \
+        shinyWidgets \
+        shinythemes \
+        shinyjs \
+        mongolite \
+        jsonlite \
+        config \
+        remotes \
+        tidyquant \
+        plotly \
+    && installGithub.r business-science/shinyauthr
+#+END_SRC
+
+* Adding Umap to the basic Template
+:PROPERTIES:
+:header-args: :tangle ./BasicUmapDockerFile
+:ID:       0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23
+:END:
+
+#+BEGIN_SRC dockerfile
+FROM rocker/shiny-verse:latest
+
+RUN apt-get update -qq \
+    && apt-get -y --no-install-recommends install \
+        lbzip2 \
+        libfftw3-dev \
+        libgdal-dev \
+        libgeos-dev \
+        libgsl0-dev \
+        libgl1-mesa-dev \
+        libglu1-mesa-dev \
+        libhdf4-alt-dev \
+        libhdf5-dev \
+        libjq-dev \
+        liblwgeom-dev \
+        libpq-dev \
+        libproj-dev \
+        libprotobuf-dev \
+        libnetcdf-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        libudunits2-dev \
+        netcdf-bin \
+        postgis \
+        protobuf-compiler \
+        sqlite3 \
+        tk-dev \
+        unixodbc-dev \
+        libsasl2-dev \
+        libv8-dev \
+        libsodium-dev \
+    && install2.r --error --deps TRUE \
+        shinyWidgets \
+        shinythemes \
+        shinyjs \
+        mongolite \
+        jsonlite \
+        config \
+        remotes \
+        tidyquant \
+        plotly \
+	umap \
+    && installGithub.r business-science/shinyauthr
+#+END_SRC
+
+*
