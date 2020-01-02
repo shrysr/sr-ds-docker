@@ -18,10 +18,10 @@ Since each template is under it's own Org heading, the specific heading can even
 * Basic Template
 :PROPERTIES:
 :header-args: :tangle ./BasicDockerFile
-:ID:
+:ID:       797160F1-F068-4E2F-A4C7-E9D9A87B0B81
 :END:
 
-Matt Dancho's template as of [2020-01-02 Thu], placed here for ready reference. This is not tangled.
+Matt Dancho's template as of [2020-01-02 Thu], placed here for ready reference.
 
 #+BEGIN_SRC dockerfile
 FROM rocker/shiny-verse:latest
