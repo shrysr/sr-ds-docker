@@ -1,10 +1,10 @@
 * Introduction
 
-The starting point of this dockerfile is from [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] example file.
+The starting point of this dockerfile is from [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] example file. This repo will reflect my effort to construct a docker image for myself to use with my projects, and thus take a step towards reproducible results in my projects.
 
 ** Overview
 
-I intend to try maintain all my dockerfiles within Org mode documents. i.e a single Readme.org is where I will be able to edit all the dockerfiles in this repository, which will be tangled into the dockerfiles when desired.
+I am currently creating dockerfiles via source code blocks inserted into Org mode documents. i.e a single Readme.org is where I will be able to edit all the dockerfiles in this repository, which can be tangled into the dockerfiles when desired.
 
 The Org mode format can be leveraged to record comments and notes about each dockerfile and setup within the readme document itself.
 
@@ -14,6 +14,216 @@ Since each template is under it's own Org heading, the specific heading can even
 
 1. Copy the contents of the dockerfile and paste into your docker file.
 2. Alternately, this repo can be cloned, and the dockerfile can be specified with the =f= flag for example =docker build . -f ~/temp/testdocker=
+
+** Launching the docker container
+
+Note that the test_app folder has to be created
+
+#+BEGIN_SRC sh :tangle no
+#+/bin/bash
+docker container run --rm  -p 3838:3838 \
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app \
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
+umaptest
+#+END_SRC
+
+#+RESULTS:
+* Adding All libraries to the Template
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./all_inclusive_latest/Dockerfile
+:ID:       0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23
+:END:
+
+Libraries added over the base template:
+1. Umap
+2. inspectdf
+3. DataExplorer
+
+#+BEGIN_SRC dockerfile
+FROM rocker/shiny-verse:latest
+
+RUN apt-get update -qq \
+    && apt-get -y --no-install-recommends install \
+        lbzip2 \
+        libfftw3-dev \
+        libgdal-dev \
+        libgeos-dev \
+        libgsl0-dev \
+        libgl1-mesa-dev \
+        libglu1-mesa-dev \
+        libhdf4-alt-dev \
+        libhdf5-dev \
+        libjq-dev \
+        liblwgeom-dev \
+        libpq-dev \
+        libproj-dev \
+        libprotobuf-dev \
+        libnetcdf-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        libudunits2-dev \
+        netcdf-bin \
+        postgis \
+        protobuf-compiler \
+        sqlite3 \
+        tk-dev \
+        unixodbc-dev \
+        libsasl2-dev \
+        libv8-dev \
+        libsodium-dev \
+    && install2.r --error --deps TRUE \
+        shinyWidgets \
+        shinythemes \
+        shinyjs \
+        mongolite \
+        jsonlite \
+        config \
+        remotes \
+        tidyquant \
+	plotly \
+	umap \
+	inspectdf \
+	DataExplorer \
+    && installGithub.r shrysr/sr-ds-docker/all_inclusive_latest
+#+END_SRC
+
+* Test App
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./test_app/app.R
+:ID:       9F2868CD-5A4C-40C9-885C-C522822967B4
+:END:
+
+#+BEGIN_SRC R
+library(shiny)
+
+## Define UI
+ui  <- fluidPage(
+  titlePanel("Basic widget exploration"),
+
+  fluidRow(
+
+    column(2,
+           h3("buttons"),
+           actionButton("action007", label ="Action"),
+           br(),
+           br(),
+           submitButton("Submit")
+           ),
+    column(2,
+           h3("Single Checkbox"),
+           checkboxInput("checkbox", "Choice A", value = T)
+           ),
+    column(3,
+           checkboxGroupInput("checkGroup",
+                              h3("checkbox group"),
+                              choices = list("Choice 1" = 1,
+                                             "Choice 2" = 2,
+                                             "Choice 3" = 3
+                                             ),
+                              selected = 1
+                              )
+           ),
+    column(2,
+           dateInput("date",
+                     h3("date input"),
+                     value = ""
+                     )
+           )
+
+  ),
+  ## Inserting another fluid row element
+  fluidRow(
+
+    column(2,
+           radioButtons("radio",
+                        h3("Radio Buttons"),
+                        choices = list("choice 1" = 1,
+                                       "choice 2" = 2,
+                                       "Radio 3"  = 3
+                                       ),
+                        selected =1
+                        )
+           ),
+
+    column(2,
+           selectInput("select",
+                       h3("Select box"),
+                       choices = list("choice 1" = 1,
+                                      "choice 2" = 2,
+                                      "choice 3" = 3
+                                      ),
+                       selected = 1
+                       )
+           ),
+    column(2,
+           sliderInput("slider1",
+                       h3("Sliders"),
+                       min = 0,
+                       max = 100,
+                       value = 50
+                       ),
+
+           sliderInput("slider2",
+                       h3("Another Slider"),
+                       min = 50,
+                       max = 200,
+                       value = c(60,80)
+                       )
+           ),
+    column(2,
+           selectInput("selectbox1",
+                     h3("select from drop down box"),
+                     choices = list("choice 1" = 22,
+                                    "choice 2" = 2,
+                                    "choice fake 3" = 33
+                                    ),
+                     selected = ""
+                     )
+           )
+
+  ),
+  fluidRow(
+    column(3,
+           dateRangeInput("daterange",
+                          h3("Date range input")
+                          )
+           ),
+
+    column(3,
+           fileInput("fileinput",
+                     h3("Select File")
+                     )
+           ),
+
+    column(3,
+           numericInput("numinput",
+                        h3("Enter numeric value"),
+                        value = 10
+                        )
+           ),
+    column(3,
+           h3("help text"),
+           helpText("Hello this is line one.",
+                    "This is line 2..\n",
+                    "This is line 3."
+                    )
+           )
+  )
+)
+
+
+## Define server logic
+
+server <- function(input, output){
+
+
+}
+
+
+
+## Run the app
+shinyApp(ui = ui, server = server)
+#+END_SRC
 
 * Basic Template
 :PROPERTIES:
@@ -67,57 +277,3 @@ RUN apt-get update -qq \
         plotly \
     && installGithub.r business-science/shinyauthr
 #+END_SRC
-
-* Adding Umap to the basic Template
-:PROPERTIES:
-:header-args: :tangle ./BasicUmapDockerFile
-:ID:       0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23
-:END:
-
-#+BEGIN_SRC dockerfile
-FROM rocker/shiny-verse:latest
-
-RUN apt-get update -qq \
-    && apt-get -y --no-install-recommends install \
-        lbzip2 \
-        libfftw3-dev \
-        libgdal-dev \
-        libgeos-dev \
-        libgsl0-dev \
-        libgl1-mesa-dev \
-        libglu1-mesa-dev \
-        libhdf4-alt-dev \
-        libhdf5-dev \
-        libjq-dev \
-        liblwgeom-dev \
-        libpq-dev \
-        libproj-dev \
-        libprotobuf-dev \
-        libnetcdf-dev \
-        libsqlite3-dev \
-        libssl-dev \
-        libudunits2-dev \
-        netcdf-bin \
-        postgis \
-        protobuf-compiler \
-        sqlite3 \
-        tk-dev \
-        unixodbc-dev \
-        libsasl2-dev \
-        libv8-dev \
-        libsodium-dev \
-    && install2.r --error --deps TRUE \
-        shinyWidgets \
-        shinythemes \
-        shinyjs \
-        mongolite \
-        jsonlite \
-        config \
-        remotes \
-        tidyquant \
-        plotly \
-	umap \
-    && installGithub.r business-science/shinyauthr
-#+END_SRC
-
-*

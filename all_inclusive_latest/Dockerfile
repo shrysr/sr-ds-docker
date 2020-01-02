@@ -38,6 +38,8 @@ RUN apt-get update -qq \
         config \
         remotes \
         tidyquant \
-        plotly \
+	plotly \
 	umap \
+	inspectdf \
+	DataExplorer \
     && installGithub.r business-science/shinyauthr
