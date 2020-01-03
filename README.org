@@ -51,7 +51,6 @@ umaptest
 
 #+RESULTS:
 
-
 ** Strategy
 - Using the =:latest= tag is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
 - Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, I still think this is a good feature to note and turn on. This can be accessed on the 'Builds' tab on Dockerhub.
