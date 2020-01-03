@@ -38,13 +38,13 @@ RUN apt-get -y --no-install-recommends install \
         pandoc \
         pandoc-citeproc
 
-# Installing some minimum R libraries for shiny
+# Installing minimum R libraries for shiny
 RUN install2.r --error --deps TRUE \
 	shinyWidgets \
         shinythemes \
         shinyjs
 
-# Intalling DB drivers
+# Intalling DB interfacing libraries
 RUN install2.r --error --deps TRUE \
 	mongolite \
         jsonlite \
@@ -68,5 +68,3 @@ RUN install2.r --error --deps TRUE \
     	inspectdf \
 	DataExplorer \
 	glmnet
-
-#    && installGithub.r shrysr/sr-ds-docker/all_inclusive_latest

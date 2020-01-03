@@ -1,23 +1,45 @@
-* Introduction
+* Preamble
 
-The starting point of this dockerfile is from [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] example file. This repo will reflect my effort to construct a docker image for myself to use with my projects, and thus take a step towards reproducible results in my projects.
+The starting point of this dockerfile is from [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] example file, which is generally referred to as the base template in this document. This repo will reflect my effort to construct a docker image to use with datascience projects, and thus take a step towards establishing a clear methodology for reproducible results in my work. The initial focus will be on R, and will slowly extend to including Python as well.
 
-** Overview
+In this regard, the [[https://hub.docker.com/r/datascienceschool/rpython][Data Science School's docker image]] is quite useful as a comprehensive reference.
 
-I am currently creating dockerfiles via source code blocks inserted into Org mode documents. i.e a single Readme.org is where I will be able to edit all the dockerfiles in this repository, which can be tangled into the dockerfiles when desired.
+** Plans and potential goals
 
-The Org mode format can be leveraged to record comments and notes about each dockerfile and setup within the readme document itself.
+- [ ] start with providing specific versions of atleast the major components.
+- [ ] figure out an efficient method to take care of package versions for R
+- [ ] streamline the image and layers pulling in existing official docker images.
+- [ ] consider using the Ubuntu or any other suitable OS image to build and evaluate the benefits of doing so.
+- [ ] Create tests to ensure the docker image is working
+- [ ] Add a file with the R session information to be automatically generated with each container and printed to a file in the working directory.
+- [ ] Add Rstudio server
+
+* Notes
+/There are a bunch of general docker related notes and references [[https://shreyas.ragavan.co/docs/docker-notes/][on my website]]./
+
+** Tools and methodology
+
+I am currently creating dockerfiles via source code blocks inserted into Org mode documents. i.e a single Readme.org is where I will edit all the dockerfiles in this repository, which are then tangled into the dockerfiles automatically.
+
+The Org mode format can be leveraged to record comments and notes about each dockerfile and setup within the readme document itself thus creating a literate environment.
 
 Since each template is under it's own Org heading, the specific heading can even be exported as an org file which can be externally tangled into these source files without needing the installation of Emacs. This makes the possibilities rather interesting. Down the line, further optimisations will be made
 
+Beyond this, tools like [[https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf][docker-tramp]] can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
+
 ** Running these files
 
-1. Copy the contents of the dockerfile and paste into your docker file.
-2. Alternately, this repo can be cloned, and the dockerfile can be specified with the =f= flag for example =docker build . -f ~/temp/testdocker=
+The following options exist:
+
+1. Pull the latest image from docker hub : =docker pull shrysr/datasciencer= and run the container. This will reference the [[id:0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23][Adding All libraries to the Template]], wherein the latest versions of all the files will be used.
+3. Copy the contents of the dockerfile and paste into your docker file.
+4. Alternately, this repo can be cloned, and the dockerfile can be specified with the =f= flag for example =docker build . -f ~/temp/testdocker=
 
 ** Launching the docker container
 
-Note that the test_app folder has to be created
+These are some variations of snippets used for connecting to the container placed here for ready reference.
+
+/Note that the local test_app folder has to be created/
 
 #+BEGIN_SRC sh :tangle no
 #+/bin/bash
@@ -28,16 +50,33 @@ umaptest
 #+END_SRC
 
 #+RESULTS:
-* Adding All libraries to the Template
+
+
+** Strategy
+- Using the =:latest= tag is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
+- Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, I still think this is a good feature to note and turn on. This can be accessed on the 'Builds' tab on Dockerhub.
+** Status Log
+
+#+BEGIN_QUOTE
+Current Status, [2020-01-03 Fri]
+This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the [[https://hub.docker.com/repository/docker/shrysr/datasciencer][image on dockerhub]].
+#+END_QUOTE
+
+* Latest Libraries - Shiny and RStudio server
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./all_inclusive_latest/Dockerfile
 :ID:       0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23
 :END:
 
-Libraries added over the base template:
-1. Umap
-2. inspectdf
-3. DataExplorer
+OS Package list
+1. pandoc
+2. pandoc-cite
+
+R Libraries being installed in addition to the base template:
+1. glmnet
+2. Umap
+3. inspectdf
+4. DataExplorer
 
 #+BEGIN_SRC dockerfile
 FROM rocker/shiny-verse:latest
@@ -80,13 +119,13 @@ RUN apt-get -y --no-install-recommends install \
         pandoc \
         pandoc-citeproc
 
-# Installing some minimum R libraries for shiny
+# Installing minimum R libraries for shiny
 RUN install2.r --error --deps TRUE \
 	shinyWidgets \
         shinythemes \
         shinyjs
 
-# Intalling DB drivers
+# Intalling DB interfacing libraries
 RUN install2.r --error --deps TRUE \
 	mongolite \
         jsonlite \
@@ -110,8 +149,6 @@ RUN install2.r --error --deps TRUE \
     	inspectdf \
 	DataExplorer \
 	glmnet
-
-#    && installGithub.r shrysr/sr-ds-docker/all_inclusive_latest
 #+END_SRC
 
 * Test App
@@ -254,7 +291,7 @@ shinyApp(ui = ui, server = server)
 
 * Basic Template
 :PROPERTIES:
-:header-args: :tangle ./BasicDockerFile
+:header-args: :mkdirp yes :tangle ./base_template/DockerFile
 :ID:       797160F1-F068-4E2F-A4C7-E9D9A87B0B81
 :END:
 
