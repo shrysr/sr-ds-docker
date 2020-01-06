@@ -88,3 +88,17 @@ RUN install2.r --error --deps TRUE \
 	easypackages \
 	remotes \
 	&& installGithub.r karthik/holepunch
+
+# Adding Rstudio server preview version 1.2
+# Reference: https://github.com/datascienceschool/docker_rpython/blob/0c01b0b52834f6b3bb8a0c930a3d43899ea60ce6/02_rpython/Dockerfile#L17
+
+USER root
+ENV RSTUDIOSERVER_VERSION 1.2.5001
+RUN \
+mkdir -p /download && cd /download && \
+wget https://download2.rstudio.org/server/bionic/amd64/rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb && \
+gdebi --n rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb && \
+rm -rf /download
+
+# Settings for RStudio-Server
+EXPOSE 8787
