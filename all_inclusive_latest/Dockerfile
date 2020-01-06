@@ -3,11 +3,9 @@ FROM rocker/shiny-verse:latest
 LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
 	version="1.0"
 
-# System update
-RUN apt-get update -qq
-
-# Installing a bunch of packages for the OS
-RUN apt-get -y --no-install-recommends install \
+# System update and installing a bunch of OS libraries
+RUN apt-get update -qq \
+	&& apt-get -y --no-install-recommends install \
 	lbzip2 \
 	libfftw3-dev \
         libgdal-dev \
@@ -34,9 +32,15 @@ RUN apt-get -y --no-install-recommends install \
         unixodbc-dev \
         libsasl2-dev \
         libv8-dev \
-        libsodium-dev \
+	libsodium-dev \
+# Adding a custom list of packages from this point
         pandoc \
-        pandoc-citeproc
+	pandoc-citeproc \
+	dtrx \
+	tree \
+# Removing temporary files generated after package changes
+	&& rm -rf /var/lib/apt \
+	&& apt-get autoclean
 
 # Installing minimum R libraries for shiny
 RUN install2.r --error --deps TRUE \
@@ -52,7 +56,6 @@ RUN install2.r --error --deps TRUE \
 
 # Tidyquant and Remotes
 RUN install2.r --error --deps TRUE \
-	remotes \
 	tidyquant
 
 # Installing plotly
@@ -63,8 +66,23 @@ RUN install2.r --error --deps TRUE \
 RUN install2.r --error --deps TRUE \
 	umap
 
-# Installing a bunch of libraries for EDA, Linear Regression with GLMnet
+# Installing libraries for EDA
 RUN install2.r --error --deps TRUE \
     	inspectdf \
 	DataExplorer \
-	glmnet
+
+# Installing libraries for  Linear Regression with GLMnet
+RUN install2.r --error --deps TRUE \
+	glmnet \
+	parsnip \
+	recipes \
+	rsample \
+	rpart.plot
+
+# Installing libraries related to reproducibility DevOps, planning, package management
+RUN install2.r --error --deps TRUE \
+	drake \
+	binder \
+	easypackages \
+	remotes \
+	&& installGithub.r karthik/holepunch

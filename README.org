@@ -1,21 +1,43 @@
 * Preamble
 
-The starting point of this dockerfile is from [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] example file, which is generally referred to as the base template in this document. This repo will reflect my effort to construct a docker image to use with datascience projects, and thus take a step towards establishing a clear methodology for reproducible results in my work. The initial focus will be on R, and will slowly extend to including Python as well.
+The starting point of this project was [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] docker file, which has been generally referred to as the base template in this document. The initial focus will be on R, and will slowly extend to including Python as well.
 
-In this regard, the [[https://hub.docker.com/r/datascienceschool/rpython][Data Science School's docker image]] is quite useful as a comprehensive reference.
+In this regard, the [[https://hub.docker.com/r/datascienceschool/rpython][Data Science School's docker image]] is quite useful as a comprehensive reference as well.
 
-** Plans and potential goals
+The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run datascience projects, with different development and production environments.
 
-- [ ] start with providing specific versions of atleast the major components.
-- [ ] figure out an efficient method to take care of package versions for R
-- [ ] streamline the image and layers pulling in existing official docker images.
-- [ ] consider using the Ubuntu or any other suitable OS image to build and evaluate the benefits of doing so.
-- [ ] Create tests to ensure the docker image is working
-- [ ] Add a file with the R session information to be automatically generated with each container and printed to a file in the working directory.
-- [ ] Add Rstudio server
+** Plan
 
+
+*** List of images planned
+
+1. Development : R based
+   1. [ ] R Shiny server - version to be specified
+   2. R studio server:latest
+   3. Tidyverse + ML + EDA packages  - version to be specified.
+
+2. Production for Shiny apps
+   1. R Shiny server : the same version as corresponding development image
+   2. Tidyverse + ML + EDA packages : the same versions corresponding to development image
+
+*** Tasks
+
+**** Primary
+- [ ] provide specific versions of atleast the major components, like docker images, and meta-packages and other tools.
+- [ ] Efficient method to update system package versions.
+- [ ] Efficient method to update R packages painlessly.
+- [ ] Start with a minimal OS layer, like Ubuntu or even Alpine.
+- [ ] Create tests to ensure the docker image is working as expected. Consider techniques like Continuous Integration (CI)
+- [ ] Add a file with the R session, package and other relevant information to be automatically generated when a container is run and printed to a file in the working directory.
+- [ ] Create clearly distinct production and development environments
+- [ ] Ensure streamlined connection to specific containers from Org mode source blocks.
+
+**** Good to have
+- [ ] Construct my own shiny server rather than relying on an external official image.
+- [ ] Evaluate integrating workflows using Drake,
+-
 * Notes
-/There are a bunch of general docker related notes and references [[https://shreyas.ragavan.co/docs/docker-notes/][on my website]]./
+/There is also a bunch of general docker related notes and references [[https://shreyas.ragavan.co/docs/docker-notes/][on my website]]./
 
 ** Tools and methodology
 
@@ -27,7 +49,7 @@ Since each template is under it's own Org heading, the specific heading can even
 
 Beyond this, tools like [[https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf][docker-tramp]] can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
-** Running these files
+** TODO Running these files
 
 The following options exist:
 
@@ -41,19 +63,21 @@ These are some variations of snippets used for connecting to the container place
 
 /Note that the local test_app folder has to be created/
 
-#+BEGIN_SRC sh :tangle no
+#+BEGIN_SRC sh :tangle no :results verbatim replace
 #+/bin/bash
-docker container run --rm  -p 3838:3838 \
+docker container run -d --rm  -p 3838:3838 \
 -v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app \
 -v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
-umaptest
+splicetest
 #+END_SRC
 
 #+RESULTS:
+: edf2734c5933cadd45c7bd83d9efccdf14544c3b734e67a0f28e0b8466e22bf1
 
 ** Strategy
 - Using the =:latest= tag is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
-- Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, I still think this is a good feature to note and turn on. This can be accessed on the 'Builds' tab on Dockerhub.
+- Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, this is certainly useful for subsequent builds with minor changes. It saves the effort required to commit a new image and push it to dockerhub.
+
 ** Status Log
 
 #+BEGIN_QUOTE
@@ -67,15 +91,37 @@ This dockerfile will launch a shiny server to listen at the specified port. Some
 :ID:       0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23
 :END:
 
-OS Package list
+** Overview
+
+Base image: rocker/shinyverse
+
+Beyond a list of OS libraries in the basic template, the following additional libraries are installed:
 1. pandoc
 2. pandoc-cite
+3. dtrx
+4. tree
 
-R Libraries being installed in addition to the base template:
+R Libraries in addition to the base template grouped into general categories:
+
+ML
 1. glmnet
-2. Umap
-3. inspectdf
-4. DataExplorer
+2. Umap /(Currently on a separate layer as it has a lot of dependencies and is a large install)/
+
+EDA
+1. inspectdf
+2. DataExplorer
+
+Management
+1. drake
+2. binder
+3. easypackages
+4. remotes
+5. From github:  karthik/holepunch
+
+** Dockerfile
+:PROPERTIES:
+:ID:       4F6FDA93-F5E2-407A-88BE-F0796BC93935
+:END:
 
 #+BEGIN_SRC dockerfile
 FROM rocker/shiny-verse:latest
@@ -83,11 +129,9 @@ FROM rocker/shiny-verse:latest
 LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
 	version="1.0"
 
-# System update
-RUN apt-get update -qq
-
-# Installing a bunch of packages for the OS
-RUN apt-get -y --no-install-recommends install \
+# System update and installing a bunch of OS libraries
+RUN apt-get update -qq \
+	&& apt-get -y --no-install-recommends install \
 	lbzip2 \
 	libfftw3-dev \
         libgdal-dev \
@@ -114,9 +158,15 @@ RUN apt-get -y --no-install-recommends install \
         unixodbc-dev \
         libsasl2-dev \
         libv8-dev \
-        libsodium-dev \
+	libsodium-dev \
+# Adding a custom list of packages from this point
         pandoc \
-        pandoc-citeproc
+	pandoc-citeproc \
+	dtrx \
+	tree \
+# Removing temporary files generated after package changes
+	&& rm -rf /var/lib/apt \
+	&& apt-get autoclean
 
 # Installing minimum R libraries for shiny
 RUN install2.r --error --deps TRUE \
@@ -132,7 +182,6 @@ RUN install2.r --error --deps TRUE \
 
 # Tidyquant and Remotes
 RUN install2.r --error --deps TRUE \
-	remotes \
 	tidyquant
 
 # Installing plotly
@@ -143,17 +192,79 @@ RUN install2.r --error --deps TRUE \
 RUN install2.r --error --deps TRUE \
 	umap
 
-# Installing a bunch of libraries for EDA, Linear Regression with GLMnet
+# Installing libraries for EDA
 RUN install2.r --error --deps TRUE \
     	inspectdf \
 	DataExplorer \
-	glmnet
+
+# Installing libraries for  Linear Regression with GLMnet
+RUN install2.r --error --deps TRUE \
+	glmnet \
+	parsnip \
+	recipes \
+	rsample \
+	rpart.plot
+
+# Installing libraries related to reproducibility DevOps, planning, package management
+RUN install2.r --error --deps TRUE \
+	drake \
+	binder \
+	easypackages \
+	remotes \
+	&& installGithub.r karthik/holepunch
+
+
 #+END_SRC
 
-* Test App
+* Experimental Containers
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./experiment_docker/Dockerfile
+:ID:       81A5C2EA-4760-47F2-BDDE-F194A765E2BB
+:END:
+
+#+BEGIN_SRC sh :tangle no
+docker image ls
+#+END_SRC
+
+#+RESULTS:
+| REPOSITORY             | TAG        | IMAGE        | ID | CREATED | SIZE |        |
+| srds                   | latest     | f3313b691514 | 13 | hours   | ago  | 2.93GB |
+| shrysr/datasciencer    | latest     | f3313b691514 | 13 | hours   | ago  | 2.93GB |
+| <none>                 | <none>     | b9761ac214a5 | 13 | hours   | ago  | 2.81GB |
+| umaptest               | latest     | 09ccf15c3239 | 16 | hours   | ago  | 2.91GB |
+| web2                   | latest     | 7d717b392c2e |  4 | months  | ago  | 73.7MB |
+| <none>                 | <none>     | 0d3af5fe4466 |  4 | months  | ago  | 73.7MB |
+| <none>                 | <none>     | 63429fdd1b85 |  4 | months  | ago  | 73.7MB |
+| rocker/tidyverse       | latest     | 023907c7da33 |  5 | months  | ago  | 2.1GB  |
+| <none>                 | <none>     | 363837418c2b |  5 | months  | ago  | 73.7MB |
+| rocker/shiny-verse     | latest     | 87397fc3e62a |  5 | months  | ago  | 1.86GB |
+| <none>                 | <none>     | 53aea7a47e1a |  5 | months  | ago  | 73.7MB |
+| web1                   | latest     | 1ca29acbe073 |  5 | months  | ago  | 73.1MB |
+| <none>                 | <none>     | 289ce05fc9c9 |  5 | months  | ago  | 73.1MB |
+| python                 | 2.7-alpine | f101ac3346a7 |  5 | months  | ago  | 61.7MB |
+| redis                  | latest     | bb0ab8a99fe6 |  6 | months  | ago  | 95MB   |
+| nginx                  | latest     | f68d6e55e065 |  6 | months  | ago  | 109MB  |
+| ubuntu                 | latest     | 4c108a37151f |  6 | months  | ago  | 64.2MB |
+| hello-world            | latest     | fce289e99eb9 | 12 | months  | ago  | 1.84kB |
+| rickfast/hello-oreilly | latest     | ec347d11e305 |  3 | years   | ago  | 4.79MB |
+
+#+BEGIN_SRC dockerfile
+FROM shrysr/datasciencer as base1
+FROM rocker/tidyverse
+COPY  --from=base1 * .
+#+END_SRC
+
+* Test Shiny App
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./test_app/app.R
 :ID:       9F2868CD-5A4C-40C9-885C-C522822967B4
+:END:
+
+A bunch of apps will be included here for the purpose of quickly testing functionality of widgets and etc.
+
+** Widget Gallery
+:PROPERTIES:
+:ID:       9C26940D-010B-465B-AEA3-944B0BC0048F
 :END:
 
 #+BEGIN_SRC R
