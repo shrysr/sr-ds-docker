@@ -106,10 +106,15 @@ R Libraries in addition to the base template grouped into general categories:
 ML
 1. glmnet
 2. Umap /(Currently on a separate layer as it has a lot of dependencies and is a large install)/
+3. recipes
+4. rsample
+5. rpart.plot
+6. caret
 
 EDA
 1. inspectdf
 2. DataExplorer
+3. janitor
 
 Management
 1. drake
@@ -196,6 +201,7 @@ RUN install2.r --error --deps TRUE \
 RUN install2.r --error --deps TRUE \
     	inspectdf \
 	DataExplorer \
+	janitor
 
 # Installing libraries for  Linear Regression with GLMnet
 RUN install2.r --error --deps TRUE \
@@ -203,7 +209,8 @@ RUN install2.r --error --deps TRUE \
 	parsnip \
 	recipes \
 	rsample \
-	rpart.plot
+	rpart.plot \
+	caret
 
 # Installing libraries related to reproducibility DevOps, planning, package management
 RUN install2.r --error --deps TRUE \

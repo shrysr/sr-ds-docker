@@ -70,6 +70,7 @@ RUN install2.r --error --deps TRUE \
 RUN install2.r --error --deps TRUE \
     	inspectdf \
 	DataExplorer \
+	janitor
 
 # Installing libraries for  Linear Regression with GLMnet
 RUN install2.r --error --deps TRUE \
@@ -77,7 +78,8 @@ RUN install2.r --error --deps TRUE \
 	parsnip \
 	recipes \
 	rsample \
-	rpart.plot
+	rpart.plot \
+	caret
 
 # Installing libraries related to reproducibility DevOps, planning, package management
 RUN install2.r --error --deps TRUE \
