@@ -1,15 +1,15 @@
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
 * Preamble
 
-The starting point of this project was [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] docker file, which has been generally referred to as the base template in this document. The initial focus will be on R, and will slowly extend to including Python as well.
-
-In this regard, the [[https://hub.docker.com/r/datascienceschool/rpython][Data Science School's docker image]] is quite useful as a comprehensive reference as well.
+The starting point of this project was [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] docker file, which then expanded into using the well designed [[https://github.com/matrixds/tools][Matrix DS tools]] for my purpose. Their stack of tools is replicated here with my own customizatios (at the moment restricted to some additional packages).
 
 The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run datascience projects, with different development and production environments.
 
-** Plan
+** TODO Plan
 
 
-*** List of images planned
+*** TODO List of images planned
 
 1. Development : R based
    1. [ ] R Shiny server - version to be specified
@@ -20,7 +20,7 @@ The goal is to develop a workflow based on Docker (and other tools) to create a 
    1. R Shiny server : the same version as corresponding development image
    2. Tidyverse + ML + EDA packages : the same versions corresponding to development image
 
-*** Tasks
+*** TODO Tasks
 
 **** Primary
 - [ ] provide specific versions of atleast the major components, like docker images, and meta-packages and other tools.
@@ -35,7 +35,7 @@ The goal is to develop a workflow based on Docker (and other tools) to create a 
 **** Good to have
 - [ ] Construct my own shiny server rather than relying on an external official image.
 - [ ] Evaluate integrating workflows using Drake,
--
+
 * Notes
 /There is also a bunch of general docker related notes and references [[https://shreyas.ragavan.co/docs/docker-notes/][on my website]]./
 
@@ -74,17 +74,732 @@ shrysr/datasciencer:test
 #+RESULTS:
 : 347baed2d55e42bbf07508b9cdce0b15850c645fea3d137274daec61ac666ee9
 
-** Strategy
+** General Notes
 - Using the =:latest= tag is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
 - Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, this is certainly useful for subsequent builds with minor changes. It saves the effort required to commit a new image and push it to dockerhub.
+- the [[https://hub.docker.com/r/datascienceschool/rpython][Data Science School's docker image]] is useful as a comprehensive reference.
 
 ** Status Log
 
 #+BEGIN_QUOTE
-Current Status, [2020-01-03 Fri]
-This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the [[https://hub.docker.com/repository/docker/shrysr/datasciencer][image on dockerhub]].
+[2020-01-07 Tue] : Further efforts will be based off the Matrix DS images. Essentially, there will be a r-base image with all the package installations which will feed the other tools and containers. This ensures that all the containers rely on the same dependencies. Subsequently, only the mountpoint becomes important. This approach is better because it enables smaller containers with single critical processes rather than multiple processes.
 #+END_QUOTE
 
+- [2020-01-03 Fri] : This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the [[https://hub.docker.com/repository/docker/shrysr/datasciencer][image on dockerhub]].
+
+* A Smith
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./asmith/Dockerfile
+:ID:       59B3418B-E0F3-4146-A368-3FE5BDEA2F2F
+:END:
+
+#+BEGIN_SRC dockerfile
+FROM ubuntu:18.04
+
+USER root
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update
+
+# Install all basic OS dependencies
+RUN apt-get update \
+  && apt-get install -yq --no-install-recommends \
+    apt \
+    apt-utils \
+    bash-completion \
+    build-essential \
+    byacc \
+    bzip2 \
+    ca-certificates \
+    emacs \
+    file \
+    flex \
+    fonts-dejavu \
+    fonts-liberation \
+    fonts-texgyre \
+    g++ \
+    gcc \
+    gettext \
+    gfortran \
+    git \
+    gnupg2 \
+    gsfonts \
+    hdf5-tools \
+    icu-devtools \
+    jed \
+    lmodern \
+    locales \
+    make \
+    mesa-common-dev \
+    nano \
+    netcat \
+    openjdk-8-jdk \
+    pandoc \
+    software-properties-common \
+    sudo \
+    texlive-fonts-extra \
+    texlive-fonts-recommended \
+    texlive-generic-recommended \
+    texlive-latex-base \
+    texlive-latex-extra \
+    texlive-xetex \
+    tzdata \
+    unzip \
+    vim \
+    wget \
+    zip \
+  && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+  && locale-gen en_US.utf8 \
+  && /usr/sbin/update-locale LANG=en_US.UTF-8
+
+# make the "en_US.UTF-8" locale so postgres will be utf-8 enabled by default
+ENV LANG=en_US.utf8 \
+    LC_ALL=en_US.UTF-8 \
+    TERM=xterm \
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+
+# Install additional libraries
+RUN apt-get install -yq --no-install-recommends \
+    libblas-dev \
+    libcurl4 \
+    libcurl4-gnutls-dev \
+    libgdal-dev \
+    libglu1-mesa-dev \
+    libgmp3-dev \
+    libicu60 \
+    libjpeg-turbo8 \
+    libmagick++-dev \
+    libmariadb-client-lgpl-dev \
+    libmpfr-dev \
+    libmpfr-dev \
+    libncurses5-dev \
+    libnettle6 \
+    libnlopt-dev \
+    libopenblas-dev \
+    libpango1.0-0 \
+    libpangocairo-1.0-0 \
+    libpng16-16 \
+    libpq-dev \
+    libsasl2-dev \
+    libsm6 \
+    libssl-dev \
+    libtiff5 \
+    libtool \
+    libudunits2-dev \
+    libxext-dev \
+    libxml2-dev \
+    libxrender1 \
+    zlib1g-dev \
+	dtrx
+
+# Set timezone noninteractively
+RUN ln -fs /usr/share/zoneinfo/US/Pacific /etc/localtime
+
+# Python stuff
+RUN apt-get install -y --no-install-recommends \
+    python-pip \
+    python-setuptools \
+    python-wheel \
+    python-dev \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    python3-dev \
+  && apt-get clean
+
+#install git, vim
+
+RUN apt-get install -y git \
+	                   vim \
+                       curl
+
+#install kaggle cli
+RUN pip install kaggle dvc tensorflow keras pandas
+
+#mongo cli
+RUN apt-get install -y mongodb-clients
+
+#mysql shell
+RUN apt-get install -y mysql-client
+
+#postgre shell
+RUN apt-get install -y postgresql-client
+
+# Add Tini
+ENV TINI_VERSION v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+
+RUN apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+#+END_SRC
+
+* rbase
+:PROPERTIES:
+:header-args: :mkdirp yes
+:ID:
+:END:
+
+** R package list
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./rbase/packages.R
+:ID:       0DD4CDF0-87A3-4E3D-BDCF-39B2EB7DEF00
+:END:
+
+#+BEGIN_SRC R
+#Script for common package installation on MatrixDS docker image
+p<-c('nnet','kknn','randomForest','xgboost','tidyverse','plotly','shiny','shinydashboard',
+	  'devtools','FinCal','googleVis','DT', 'kernlab','earth',
+     'htmlwidgets','rmarkdown','lubridate','leaflet','sparklyr','magrittr','openxlsx',
+     'packrat','roxygen2','knitr','readr','readxl','stringr','broom','feather',
+     'forcats','testthat','plumber','RCurl','rvest','mailR','nlme','foreign','lattice',
+     'expm','Matrix','flexdashboard','caret','mlbench','plotROC','RJDBC','rgdal',
+     'highcharter','tidyquant','timetk','quantmod','PerformanceAnalytics','scales',
+     'tidymodels','C50','xgboost','parsnip','rmetalog','reticulate','umap', 'glmnet', 'easypackages', 'drake', 'shinythemes', 'shinyjs', 'recipes', 'rsample', 'rpart.plot', 'remotes', 'DataExplorer', 'inspectdf', 'janitor', 'mongolite', 'jsonlite', 'config' )
+
+
+install.packages(p,dependencies = TRUE)
+
+#+END_SRC
+
+** Dockerfile
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./rbase/Dockerfile
+:ID:       0C5AA86C-CE86-48E5-87E3-81DB9DC508CC
+:END:
+
+#+BEGIN_SRC dockerfile
+FROM shrysr/asmith:v1
+
+#install some helper python packages
+RUN pip install sympy numpy
+
+# R Repo, see https://cran.r-project.org/bin/linux/ubuntu/README.html
+RUN echo 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' >> /etc/apt/sources.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+RUN add-apt-repository ppa:marutter/c2d4u3.5
+
+# R-specific packages
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    r-base \
+    r-base-core \
+    r-recommended \
+    r-base-dev \
+    r-cran-boot \
+    r-cran-class \
+    r-cran-cluster \
+    r-cran-codetools \
+    r-cran-foreign \
+    r-cran-kernsmooth \
+    r-cran-matrix \
+    r-cran-rjava \
+    r-cran-rpart \
+    r-cran-spatial \
+    r-cran-survival
+COPY r_packages.R .
+RUN R CMD javareconf \
+  && Rscript r_packages.R \
+  && rm r_packages.R
+
+
+COPY packages.R /usr/local/lib/R/packages.R
+
+#install R packages
+RUN R CMD javareconf && \
+    Rscript /usr/local/lib/R/packages.R
+
+#+END_SRC
+* Rstudio
+:PROPERTIES:
+:header-args: :mkdirp yes
+:ID:
+:END:
+** Environment and Profile
+:PROPERTIES:
+:ID:       E5928ED3-9589-4F09-8AFB-5420EB1EDF68
+:END:
+
+#+BEGIN_SRC R :tangle ./rstudio/Renviron
+R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/home/rstudio/.R/library
+#+END_SRC
+
+#+BEGIN_SRC R :tangle ./rstudio/Rprofile
+.libPaths("/home/rstudio/.R/library")
+#+END_SRC
+
+** Add shiny
+:PROPERTIES:
+:ID:       C1B2AF9C-079D-4A60-A682-800B07BF584E
+:END:
+
+#+BEGIN_SRC sh :tangle ./rstudio/add-shiny.sh
+#!/usr/bin/with-contenv bash
+
+ADD=${ADD:=none}
+
+## A script to add shiny to an rstudio-based rocker image.
+
+if [ "$ADD" == "shiny" ]; then
+  echo "Adding shiny server to container..."
+  apt-get update && apt-get -y install \
+    gdebi-core \
+    libxt-dev && \
+    wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -O "version.txt" && \
+    VERSION=$(cat version.txt)  && \
+    wget --no-verbose "https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb && \
+    gdebi -n ss-latest.deb && \
+    rm -f version.txt ss-latest.deb && \
+    install2.r -e shiny rmarkdown && \
+    cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /var/log/shiny-server && \
+    chown shiny.shiny /var/log/shiny-server && \
+    mkdir -p /etc/services.d/shiny-server && \
+    cd /etc/services.d/shiny-server && \
+    echo '#!/bin/bash' > run && echo 'exec shiny-server > /var/log/shiny-server.log' >> run && \
+    chmod +x run && \
+    adduser rstudio shiny && \
+    cd /
+fi
+
+if [ $"$ADD" == "none" ]; then
+       echo "Nothing additional to add"
+fi
+#+END_SRC
+
+** Encrypted sign in
+:PROPERTIES:
+:ID:       CB382EF3-9133-4865-BD8A-DE3F784FEC20
+:END:
+
+#+BEGIN_SRC html :tangle ./rstudio/encrypted-sign-in.htm
+<!DOCTYPE html>
+
+<!--
+#
+# encrypted-sign-in.htm
+#
+# Copyright (C) 2009-17 by RStudio, Inc., MatrixDS
+#
+# This program is licensed to you under the terms of version 3 of the
+# GNU Affero General Public License. This program is distributed WITHOUT
+# ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING THOSE OF NON-INFRINGEMENT,
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Please refer to the
+# AGPL (http://www.gnu.org/licenses/agpl-3.0.txt) for more details.
+#
+-->
+<html>
+<head>
+<script type="text/javascript" src="/js/encrypt.min.js"></script>
+<script type="text/javascript">
+function prepare() {
+
+   try {
+      var payload = "rstudio" + "\n" + "matrix";
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/auth-public-key", true);
+      xhr.onreadystatechange = function() {
+         try {
+            if (xhr.readyState == 4) {
+               if (xhr.status != 200) {
+                  var errorMessage;
+                  if (xhr.status == 0)
+                     errorMessage = "Error: Could not reach server--check your internet connection";
+                  else
+                     errorMessage = "Error: " + xhr.statusText;
+
+                  if (typeof(errorp.innerText) == 'undefined')
+                     console.log(errorMessage);
+                  else
+                     console.log(errorMessage);
+               }
+               else {
+                  var response = xhr.responseText;
+                  var chunks = response.split(':', 2);
+                  var exp = chunks[0];
+                  var mod = chunks[1];
+                  var encrypted = encrypt(payload, exp, mod);
+                  document.getElementById('persist').value = 1;
+                  document.getElementById('package').value = encrypted;
+                  document.getElementById('clientPath').value = window.location.pathname;
+                  document.realform.submit();
+               }
+            }
+         } catch (exception) {
+            console.log("Error: " + exception);
+         }
+      };
+      xhr.send(null);
+   } catch (exception) {
+      console.log("Error: " + exception);
+   }
+}
+function submitRealForm() {
+   if (prepare())
+      document.realform.submit();
+}
+</script>
+
+</head>
+<form action="auth-do-sign-in" name="realform" method="POST">
+   <input type="hidden" name="persist" id="persist" value=""/>
+   <input type="hidden" name="appUri" value=""/>
+   <input type="hidden" name="clientPath" id="clientPath" value=""/>
+   <input id="package" type="hidden" name="v" value=""/>
+</form>
+<script>
+  submitRealForm();
+</script>
+</body>
+</html>
+
+#+END_SRC
+
+** Entrypoint
+:PROPERTIES:
+:ID:       DFC1A4E8-DD20-4F39-8617-F7D6A0ED1935
+:END:
+
+#+BEGIN_SRC sh :tangle ./rstudio/entrypoint.sh
+#!/bin/bash -e
+
+mkdir -p /home/rstudio/.R/library
+
+cp /home/README.txt /home/rstudio/README.txt
+
+chown -R rstudio:rstudio /home/rstudio/.R
+[ -f  /home/rstudio/.Rprofile ] || echo '.libPaths("/home/rstudio/.R/library")' > /home/rstudio/.Rprofile
+chown rstudio:rstudio /home/rstudio/.Rprofile
+[ -f  /home/rstudio/.Renvron ] || echo 'R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/home/rstudio/.R/library
+' > /home/rstudio/.Renvron
+chown rstudio:rstudio /home/rstudio/.Renvron
+#start RStudio
+/init
+#+END_SRC
+
+** nginx conf
+:PROPERTIES:
+:ID:       FB163EC6-E138-498E-9FDD-88161A0DCA75
+:END:
+
+#+BEGIN_SRC conf :tangle ./rstudio/nginx.conf
+http {
+
+  map $http_upgrade $connection_upgrade {
+      default upgrade;
+      ''      close;
+    }
+
+  server {
+    listen 80;
+
+    location / {
+      proxy_pass http://localhost:8787;
+      proxy_redirect http://localhost:8787/ $scheme://$http_host/;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+      proxy_read_timeout 20d;
+    }
+  }
+}
+#+END_SRC
+
+** Additional Packages
+:PROPERTIES:
+:ID:       56A19BED-2367-4F25-BD55-CAB7C7AE8827
+:END:
+
+#+BEGIN_SRC R :tangle ./rstudio/packages.R
+#Script for common package installation on MatrixDS docker image
+p<-c('reticulate')
+
+
+install.packages(p,dependencies = TRUE)
+
+#+END_SRC
+
+** PAM helper
+:PROPERTIES:
+:ID:       62D22A95-5F91-4B5F-9E6A-0F0C555C7FDE
+:END:
+
+#+BEGIN_SRC sh :tangle ./rstudio/pam-helper.sh
+#!/usr/bin/env sh
+
+## Enforces the custom password specified in the PASSWORD environment variable
+## The accepted RStudio username is the same as the USER environment variable (i.e., local user name).
+
+set -o nounset
+
+IFS='' read -r password
+
+[ "${USER}" = "${1}" ] && [ "${PASSWORD}" = "${password}" ]
+
+#+END_SRC
+
+** User settings
+:PROPERTIES:
+:ID:       2A450430-BC35-461A-931F-7B6DFD3F1556
+:END:
+
+#+BEGIN_SRC conf :tangle ./rstudio/user-settings
+alwaysSaveHistory="0"
+loadRData="0"
+saveAction="0"
+#+END_SRC
+
+** Userconf
+:PROPERTIES:
+:ID:       ED2C94C0-0A39-4788-A9C5-BB9E950C083F
+:END:
+
+#+BEGIN_SRC sh :tangle ./rstudio/userconf.sh
+#!/usr/bin/with-contenv bash
+
+## Set defaults for environmental variables in case they are undefined
+USER=${USER:=rstudio}
+PASSWORD=${PASSWORD:=rstudio}
+USERID=${USERID:=1000}
+GROUPID=${GROUPID:=1000}
+ROOT=${ROOT:=FALSE}
+UMASK=${UMASK:=022}
+
+## Make sure RStudio inherits the full path
+echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+
+if [[ ${DISABLE_AUTH,,} == "true" ]]
+then
+	mv /etc/rstudio/disable_auth_rserver.conf /etc/rstudio/rserver.conf
+	echo "USER=$USER" >> /etc/environment
+fi
+
+
+
+if grep --quiet "auth-none=1" /etc/rstudio/rserver.conf
+then
+	echo "Skipping authentication as requested"
+elif [ "$PASSWORD" == "rstudio" ]
+then
+    printf "\n\n"
+    tput bold
+    printf "\e[31mERROR\e[39m: You must set a unique PASSWORD (not 'rstudio') first! e.g. run with:\n"
+    printf "docker run -e PASSWORD=\e[92m<YOUR_PASS>\e[39m -p 8787:8787 rocker/rstudio\n"
+    tput sgr0
+    printf "\n\n"
+    exit 1
+fi
+
+if [ "$USERID" -lt 1000 ]
+# Probably a macOS user, https://github.com/rocker-org/rocker/issues/205
+  then
+    echo "$USERID is less than 1000"
+    check_user_id=$(grep -F "auth-minimum-user-id" /etc/rstudio/rserver.conf)
+    if [[ ! -z $check_user_id ]]
+    then
+      echo "minumum authorised user already exists in /etc/rstudio/rserver.conf: $check_user_id"
+    else
+      echo "setting minumum authorised user to 499"
+      echo auth-minimum-user-id=499 >> /etc/rstudio/rserver.conf
+    fi
+fi
+
+if [ "$USERID" -ne 1000 ]
+## Configure user with a different USERID if requested.
+  then
+    echo "deleting user rstudio"
+    userdel rstudio
+    echo "creating new $USER with UID $USERID"
+    useradd -m $USER -u $USERID
+    mkdir /home/$USER
+    chown -R $USER /home/$USER
+    usermod -a -G staff $USER
+elif [ "$USER" != "rstudio" ]
+  then
+    ## cannot move home folder when it's a shared volume, have to copy and change permissions instead
+    cp -r /home/rstudio /home/$USER
+    ## RENAME the user
+    usermod -l $USER -d /home/$USER rstudio
+    groupmod -n $USER rstudio
+    usermod -a -G staff $USER
+    chown -R $USER:$USER /home/$USER
+    echo "USER is now $USER"
+fi
+
+if [ "$GROUPID" -ne 1000 ]
+## Configure the primary GID (whether rstudio or $USER) with a different GROUPID if requested.
+  then
+    echo "Modifying primary group $(id $USER -g -n)"
+    groupmod -g $GROUPID $(id $USER -g -n)
+    echo "Primary group ID is now custom_group $GROUPID"
+fi
+
+## Add a password to user
+echo "$USER:$PASSWORD" | chpasswd
+
+# Use Env flag to know if user should be added to sudoers
+if [[ ${ROOT,,} == "true" ]]
+  then
+    adduser $USER sudo && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+    echo "$USER added to sudoers"
+fi
+
+## Change Umask value if desired
+if [ "$UMASK" -ne 022 ]
+  then
+    echo "server-set-umask=false" >> /etc/rstudio/rserver.conf
+    echo "Sys.umask(mode=$UMASK)" >> /home/$USER/.Rprofile
+fi
+
+## add these to the global environment so they are avialable to the RStudio user
+echo "HTTR_LOCALHOST=$HTTR_LOCALHOST" >> /etc/R/Renviron.site
+echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
+
+#+END_SRC
+
+** Dockerfile
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./rstudio/Dockerfile
+:ID:       ADA2C687-C6E2-489D-A91E-896741ACC0B8
+:END:
+
+#+BEGIN_SRC dockerfile
+FROM shrysr/rbase:v1
+
+COPY packages.R /usr/local/lib/R/packages.R
+
+#install R packages
+RUN R CMD javareconf && \
+    Rscript /usr/local/lib/R/packages.R
+
+ARG RSTUDIO_VERSION
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
+
+#Creating etc folder at /usr/local/lib/R/ location Searce
+RUN mkdir -p /usr/local/lib/R/etc
+
+## Download and install RStudio server & dependencies
+## Attempts to get detect latest version, otherwise falls back to version given in $VER
+## Symlink pandoc, pandoc-citeproc so they are available system-wide
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+#    file \
+    libapparmor1 \
+    libcurl4-openssl-dev \
+    libedit2 \
+    lsb-release \
+    psmisc \
+    libclang-dev \
+  && wget -O libssl1.0.0.deb http://ftp.debian.org/debian/pool/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u8_amd64.deb \
+  && dpkg -i libssl1.0.0.deb \
+  && rm libssl1.0.0.deb \
+  && RSTUDIO_LATEST=$(wget --no-check-certificate -qO- https://s3.amazonaws.com/rstudio-server/current.ver) \
+  && [ -z "$RSTUDIO_VERSION" ] && RSTUDIO_VERSION=$RSTUDIO_LATEST || true \
+  # hard code the latest v1.2
+  && wget -q https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-1.2.1511-amd64.deb \
+  && dpkg -i rstudio-server-1.2.1511-amd64.deb \
+  #use this for latest
+ # && wget -q http://download2.rstudio.org/rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
+ # && dpkg -i rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
+  && rm rstudio-server-*-amd64.deb \
+  ## Symlink pandoc & standard pandoc templates for use system-wide
+  && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc /usr/local/bin \
+  && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc-citeproc /usr/local/bin \
+  && git clone https://github.com/jgm/pandoc-templates \
+  && mkdir -p /opt/pandoc/templates \
+  && cp -r pandoc-templates*/* /opt/pandoc/templates && rm -rf pandoc-templates* \
+  && mkdir /root/.pandoc && ln -s /opt/pandoc/templates /root/.pandoc/templates \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/ \
+  ## RStudio wants an /etc/R, will populate from $R_HOME/etc
+  && mkdir -p /etc/R \
+  ## Write config files in $R_HOME/etc
+  && echo '\n\
+    \n# Configure httr to perform out-of-band authentication if HTTR_LOCALHOST \
+    \n# is not set since a redirect to localhost may not work depending upon \
+    \n# where this Docker container is running. \
+    \nif(is.na(Sys.getenv("HTTR_LOCALHOST", unset=NA))) { \
+    \n  options(httr_oob_default = TRUE) \
+    \n}' >> /usr/local/lib/R/etc/Rprofile.site \
+  && echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron \
+  ## Need to configure non-root user for RStudio
+  && useradd rstudio \
+  && echo "rstudio:matrix" | chpasswd \
+	&& mkdir /home/rstudio \
+	&& chown rstudio:rstudio /home/rstudio \
+	&& addgroup rstudio staff \
+  ## Prevent rstudio from deciding to use /usr/bin/R if a user apt-get installs a package
+  &&  echo 'rsession-which-r=/usr/bin/R' >> /etc/rstudio/rserver.conf \
+  ## use more robust file locking to avoid errors when using shared volumes:
+#  && echo 'lock-type=advisory' >> /etc/rstudio/file-locks \
+  ## configure git not to request password each time
+  && git config --system credential.helper 'cache --timeout=3600' \
+  && git config --system push.default simple \
+  ## Set up S6 init system
+  && wget -P /tmp/ https://github.com/just-containers/s6-overlay/releases/download/v1.11.0.1/s6-overlay-amd64.tar.gz \
+  && tar xzf /tmp/s6-overlay-amd64.tar.gz -C / \
+  && mkdir -p /etc/services.d/rstudio \
+  && echo '#!/usr/bin/with-contenv bash \
+          \n exec /usr/lib/rstudio-server/bin/rserver --server-daemonize 0' \
+          > /etc/services.d/rstudio/run \
+  && echo '#!/bin/bash \
+          \n rstudio-server stop' \
+          > /etc/services.d/rstudio/finish
+
+COPY userconf.sh /etc/cont-init.d/userconf
+
+COPY pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
+
+EXPOSE 8787
+
+COPY user-settings /home/rstudio/.rstudio/monitored/user-settings/
+# No chown will cause "RStudio Initalization Error"
+# "Error occurred during the transmission"; RStudio will not load.
+RUN chown -R rstudio:rstudio /home/rstudio/.rstudio
+
+
+############ https://github.com/matrixds/tools/blob/master/rstudio/Dockerfile ##########
+
+RUN \
+  apt-get update && apt-get install -y && \
+  DEBIAN_FRONTEND=noninteractive apt install --no-install-recommends -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
+    default-jre default-jdk icu-devtools && apt-get clean
+
+COPY entrypoint.sh /entrypoint.sh
+
+#add encrypted auth html file
+COPY encrypted-sign-in.htm /usr/lib/rstudio-server/www/templates/encrypted-sign-in.htm
+
+
+RUN   usermod -u 1100 rstudio && \
+      groupmod -g 1100 rstudio && \
+      chown -R rstudio:rstudio /home/rstudio && \
+      chmod +x /entrypoint.sh
+
+ENV PASSWORD matrix
+ENV DISABLE_AUTH true
+ENV ROOT TRUE
+WORKDIR /home/rstudio
+COPY README.txt /home/README.txt
+
+ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
+
+#+END_SRC
+* Shiny
+:PROPERTIES:
+:header-args: :mkdirp yes
+:ID:
+:END:
+
+* TODO Rstudio Preview
 * Latest Libraries - Shiny and RStudio server
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./all_inclusive_latest/Dockerfile
@@ -140,7 +855,7 @@ shrysr/datasciencer:test
 #+END_SRC
 
 #+RESULTS:
-: 05599bf42d51fd41d0ed76b379e4ca0c60eea9e13b0746cfca6626d1ec235fe6
+: 8347afa753ef9ad39db408372979f883fe1e675b3126c29410fddd7a07d7eb4e
 
 *** Userconf for rstudio
 :PROPERTIES:
