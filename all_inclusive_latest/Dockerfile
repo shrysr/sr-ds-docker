@@ -38,6 +38,7 @@ RUN apt-get update -qq \
 	pandoc-citeproc \
 	dtrx \
 	tree \
+	libzmq3-dev \
 # Removing temporary files generated after package changes
 	&& rm -rf /var/lib/apt \
 	&& apt-get autoclean
