@@ -73,7 +73,7 @@ RUN install2.r --error --deps TRUE \
 	DataExplorer \
 	janitor
 
-# Installing libraries for  Linear Regression with GLMnet
+# Installing libraries for ML
 RUN install2.r --error --deps TRUE \
 	glmnet \
 	parsnip \
@@ -89,16 +89,23 @@ RUN install2.r --error --deps TRUE \
 	remotes \
 	&& installGithub.r karthik/holepunch
 
-# Adding Rstudio server preview version 1.2
+# Adding Rstudio server preview version as an environment variable which can be changed.
 # Reference: https://github.com/datascienceschool/docker_rpython/blob/0c01b0b52834f6b3bb8a0c930a3d43899ea60ce6/02_rpython/Dockerfile#L17
 
 USER root
 ENV RSTUDIOSERVER_VERSION 1.2.5036
+ENV RSTUDIO_SERVER_ON ON
 RUN \
-mkdir -p /download && cd /download && \
-wget https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb &&
-gdebi --n rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb && \
-rm -rf /download
-
+apt-get update \
+&& apt-get install psmisc \
+&& mkdir -p /download && cd /download \
+&& wget https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
+&& gdebi --n rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
+&& rm -rf /download \
+&& rm -rf /var/lib/apt \
+&& apt-get autoclean
+#$$ if {$RSTUDIO_SERVER_ON}
 # Settings for RStudio-Server
+
 EXPOSE 8787
+RUN rstudio-server start
