@@ -84,7 +84,6 @@ RUN install2.r --error --deps TRUE \
 # Installing libraries related to reproducibility DevOps, planning, package management
 RUN install2.r --error --deps TRUE \
 	drake \
-	binder \
 	easypackages \
 	remotes \
 	&& installGithub.r karthik/holepunch
