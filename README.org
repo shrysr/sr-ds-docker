@@ -131,15 +131,131 @@ Management
 *** Container run command
 
 #+BEGIN_SRC sh :tangle no :results verbatim replace
-#+/bin/bash
-docker container run -Pit -d --rm  -p 3838:3838 -p 8787:8787 \
+#/bin/bash
+docker container run -it -d --rm  -p 3838:3838 -p 8787:8787 \
+-e PASSWORD=abcd \
 -v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app \
 -v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
 shrysr/datasciencer:test
 #+END_SRC
 
 #+RESULTS:
-: 22cc8f5551fcfbaf11eaca9ee1910efbde586664af588e6e53365a4de79c326f
+: 05599bf42d51fd41d0ed76b379e4ca0c60eea9e13b0746cfca6626d1ec235fe6
+
+*** Userconf for rstudio
+:PROPERTIES:
+:header-args: :tangle ./all_inclusive_latest/userconf.sh
+:ID:       D2A259B8-C2E8-4F99-AC82-4F80B1E38639
+:END:
+
+Reference: https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/userconf.sh
+
+#+BEGIN_SRC sh
+#!/usr/bin/with-contenv bash
+
+## Set defaults for environmental variables in case they are undefined
+USER=${USER:=rstudio}
+PASSWORD=${PASSWORD:=rstudio}
+USERID=${USERID:=1000}
+GROUPID=${GROUPID:=1000}
+ROOT=${ROOT:=FALSE}
+UMASK=${UMASK:=022}
+
+## Make sure RStudio inherits the full path
+echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+
+if [[ ${DISABLE_AUTH,,} == "true" ]]
+then
+	mv /etc/rstudio/disable_auth_rserver.conf /etc/rstudio/rserver.conf
+	echo "USER=$USER" >> /etc/environment
+fi
+
+
+
+if grep --quiet "auth-none=1" /etc/rstudio/rserver.conf
+then
+	echo "Skipping authentication as requested"
+elif [ "$PASSWORD" == "rstudio" ]
+then
+    printf "\n\n"
+    tput bold
+    printf "\e[31mERROR\e[39m: You must set a unique PASSWORD (not 'rstudio') first! e.g. run with:\n"
+    printf "docker run -e PASSWORD=\e[92m<YOUR_PASS>\e[39m -p 8787:8787 rocker/rstudio\n"
+    tput sgr0
+    printf "\n\n"
+    exit 1
+fi
+
+if [ "$USERID" -lt 1000 ]
+# Probably a macOS user, https://github.com/rocker-org/rocker/issues/205
+  then
+    echo "$USERID is less than 1000"
+    check_user_id=$(grep -F "auth-minimum-user-id" /etc/rstudio/rserver.conf)
+    if [[ ! -z $check_user_id ]]
+    then
+      echo "minumum authorised user already exists in /etc/rstudio/rserver.conf: $check_user_id"
+    else
+      echo "setting minumum authorised user to 499"
+      echo auth-minimum-user-id=499 >> /etc/rstudio/rserver.conf
+    fi
+fi
+
+if [ "$USERID" -ne 1000 ]
+## Configure user with a different USERID if requested.
+  then
+    echo "deleting user rstudio"
+    userdel rstudio
+    echo "creating new $USER with UID $USERID"
+    useradd -m $USER -u $USERID
+    mkdir /home/$USER
+    chown -R $USER /home/$USER
+    usermod -a -G staff $USER
+elif [ "$USER" != "rstudio" ]
+  then
+    ## cannot move home folder when it's a shared volume, have to copy and change permissions instead
+    cp -r /home/rstudio /home/$USER
+    ## RENAME the user
+    usermod -l $USER -d /home/$USER rstudio
+    groupmod -n $USER rstudio
+    usermod -a -G staff $USER
+    chown -R $USER:$USER /home/$USER
+    echo "USER is now $USER"
+fi
+
+if [ "$GROUPID" -ne 1000 ]
+## Configure the primary GID (whether rstudio or $USER) with a different GROUPID if requested.
+  then
+    echo "Modifying primary group $(id $USER -g -n)"
+    groupmod -g $GROUPID $(id $USER -g -n)
+    echo "Primary group ID is now custom_group $GROUPID"
+fi
+
+## Add a password to user
+echo "$USER:$PASSWORD" | chpasswd
+
+# Use Env flag to know if user should be added to sudoers
+if [[ ${ROOT,,} == "true" ]]
+  then
+    adduser $USER sudo && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+    echo "$USER added to sudoers"
+fi
+
+## Change Umask value if desired
+if [ "$UMASK" -ne 022 ]
+  then
+    echo "server-set-umask=false" >> /etc/rstudio/rserver.conf
+    echo "Sys.umask(mode=$UMASK)" >> /home/$USER/.Rprofile
+fi
+
+## add these to the global environment so they are avialable to the RStudio user
+echo "HTTR_LOCALHOST=$HTTR_LOCALHOST" >> /etc/R/Renviron.site
+echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
+#+END_SRC
+
 
 *** Dockerfile contents
 :PROPERTIES:
@@ -238,26 +354,96 @@ RUN install2.r --error --deps TRUE \
 	remotes \
 	&& installGithub.r karthik/holepunch
 
+# Temp layer to be integrated into OS package layer
+RUN apt-get update \
+&& apt-get -y --no-install-recommends install git
+
 # Adding Rstudio server preview version as an environment variable which can be changed.
 # Reference: https://github.com/datascienceschool/docker_rpython/blob/0c01b0b52834f6b3bb8a0c930a3d43899ea60ce6/02_rpython/Dockerfile#L17
 
 USER root
+ARG PANDOC_TEMPLATES_VERSION
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
+ENV PANDOC_TEMPLATES_VERSION=${PANDOC_TEMPLATES_VERSION:-2.9}
+
 ENV RSTUDIOSERVER_VERSION 1.2.5036
-ENV RSTUDIO_SERVER_ON ON
+ENV RSTUDIO_PREVIEW YES
 RUN \
 apt-get update \
 && apt-get install psmisc \
 && mkdir -p /download && cd /download \
 && wget https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
-&& gdebi --n rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
-&& rm -rf /download \
-&& rm -rf /var/lib/apt \
-&& apt-get autoclean
+# && gdebi --n rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
+# && rm -rf /download \
+# && rm -rf /var/lib/apt \
+# && apt-get autoclean \
+# && rstudio-server start
+
 #$$ if {$RSTUDIO_SERVER_ON}
 # Settings for RStudio-Server
+# && if [ -z "$RSTUDIO_PREVIEW" ]; \
+# 	then RSTUDIO_URL="https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb"; \
+# 	else RSTUDIO_URL="https://www.rstudio.org/download/latest/stable/server/bionic/rstudio-server-latest-amd64.deb"; fi \
+  # && wget -q $RSTUDIO_URL \
+	&& gdebi --n rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
+##  && dpkg -i rstudio-server-*-amd64.deb \
+  && rm rstudio-server-*-amd64.deb \
+  ## Symlink pandoc & standard pandoc templates for use system-wide
+  && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc /usr/local/bin \
+  && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc-citeproc /usr/local/bin \
+  && git clone --recursive --branch ${PANDOC_TEMPLATES_VERSION} https://github.com/jgm/pandoc-templates \
+  && mkdir -p /opt/pandoc/templates \
+  && cp -r pandoc-templates*/* /opt/pandoc/templates && rm -rf pandoc-templates* \
+  && mkdir /root/.pandoc && ln -s /opt/pandoc/templates /root/.pandoc/templates \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/ \
+  ## RStudio wants an /etc/R, will populate from $R_HOME/etc
+  && mkdir -p /etc/R \
+  ## Write config files in $R_HOME/etc
+  && echo '\n\
+    \n# Configure httr to perform out-of-band authentication if HTTR_LOCALHOST \
+    \n# is not set since a redirect to localhost may not work depending upon \
+    \n# where this Docker container is running. \
+    \nif(is.na(Sys.getenv("HTTR_LOCALHOST", unset=NA))) { \
+    \n  options(httr_oob_default = TRUE) \
+    \n}' >> /usr/local/lib/R/etc/Rprofile.site \
+  && echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron \
+  ## Need to configure non-root user for RStudio
+  && useradd rstudio \
+  && echo "rstudio:rstudio" | chpasswd \
+	&& mkdir /home/rstudio \
+	&& chown rstudio:rstudio /home/rstudio \
+	&& addgroup rstudio staff \
+  ## Prevent rstudio from deciding to use /usr/bin/R if a user apt-get installs a package
+  &&  echo 'rsession-which-r=/usr/local/bin/R' >> /etc/rstudio/rserver.conf \
+  ## use more robust file locking to avoid errors when using shared volumes:
+  && echo 'lock-type=advisory' >> /etc/rstudio/file-locks \
+  ## configure git not to request password each time
+  && git config --system credential.helper 'cache --timeout=3600' \
+  && git config --system push.default simple \
+  # ## Set up S6 init system
+  # && wget -P /tmp/ https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-amd64.tar.gz \
+  # && tar xzf /tmp/s6-overlay-amd64.tar.gz -C / \
+  && mkdir -p /etc/services.d/rstudio \
+  && echo '#!/usr/bin/with-contenv bash \
+          \n## load /etc/environment vars first: \
+  		  \n for line in $( cat /etc/environment ) ; do export $line ; done \
+          \n exec /usr/lib/rstudio-server/bin/rserver --server-daemonize 0' \
+          > /etc/services.d/rstudio/run \
+  && echo '#!/bin/bash \
+          \n rstudio-server stop' \
+          > /etc/services.d/rstudio/finish \
+  && mkdir -p /home/rstudio/.rstudio/monitored/user-settings \
+  && echo 'alwaysSaveHistory="0" \
+          \nloadRData="0" \
+          \nsaveAction="0"' \
+          > /home/rstudio/.rstudio/monitored/user-settings/user-settings \
+  && chown -R rstudio:rstudio /home/rstudio/.rstudio \
+	&& rstudio-server start
+
+COPY userconf.sh /etc/cont-init.d/userconf
 
 EXPOSE 8787
-RUN rstudio-server start
 
 #+END_SRC
 
