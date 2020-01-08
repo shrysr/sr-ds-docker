@@ -9,13 +9,12 @@ mkdir -p /srv/.R/library
 if [ ! -d "/srv/shiny-server" ]
 then
   mkdir -p /srv/shiny-server
-  cp -r /root/shiny-server/example_shiny/app.R /srv/shiny-server/
+  cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
 else
   if [ ! "$(ls -A /srv/shiny-server)" ]
    then
-     cp -r /root/shiny-server/example_shiny/app.R /srv/shiny-server/
+     cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
   fi
 fi
 
 sh /usr/bin/shiny-server.sh
-

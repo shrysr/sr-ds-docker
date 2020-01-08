@@ -13,12 +13,14 @@ RUN apt-get update && apt-get install -y \
     libcurl4-gnutls-dev \
     libcairo2-dev \
     libxt-dev \
-    xtail
+    xtail \
+	tree
 
 COPY entrypoint.sh /entrypoint.sh
-RUN mkdir -p /root/shiny-server/
-RUN mkdir -p /root/shiny-server/example_shiny/
-COPY app.R /root/shiny-server/example_shiny/app.R
+RUN mkdir -p /root/shiny-server/  \
+	&&  mkdir -p /root/shiny-server/test_shiny/
+
+COPY test_apps/ /root/shiny-server/test_shiny/
 
 
 # Download and install shiny server

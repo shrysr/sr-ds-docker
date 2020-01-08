@@ -109,7 +109,8 @@ shrysr/datasciencer:test
 
 - the [[https://hub.docker.com/r/datascienceschool/rpython][Data Science School's docker image]] is useful as a comprehensive reference.
 
-* A Smith
+* DONE ASmith
+CLOSED: [2020-01-08 Wed 11:00]
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./asmith/Dockerfile
 :ID:       59B3418B-E0F3-4146-A368-3FE5BDEA2F2F
@@ -263,7 +264,8 @@ RUN apt-get clean \
 
 #+END_SRC
 
-* rbase
+* DONE rbase
+CLOSED: [2020-01-08 Wed 11:00]
 :PROPERTIES:
 :header-args: :mkdirp yes
 :ID:
@@ -349,7 +351,7 @@ RUN R CMD javareconf && \
     Rscript /usr/local/lib/R/packages.R
 
 #+END_SRC
-* Rstudio
+* TODO Rstudio
 :PROPERTIES:
 :header-args: :mkdirp yes
 :ID:
@@ -962,6 +964,7 @@ shinyApp(ui = ui, server = server)
 :ID:       D112EC86-4439-4118-B736-EC8A331E3928
 :END:
 
+A folder called test_shiny is created w
 #+BEGIN_SRC sh :tangle  ./shiny/entrypoint.sh
 #!/bin/bash
 
@@ -974,11 +977,11 @@ mkdir -p /srv/.R/library
 if [ ! -d "/srv/shiny-server" ]
 then
   mkdir -p /srv/shiny-server
-  cp -r /root/shiny-server/example_shiny/app.R /srv/shiny-server/
+  cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
 else
   if [ ! "$(ls -A /srv/shiny-server)" ]
    then
-     cp -r /root/shiny-server/example_shiny/app.R /srv/shiny-server/
+     cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
   fi
 fi
 
@@ -1030,6 +1033,12 @@ install.packages(p,dependencies = TRUE)
 :ID:       80108F6B-1AC3-4823-9DDD-26DFB1724F4A
 :END:
 
+The folder test_apps will contain shiny apps meant to test functionality. This is copied into the docker image.
+
+- [ ] [2020-01-08 Wed] During the image build, there were messages that the rmarkdown and shiny libraries could not be installed for this version of R. However, the shiny apps do display in the browser. This needs to be investigated.
+
+Changes: Reduced a step and added the tree package. This makes it easier to troubleshoot.
+
 #+BEGIN_SRC dockerfile :tangle ./shiny/Dockerfile
 FROM shrysr/rbase:v1
 
@@ -1046,12 +1055,14 @@ RUN apt-get update && apt-get install -y \
     libcurl4-gnutls-dev \
     libcairo2-dev \
     libxt-dev \
-    xtail
+    xtail \
+	tree
 
 COPY entrypoint.sh /entrypoint.sh
-RUN mkdir -p /root/shiny-server/
-RUN mkdir -p /root/shiny-server/example_shiny/
-COPY app.R /root/shiny-server/example_shiny/app.R
+RUN mkdir -p /root/shiny-server/  \
+	&&  mkdir -p /root/shiny-server/test_shiny/
+
+COPY test_apps/ /root/shiny-server/test_shiny/
 
 
 # Download and install shiny server
@@ -1081,14 +1092,83 @@ COPY shiny-server.sh /usr/bin/shiny-server.sh
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
 #+END_SRC
-** Container launch
+** Container launch and image build command samples
+
+The local path should be the outermost project folder. Any location specified will have a folder created shiny-server within which the shiny test apps will be placed. Note that the correct tag version should be substituted.
 
 #+BEGIN_SRC sh
-docker container run -itd -p 3839:3839 -v /Users/shrysr/my_projects/sr-ds-docker/shiny-server/test_app/:/srv shrysr/shiny:v1
+docker container run -itd -p 3838:3838 -v /Users/shrysr/my_projects/sr-ds-docker/:/srv shrysr/shiny:v2
 #+END_SRC
 
 #+RESULTS:
-: 3bfe6efabfe0c8663e22b655f2c35ffa7e34b3b29db00059133e94f9a4a193ae
+: 4e0377a1c8e0817208a5c32eb8e2232d44e54aa4ae02442e2585bb9a1256771e
+
+
+#+BEGIN_SRC sh :results verbatim replace
+docker ps
+#+END_SRC
+
+#+RESULTS:
+: CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+: 4e0377a1c8e0        shrysr/shiny:v2     "sh -c '/entrypoint.…"   2 seconds ago       Up 1 second         0.0.0.0:3838->3838/tcp   focused_panini
+
+#+BEGIN_SRC sh
+docker kill wizardly_kirch
+#+END_SRC
+
+#+RESULTS:
+: wizardly_kirch
+
+#+BEGIN_SRC sh :dir ./shiny/ :results verbatim replace
+docker image build . -t shrysr/shiny:v2
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Sending build context to Docker daemon   25.6kB
+Step 1/12 : FROM shrysr/rbase:v1
+ ---> 69a5d71ab480
+Step 2/12 : COPY packages.R /usr/local/lib/R/packages.R
+ ---> Using cache
+ ---> 1b99994fe3dd
+Step 3/12 : RUN R CMD javareconf &&     Rscript /usr/local/lib/R/packages.R
+ ---> Using cache
+ ---> d0cabadc7e76
+Step 4/12 : RUN apt-get update && apt-get install -y     gdebi-core     pandoc     pandoc-citeproc     libcurl4-gnutls-dev     libcairo2-dev     libxt-dev     xtail
+ ---> Using cache
+ ---> 17e9a895351c
+Step 5/12 : COPY entrypoint.sh /entrypoint.sh
+ ---> Using cache
+ ---> 5da419714cde
+Step 6/12 : RUN mkdir -p /root/shiny-server/
+ ---> Using cache
+ ---> b6a8b03ebf59
+Step 7/12 : RUN mkdir -p /root/shiny-server/test_shiny/
+ ---> Using cache
+ ---> ffc8a7da14f6
+Step 8/12 : COPY test_apps/* /root/shiny-server/test_shiny/
+ ---> Using cache
+ ---> 9db4efd25b21
+Step 9/12 : RUN wget --no-verbose https://download3.rstudio.org/ubuntu-14.04/x86_64/VERSION -O "version.txt" &&     VERSION=$(cat version.txt)  &&     wget --no-verbose "https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb &&     gdebi -n ss-latest.deb &&     rm -f version.txt ss-latest.deb &&     . /etc/environment &&     R -e "install.packages(c('shiny', 'rmarkdown'), repos='$MRAN')" &&     cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/
+ ---> Using cache
+ ---> c4b940669223
+Step 10/12 : RUN   apt-get update && apt-get install -y &&   DEBIAN_FRONTEND=noninteractive apt install --no-install-recommends -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"     default-jre default-jdk     && apt-get clean &&   usermod -u 1100 shiny &&   groupmod -g 1100 shiny &&   chown -R shiny:shiny /srv &&   chown -R shiny:shiny /srv &&   chmod +x /entrypoint.sh
+ ---> Using cache
+ ---> adbbb9ee209b
+Step 11/12 : COPY shiny-server.sh /usr/bin/shiny-server.sh
+ ---> Using cache
+ ---> 50d267c93b17
+Step 12/12 : ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
+ ---> Using cache
+ ---> 9a29dc8f08b2
+Successfully built 9a29dc8f08b2
+Successfully tagged shrysr/shiny:v2
+#+end_example
+
+#+BEGIN_SRC sh
+docker exec -it  inspiring_grothendieck /bin/bash
+#+END_SRC
+
 
 * TODO Rstudio Server Preview
 
