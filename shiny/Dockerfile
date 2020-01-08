@@ -1,4 +1,4 @@
-FROM matrixds/rbase
+FROM shrysr/rbase:v1
 
 COPY packages.R /usr/local/lib/R/packages.R
 

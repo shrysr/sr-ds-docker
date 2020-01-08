@@ -1,18 +1,32 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+#+TITLE: Docker driven datascience environment and workflow.
 
 * Preamble
 
-The starting point of this project was [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] docker file, which then expanded into using the well designed [[https://github.com/matrixds/tools][Matrix DS tools]] for my purpose. Their stack of tools is replicated here with my own customizatios (at the moment restricted to some additional packages).
+The starting point of this project was [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] docker file, which then expanded into using the well designed [[https://github.com/matrixds/tools][Matrix DS tools]] for my purpose. Their docker stack of tools is replicated here with my customization.
 
-The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run datascience projects, with different development and production environments.
+The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run a variety of datascience projects, with different development and production environments. In particular, I want to be able to develop and deploy dashboards like shiny or streamlit.io quickly and with ease.
+
+#+BEGIN_QUOTE
+Why not just use the MatrixDS stack directly and add the missing packages as layers?
+
+Fair question and quite possible. It may seem childish, but I wanted to build these images by hand as my set of tools, even if the tools were largely similar to the MatrixDS stack. From whatever I've learned of Docker - the MatrixDS stack is quite efficient and the cascading + common dependency layer makes sense to use. There may be other methods, but this certainly appeared technically sensible.
+#+END_QUOTE
+
+These containers are hosted on dockerhub as :
+1. [[https://hub.docker.com/repository/docker/shrysr/asmith][shrysr/asmith]]
+2. [[https://hub.docker.com/repository/docker/shrysr/rbase][shrysr/rbase]]
+3. [[https://hub.docker.com/repository/docker/shrysr/rstudio][shrysr/rstudio]]
+4. [[https://hub.docker.com/repository/docker/shrysr/shiny][shrysr/shiny]]
+
+One of the earlier versions created is at shrysr/datasciencer
 
 ** TODO Plan
-
 
 *** TODO List of images planned
 
 1. Development : R based
-   1. [ ] R Shiny server - version to be specified
+   1. R Shiny server - version to be specified
    2. R studio server:latest
    3. Tidyverse + ML + EDA packages  - version to be specified.
 
@@ -22,17 +36,17 @@ The goal is to develop a workflow based on Docker (and other tools) to create a 
 
 *** TODO Tasks
 
-**** Primary
+**** Primary [3/8]
 - [ ] provide specific versions of atleast the major components, like docker images, and meta-packages and other tools.
-- [ ] Efficient method to update system package versions.
-- [ ] Efficient method to update R packages painlessly.
-- [ ] Start with a minimal OS layer, like Ubuntu or even Alpine.
+- [X] Efficient method to update system package versions.
+- [X] Efficient method to update R packages painlessly.
+- [X] Start with a minimal OS layer, like Ubuntu or even Alpine.
 - [ ] Create tests to ensure the docker image is working as expected. Consider techniques like Continuous Integration (CI)
 - [ ] Add a file with the R session, package and other relevant information to be automatically generated when a container is run and printed to a file in the working directory.
 - [ ] Create clearly distinct production and development environments
 - [ ] Ensure streamlined connection to specific containers from Org mode source blocks.
 
-**** Good to have
+**** Good to have [0/2]
 - [ ] Construct my own shiny server rather than relying on an external official image.
 - [ ] Evaluate integrating workflows using Drake,
 
@@ -59,7 +73,9 @@ The following options exist:
 
 ** Launching the docker container
 
-These are some variations of snippets used for connecting to the container placed here for ready reference.
+These are some variations of snippets used for connecting to the container placed here for ready reference. Individual snippets are placed along with the documentation of each docker container, and will be incorporated into the readme's eventually.
+
+- [ ] incorporate the container launch instructions into individual docker repo readme.
 
 /Note that the local test_app folder has to be created/
 
@@ -74,24 +90,34 @@ shrysr/datasciencer:test
 #+RESULTS:
 : 347baed2d55e42bbf07508b9cdce0b15850c645fea3d137274daec61ac666ee9
 
-** General Notes
-- Using the =:latest= tag is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
-- Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, this is certainly useful for subsequent builds with minor changes. It saves the effort required to commit a new image and push it to dockerhub.
-- the [[https://hub.docker.com/r/datascienceschool/rpython][Data Science School's docker image]] is useful as a comprehensive reference.
-
 ** Status Log
 
 #+BEGIN_QUOTE
-[2020-01-07 Tue] : Further efforts will be based off the Matrix DS images. Essentially, there will be a r-base image with all the package installations which will feed the other tools and containers. This ensures that all the containers rely on the same dependencies. Subsequently, only the mountpoint becomes important. This approach is better because it enables smaller containers with single critical processes rather than multiple processes.
+- [2020-01-08 Wed] : Basic MatrixDS tools have been replicated like the Asmith, rbase and shiny layers. Relatively minor package additions have been made to the asmith and rbase layers. The Rstudio layer still needs some work.
 #+END_QUOTE
 
+- [2020-01-07 Tue] : Further efforts will be based off the Matrix DS images. Essentially, there will be a r-base image with all the package installations which will feed the other tools and containers. This ensures that all the containers rely on the same dependencies. Subsequently, only the mountpoint becomes important. This approach is better because it enables smaller containers with single critical processes rather than multiple processes.
+
+
 - [2020-01-03 Fri] : This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the [[https://hub.docker.com/repository/docker/shrysr/datasciencer][image on dockerhub]].
+
+** General Notes
+
+- Using the =:latest= tag is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
+
+- Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, this is certainly useful for subsequent builds with minor changes. It saves the effort required to commit a new image and push it to dockerhub.
+
+- the [[https://hub.docker.com/r/datascienceschool/rpython][Data Science School's docker image]] is useful as a comprehensive reference.
 
 * A Smith
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./asmith/Dockerfile
 :ID:       59B3418B-E0F3-4146-A368-3FE5BDEA2F2F
 :END:
+
+This is the very first layer. This layer adds several OS packages and starts with a specific version of Ubuntu (v18.04). Currently, it is largely left the same except for adding the package dtrx, which is useful to quickly zip and unzip files.
+
+This layer does not take very long to build, however, if it is - then all the other subsequent layers will probably need to be rebuilt.
 
 #+BEGIN_SRC dockerfile
 FROM ubuntu:18.04
@@ -243,6 +269,16 @@ RUN apt-get clean \
 :ID:
 :END:
 
+This layer contains all the basic R packages required for datascience and ML. A bunch of packages were added to the already extensive default list of packages in MatrixDS's docker file.
+
+The packages are defined in an R script called packages.R.
+
+This layer takes a /tremendously long time to build/. A couple of hours on a Macbook Pro 2019, with 6 cores and 32 GB of RAM. One should be careful in assessing whether this layer has to be disturbed. Automated builds on Dockerhub are likely to take even longer.
+
+Note: As such the dockerfile indicates that the packages are called in the last 2 layers only. It may be possible that subsequent image builds do not take as much time as I imagine.
+
+- [ ] It may be easier to find a way to keep the additional packages specified in the rstudio and shiny package list to be in sync.
+
 ** R package list
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./rbase/packages.R
@@ -318,6 +354,9 @@ RUN R CMD javareconf && \
 :header-args: :mkdirp yes
 :ID:
 :END:
+
+This layer contains a specified RStudio version built on top of the rbase layer. i.e all the R packages defined in the earlier layers will be available to this web based deployment of Rstudio server.
+
 ** Environment and Profile
 :PROPERTIES:
 :ID:       E5928ED3-9589-4F09-8AFB-5420EB1EDF68
@@ -788,18 +827,273 @@ ENV PASSWORD matrix
 ENV DISABLE_AUTH true
 ENV ROOT TRUE
 WORKDIR /home/rstudio
-COPY README.txt /home/README.txt
+COPY readme.txt /home/readme.txt
 
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
 #+END_SRC
+** Container launch
+
+#+BEGIN_SRC sh
+docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker:/home/rstudio -e USER=shrysr -e PASSWORD=abcd shrysr/rstudio:v1
+#+END_SRC
+
+#+RESULTS:
+: 165ae30412e0d670283d1df0cef5b7e7c4da3de998c87626a8125979e5b9785e
+
 * Shiny
 :PROPERTIES:
 :header-args: :mkdirp yes
 :ID:
 :END:
+** Environment and Profile
+:PROPERTIES:
+:ID:       EC8967B1-EEE0-4FEE-BDDD-8903F6203B09
+:END:
 
-* TODO Rstudio Preview
+#+BEGIN_SRC sh  :tangle ./shiny/Renviron
+R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/srv/R/library
+#+END_SRC
+
+#+BEGIN_SRC sh  :tangle ./shiny/Rprofile
+.libPaths("/srv/R/library/")
+#+END_SRC
+
+** app.r
+:PROPERTIES:
+:ID:       65738717-48A1-4C34-8C8D-52F3E11BB5B3
+:END:
+
+#+BEGIN_SRC R :tangle ./shiny/app.R
+#
+# This is a Shiny web application on MatrixDS.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+
+##########################################################################################
+# This points the Shiny server tool to any libraries installed with RStudio
+# that means that any library you install on your RStudio instance in this project,
+# will be available to the shiny server
+##########################################################################################
+
+.libPaths( c( .libPaths(), "/srv/.R/library") )
+
+##########################################################################################
+# Here you can call all the required libraries for your code to run
+##########################################################################################
+
+library(shiny)
+
+##########################################################################################
+# For deploying tools on MatrixDS, we created this production variable
+# when set to true, your shiny app will run on the shiny server tool upon clicking open
+# when set to false, your shiny app will run when you hit the "Run App" button on RStudio
+##########################################################################################
+
+production <- TRUE
+
+##########################################################################################
+# The shiny server tool uses a different absolute path than RStudio.
+# this if statement denotes the correct path for the 2 values of the production variable
+##########################################################################################
+
+if(production == FALSE) {
+  #if you using the RStudio tool
+  shiny_path <- "~/shiny-server/"
+  home_path <- "~/"
+} else {
+  #if you are using the shiny tool
+  shiny_path <- "/srv/shiny-server/"
+  home_path <- "/srv/"
+}
+
+##########################################################################################
+# To call a file/artifact in your MatrixDS project use the following line of code
+# this example uses the function read.csv
+#  my_csv <- read.csv(paste0(home_path,"file_name.csv"))
+##########################################################################################
+
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+
+   # Application title
+   titlePanel("Old Faithful Geyser Data"),
+
+   # Sidebar with a slider input for number of bins
+   sidebarLayout(
+      sidebarPanel(
+         sliderInput("bins",
+                     "Number of bins:",
+                     min = 1,
+                     max = 50,
+                     value = 30)
+      ),
+
+      # Show a plot of the generated distribution
+      mainPanel(
+         plotOutput("distPlot")
+      )
+   )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+
+   output$distPlot <- renderPlot({
+      # generate bins based on input$bins from ui.R
+      x    <- faithful[, 2]
+      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+      # draw the histogram with the specified number of bins
+      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+   })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
+
+#+END_SRC
+
+** entrypoint
+:PROPERTIES:
+:ID:       D112EC86-4439-4118-B736-EC8A331E3928
+:END:
+
+#+BEGIN_SRC sh :tangle  ./shiny/entrypoint.sh
+#!/bin/bash
+
+mkdir -p /srv/shiny-server
+mkdir -p /srv/.R/library
+[ -f  /srv/.Rprofile ] || echo '.libPaths("/srv/.R/library/")' > /srv/.Rprofile
+[ -f  /srv/.Renvron ] || echo 'R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/srv/.R/library
+' > /srv/.Renvron
+
+if [ ! -d "/srv/shiny-server" ]
+then
+  mkdir -p /srv/shiny-server
+  cp -r /root/shiny-server/example_shiny/app.R /srv/shiny-server/
+else
+  if [ ! "$(ls -A /srv/shiny-server)" ]
+   then
+     cp -r /root/shiny-server/example_shiny/app.R /srv/shiny-server/
+  fi
+fi
+
+sh /usr/bin/shiny-server.sh
+
+#+END_SRC
+
+** shiny server script
+:PROPERTIES:
+:ID:       9DC7422D-B4D0-4729-A38D-6D483B357B67
+:END:
+
+#+BEGIN_SRC sh :tangle ./shiny/shiny-server.sh
+#!/bin/sh
+
+# Make sure the directory for individual app logs exists
+mkdir -p /var/log/shiny-server
+chown shiny.shiny /var/log/shiny-server
+
+if [ "$APPLICATION_LOGS_TO_STDOUT" = "false" ];
+then
+    exec shiny-server 2>&1
+else
+    # start shiny server in detached mode
+    exec shiny-server 2>&1 &
+
+    # push the "real" application logs to stdout with xtail
+    exec xtail /var/log/shiny-server/
+fi
+
+#+END_SRC
+
+** packages
+:PROPERTIES:
+:ID:       DB9B5B9E-4E6F-498B-B28D-AFC4DFEEAFF1
+:END:
+
+#+BEGIN_SRC R :tangle ./shiny/packages.R
+#Script for common package installation on MatrixDS docker image
+p<-c('reticulate')
+
+
+install.packages(p,dependencies = TRUE)
+
+#+END_SRC
+** version
+** Dockerfile
+:PROPERTIES:
+:ID:       80108F6B-1AC3-4823-9DDD-26DFB1724F4A
+:END:
+
+#+BEGIN_SRC dockerfile :tangle ./shiny/Dockerfile
+FROM shrysr/rbase:v1
+
+COPY packages.R /usr/local/lib/R/packages.R
+
+#install R packages
+RUN R CMD javareconf && \
+    Rscript /usr/local/lib/R/packages.R
+
+RUN apt-get update && apt-get install -y \
+    gdebi-core \
+    pandoc \
+    pandoc-citeproc \
+    libcurl4-gnutls-dev \
+    libcairo2-dev \
+    libxt-dev \
+    xtail
+
+COPY entrypoint.sh /entrypoint.sh
+RUN mkdir -p /root/shiny-server/
+RUN mkdir -p /root/shiny-server/example_shiny/
+COPY app.R /root/shiny-server/example_shiny/app.R
+
+
+# Download and install shiny server
+RUN wget --no-verbose https://download3.rstudio.org/ubuntu-14.04/x86_64/VERSION -O "version.txt" && \
+    VERSION=$(cat version.txt)  && \
+    wget --no-verbose "https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb && \
+    gdebi -n ss-latest.deb && \
+    rm -f version.txt ss-latest.deb && \
+    . /etc/environment && \
+    R -e "install.packages(c('shiny', 'rmarkdown'), repos='$MRAN')" && \
+    cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/
+
+RUN \
+  apt-get update && apt-get install -y && \
+  DEBIAN_FRONTEND=noninteractive apt install --no-install-recommends -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
+    default-jre default-jdk \
+    && apt-get clean && \
+  usermod -u 1100 shiny && \
+  groupmod -g 1100 shiny && \
+  chown -R shiny:shiny /srv && \
+  chown -R shiny:shiny /srv && \
+  chmod +x /entrypoint.sh
+
+
+COPY shiny-server.sh /usr/bin/shiny-server.sh
+#CMD ["sh", "/usr/bin/shiny-server.sh"]
+ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
+
+#+END_SRC
+** Container launch
+
+#+BEGIN_SRC sh
+docker container run -itd -p 3839:3839 -v /Users/shrysr/my_projects/sr-ds-docker/shiny-server/test_app/:/srv shrysr/shiny:v1
+#+END_SRC
+
+#+RESULTS:
+: 3bfe6efabfe0c8663e22b655f2c35ffa7e34b3b29db00059133e94f9a4a193ae
+
+* TODO Rstudio Server Preview
+
+This layer will build the Rstudio server preview edition. It is a low priority task planned subsequent to getting the fundamental layers to work.
+
 * Latest Libraries - Shiny and RStudio server
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./all_inclusive_latest/Dockerfile
@@ -847,15 +1141,14 @@ Management
 
 #+BEGIN_SRC sh :tangle no :results verbatim replace
 #/bin/bash
-docker container run -it -d --rm  -p 3838:3838 -p 8787:8787 \
--e PASSWORD=abcd \
+docker container run -it --rm  -p 3838:3838 -p 8787:8787 \
 -v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app \
 -v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
-shrysr/datasciencer:test
+shrysr/rstudio:v1
 #+END_SRC
 
 #+RESULTS:
-: 8347afa753ef9ad39db408372979f883fe1e675b3126c29410fddd7a07d7eb4e
+: a3745db73741c60e65bf90fd7433a1635d08a541f8138599e08db24c63699a41
 
 *** Userconf for rstudio
 :PROPERTIES:
@@ -1162,51 +1455,13 @@ EXPOSE 8787
 
 #+END_SRC
 
-* Experimental Containers
-:PROPERTIES:
-:header-args: :mkdirp yes :tangle ./experiment_docker/Dockerfile
-:ID:       81A5C2EA-4760-47F2-BDDE-F194A765E2BB
-:END:
-
-#+BEGIN_SRC sh :tangle no
-docker image ls
-#+END_SRC
-
-#+RESULTS:
-| REPOSITORY             | TAG        | IMAGE        | ID | CREATED | SIZE |        |
-| srds                   | latest     | f3313b691514 | 13 | hours   | ago  | 2.93GB |
-| shrysr/datasciencer    | latest     | f3313b691514 | 13 | hours   | ago  | 2.93GB |
-| <none>                 | <none>     | b9761ac214a5 | 13 | hours   | ago  | 2.81GB |
-| umaptest               | latest     | 09ccf15c3239 | 16 | hours   | ago  | 2.91GB |
-| web2                   | latest     | 7d717b392c2e |  4 | months  | ago  | 73.7MB |
-| <none>                 | <none>     | 0d3af5fe4466 |  4 | months  | ago  | 73.7MB |
-| <none>                 | <none>     | 63429fdd1b85 |  4 | months  | ago  | 73.7MB |
-| rocker/tidyverse       | latest     | 023907c7da33 |  5 | months  | ago  | 2.1GB  |
-| <none>                 | <none>     | 363837418c2b |  5 | months  | ago  | 73.7MB |
-| rocker/shiny-verse     | latest     | 87397fc3e62a |  5 | months  | ago  | 1.86GB |
-| <none>                 | <none>     | 53aea7a47e1a |  5 | months  | ago  | 73.7MB |
-| web1                   | latest     | 1ca29acbe073 |  5 | months  | ago  | 73.1MB |
-| <none>                 | <none>     | 289ce05fc9c9 |  5 | months  | ago  | 73.1MB |
-| python                 | 2.7-alpine | f101ac3346a7 |  5 | months  | ago  | 61.7MB |
-| redis                  | latest     | bb0ab8a99fe6 |  6 | months  | ago  | 95MB   |
-| nginx                  | latest     | f68d6e55e065 |  6 | months  | ago  | 109MB  |
-| ubuntu                 | latest     | 4c108a37151f |  6 | months  | ago  | 64.2MB |
-| hello-world            | latest     | fce289e99eb9 | 12 | months  | ago  | 1.84kB |
-| rickfast/hello-oreilly | latest     | ec347d11e305 |  3 | years   | ago  | 4.79MB |
-
-#+BEGIN_SRC dockerfile
-FROM shrysr/datasciencer as base1
-FROM rocker/tidyverse
-COPY  --from=base1 * .
-#+END_SRC
-
 * Test Shiny App
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./test_app/app.R
 :ID:       9F2868CD-5A4C-40C9-885C-C522822967B4
 :END:
 
-A bunch of apps will be included here for the purpose of quickly testing functionality of widgets and etc.
+A bunch of apps will be included here for the purpose of quickly testing functionality of widgets and etc. As such, the sample apps with the shiny server can also be used. Here, I would like to construct specific examples to have a look on whether all the components are working as expected. Perhaps like a test suite of apps.
 
 ** Widget Gallery
 :PROPERTIES:
@@ -1345,13 +1600,51 @@ server <- function(input, output){
 shinyApp(ui = ui, server = server)
 #+END_SRC
 
+* Experimental Containers
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./experiment_docker/Dockerfile
+:ID:       81A5C2EA-4760-47F2-BDDE-F194A765E2BB
+:END:
+
+#+BEGIN_SRC sh :tangle no
+docker image ls
+#+END_SRC
+
+#+RESULTS:
+| REPOSITORY             | TAG        | IMAGE        | ID | CREATED | SIZE |        |
+| srds                   | latest     | f3313b691514 | 13 | hours   | ago  | 2.93GB |
+| shrysr/datasciencer    | latest     | f3313b691514 | 13 | hours   | ago  | 2.93GB |
+| <none>                 | <none>     | b9761ac214a5 | 13 | hours   | ago  | 2.81GB |
+| umaptest               | latest     | 09ccf15c3239 | 16 | hours   | ago  | 2.91GB |
+| web2                   | latest     | 7d717b392c2e |  4 | months  | ago  | 73.7MB |
+| <none>                 | <none>     | 0d3af5fe4466 |  4 | months  | ago  | 73.7MB |
+| <none>                 | <none>     | 63429fdd1b85 |  4 | months  | ago  | 73.7MB |
+| rocker/tidyverse       | latest     | 023907c7da33 |  5 | months  | ago  | 2.1GB  |
+| <none>                 | <none>     | 363837418c2b |  5 | months  | ago  | 73.7MB |
+| rocker/shiny-verse     | latest     | 87397fc3e62a |  5 | months  | ago  | 1.86GB |
+| <none>                 | <none>     | 53aea7a47e1a |  5 | months  | ago  | 73.7MB |
+| web1                   | latest     | 1ca29acbe073 |  5 | months  | ago  | 73.1MB |
+| <none>                 | <none>     | 289ce05fc9c9 |  5 | months  | ago  | 73.1MB |
+| python                 | 2.7-alpine | f101ac3346a7 |  5 | months  | ago  | 61.7MB |
+| redis                  | latest     | bb0ab8a99fe6 |  6 | months  | ago  | 95MB   |
+| nginx                  | latest     | f68d6e55e065 |  6 | months  | ago  | 109MB  |
+| ubuntu                 | latest     | 4c108a37151f |  6 | months  | ago  | 64.2MB |
+| hello-world            | latest     | fce289e99eb9 | 12 | months  | ago  | 1.84kB |
+| rickfast/hello-oreilly | latest     | ec347d11e305 |  3 | years   | ago  | 4.79MB |
+
+#+BEGIN_SRC dockerfile
+FROM shrysr/datasciencer as base1
+FROM rocker/tidyverse
+COPY  --from=base1 * .
+#+END_SRC
+
 * Basic Template
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./base_template/DockerFile
 :ID:       797160F1-F068-4E2F-A4C7-E9D9A87B0B81
 :END:
 
-Matt Dancho's template as of [2020-01-02 Thu], placed here for ready reference.
+Matt Dancho's original Dockerfile as of [2020-01-02 Thu], placed here for ready reference.
 
 #+BEGIN_SRC dockerfile
 FROM rocker/shiny-verse:latest

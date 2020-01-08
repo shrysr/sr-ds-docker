@@ -114,6 +114,6 @@ ENV PASSWORD matrix
 ENV DISABLE_AUTH true
 ENV ROOT TRUE
 WORKDIR /home/rstudio
-COPY README.txt /home/README.txt
+COPY readme.txt /home/readme.txt
 
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
