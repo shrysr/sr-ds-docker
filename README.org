@@ -848,6 +848,13 @@ docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker
 :header-args: :mkdirp yes
 :ID:
 :END:
+
+Overview of the process:
+
+Suppose you have a project folder within which related scripts, shiny apps, etc live. This directory is mounted as a volume to the docker container. The docker container will check for the presence of a folder called =shiny-server= and if not available, will create it. Even if the folder is available, the contents of test_apps will be copied into the image.
+
+Into the =shiny-server= folder, the test_apps folder containing shiny apps for testing are copied.
+
 ** Environment and Profile
 :PROPERTIES:
 :ID:       EC8967B1-EEE0-4FEE-BDDD-8903F6203B09
@@ -959,40 +966,12 @@ shinyApp(ui = ui, server = server)
 
 #+END_SRC
 
-** entrypoint
-:PROPERTIES:
-:ID:       D112EC86-4439-4118-B736-EC8A331E3928
-:END:
-
-A folder called test_shiny is created w
-#+BEGIN_SRC sh :tangle  ./shiny/entrypoint.sh
-#!/bin/bash
-
-mkdir -p /srv/shiny-server
-mkdir -p /srv/.R/library
-[ -f  /srv/.Rprofile ] || echo '.libPaths("/srv/.R/library/")' > /srv/.Rprofile
-[ -f  /srv/.Renvron ] || echo 'R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/srv/.R/library
-' > /srv/.Renvron
-
-if [ ! -d "/srv/shiny-server" ]
-then
-  mkdir -p /srv/shiny-server
-  cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
-else
-  if [ ! "$(ls -A /srv/shiny-server)" ]
-   then
-     cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
-  fi
-fi
-
-sh /usr/bin/shiny-server.sh
-
-#+END_SRC
-
 ** shiny server script
 :PROPERTIES:
 :ID:       9DC7422D-B4D0-4729-A38D-6D483B357B67
 :END:
+
+This is script to execute or run the shiny server. Apparently, it is necessary to be called via script in this fashion for the process to work, rather than the docker file itself. In a way this helps keeping the code modular. It is generally unlikely any changes would be needed here.
 
 #+BEGIN_SRC sh :tangle ./shiny/shiny-server.sh
 #!/bin/sh
@@ -1092,6 +1071,37 @@ COPY shiny-server.sh /usr/bin/shiny-server.sh
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
 #+END_SRC
+** entrypoint
+:PROPERTIES:
+:ID:       D112EC86-4439-4118-B736-EC8A331E3928
+:END:
+
+The dockerfile copied the contents of =test_apps= into the =root/shiny-server/test_shiny= directory. Now via shell script (=entrypoint.sh=), the contents from =root/shiny-server/test_shiny= within the container are copied in a folder called =/srv/shiny-server= within the container. Now the final /srv/shiny-server is matched with the specified mount volume.
+
+#+BEGIN_SRC sh :tangle  ./shiny/entrypoint.sh
+#!/bin/bash
+
+mkdir -p /srv/shiny-server
+mkdir -p /srv/.R/library
+[ -f  /srv/.Rprofile ] || echo '.libPaths("/srv/.R/library/")' > /srv/.Rprofile
+[ -f  /srv/.Renvron ] || echo 'R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/srv/.R/library
+' > /srv/.Renvron
+
+if [ ! -d "/srv/shiny-server" ]
+then
+  mkdir -p /srv/shiny-server
+  cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
+else
+  if [ ! "$(ls -A /srv/shiny-server)" ]
+   then
+     cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
+  fi
+fi
+
+sh /usr/bin/shiny-server.sh
+
+#+END_SRC
+
 ** Container launch and image build command samples
 
 The local path should be the outermost project folder. Any location specified will have a folder created shiny-server within which the shiny test apps will be placed. Note that the correct tag version should be substituted.
