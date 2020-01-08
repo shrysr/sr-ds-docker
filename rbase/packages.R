@@ -6,7 +6,7 @@ p<-c('nnet','kknn','randomForest','xgboost','tidyverse','plotly','shiny','shinyd
      'forcats','testthat','plumber','RCurl','rvest','mailR','nlme','foreign','lattice',
      'expm','Matrix','flexdashboard','caret','mlbench','plotROC','RJDBC','rgdal',
      'highcharter','tidyquant','timetk','quantmod','PerformanceAnalytics','scales',
-     'tidymodels','C50','xgboost','parsnip','rmetalog','reticulate','umap', 'glmnet', 'easypackages', 'drake', 'shinythemes', 'shinyjs', 'recipes', 'rsample', 'rpart.plot', 'remotes', 'DataExplorer', 'inspectdf', 'janitor', 'mongolite', 'jsonlite', 'config' )
+     'tidymodels','C50', 'parsnip','rmetalog','reticulate','umap', 'glmnet', 'easypackages', 'drake', 'shinythemes', 'shinyjs', 'recipes', 'rsample', 'rpart.plot', 'remotes', 'DataExplorer', 'inspectdf', 'janitor', 'mongolite', 'jsonlite', 'config' )
 
 
 install.packages(p,dependencies = TRUE)
