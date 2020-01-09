@@ -4,9 +4,20 @@ Docker driven datascience environment and workflow.
 
     :Author: Shreyas Ragavan
 
-.. contents::
+Readme on Readthedocs:
 
+Docker image Cloud Build Status. *Note: Sometimes images are built locally and pushed dockerhub*
+D#+BEGIN\_EXPORT html
+<a href = 'https://hub.docker.com/repository/docker/shrysr/asmith/builds'>
+<img alt="Docker Asmith Cloud Build Status" src="`https://img.shields.io/docker/cloud/build/shrysr/asmith?label=ASmith%20Image&style=flat-square <https://img.shields.io/docker/cloud/build/shrysr/asmith?label=ASmith%20Image&style=flat-square>`_">
+</a>
+#+END\_EXPORT
 
+mm#+BEGIN\_EXPORT html
+<a href = 'https://hub.docker.com/repository/docker/shrysr/rstudio/builds'>
+<img alt="Docker Cloud Build Status" src="`https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square <https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square>`_">
+</a>
+#+END\_EXPORT
 
 1 TL;DR
 -------
@@ -48,8 +59,8 @@ The main containers to be aware of, and also hosted on dockerhub are :
 
 The rbase image is built on the first asmith image. The RStudio and Shiny images are based of a common rbase dependency environment. However, additional packages can be specified for these, and it is not necessary to rebuild the rbase layer each time.
 
-2.1 TODO Launching the docker containers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.1 Launching the docker containers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following snippets are examples for launching containers powered by these images. *Individual snippets are placed along with the documentation of each docker container, and will be incorporated into corresponding readme's eventually.*
 
@@ -64,8 +75,8 @@ For example, assuming your shiny app and project folder is ``/Users/superman/my-
 
     docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
 
-2.1.2 TODO Multiple ports
-^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.2 Multiple ports
+^^^^^^^^^^^^^^^^^^^^
 
 Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
 
@@ -77,11 +88,11 @@ Example for launching a temporary shiny server with 2 ports exposed for 2 proces
     -v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
     shrysr/datasciencer:test
 
-2.2 TODO Plan
-~~~~~~~~~~~~~
+2.2 Plan
+~~~~~~~~
 
-2.2.1 TODO List of images planned
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.2.1 List of images planned
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1. Development : R based
 
@@ -97,8 +108,8 @@ Example for launching a temporary shiny server with 2 ports exposed for 2 proces
 
    2. Tidyverse + ML + EDA packages : the same versions corresponding to development image
 
-2.2.2 TODO Tasks
-^^^^^^^^^^^^^^^^
+2.2.2 Tasks
+^^^^^^^^^^^
 
 2.2.2.1 Primary [3/8]
 :::::::::::::::::::::
@@ -239,8 +250,8 @@ connect directly to docker instances and have the results printed in the local b
 
 .. _59B3418B-E0F3-4146-A368-3FE5BDEA2F2F:
 
-4 DONE ASmith
--------------
+4 ASmith
+--------
 
 This is the very first layer. This layer adds several OS packages and starts with a specific version of Ubuntu (v18.04). Currently, it is largely left the same except for adding the package dtrx, which is useful to quickly zip and unzip files.
 
@@ -394,8 +405,8 @@ This layer does not take very long to build, however, if it is - then all the ot
 
 .. _:
 
-5 DONE rbase
-------------
+5 rbase
+-------
 
 This layer contains all the basic R packages required for datascience and ML. A bunch of packages were added to the already extensive default list of packages in MatrixDS's docker file.
 
@@ -503,8 +514,8 @@ Add your custom packages to this layer. In this way, only the additional package
 
 .. _:
 
-6 TODO Rstudio
---------------
+6 Rstudio
+---------
 
 This layer contains a specified RStudio version built on top of the rbase layer. i.e all the R packages defined in the earlier layers will be available to this web based deployment of Rstudio server.
 
@@ -990,8 +1001,8 @@ This layer contains a specified RStudio version built on top of the rbase layer.
 
 .. _:
 
-7 DONE Shiny
-------------
+7 Shiny
+-------
 
 Overview of the process:
 
@@ -1274,15 +1285,15 @@ The local path should be the outermost project folder. Any location specified wi
 
     docker exec -it  inspiring_grothendieck /bin/bash
 
-8 TODO Rstudio Server Preview
------------------------------
+8 Rstudio Server Preview
+------------------------
 
 This layer will build the Rstudio server preview edition. It is a low priority task planned subsequent to getting the fundamental layers to work.
 
 .. _0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23:
 
-9 TODO Multiple services, latest Libraries - Shiny and RStudio server
----------------------------------------------------------------------
+9 Multiple services, latest Libraries - Shiny and RStudio server
+----------------------------------------------------------------
 
 *This was one of the very first images created. It works, however, it will be developed into a container that launches 2 services - a Shiny server, and an Rstudio server. In general, this is not recommended. However, I think it may be useful to have available when necessary.*
 
