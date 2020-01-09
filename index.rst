@@ -1,134 +1,110 @@
+===================================================
+Docker driven datascience environment and workflow.
+===================================================
 
-# Table of Contents
+    :Author: Shreyas Ragavan
 
-1.  [Preamble](#org22f482a)
-    1.  [Plan](#org04c12f0)
-        1.  [List of images planned](#org9390f3a)
-        2.  [Tasks](#org0fb6954)
-2.  [Notes](#orga9e3b62)
-    1.  [Tools and methodology](#org3138bbb)
-    2.  [Launching the docker container](#orgcd5144a)
-    3.  [Status Log](#org1135ced)
-    4.  [General Notes](#orgd6621b1)
-3.  [ASmith](#org9576ba1)
-4.  [rbase](#org30d56fe)
-    1.  [R package list](#orgcdb4a43)
-    2.  [Dockerfile](#orgcfec6d7)
-5.  [Rstudio](#org351327f)
-    1.  [Environment and Profile](#orge14eb0a)
-    2.  [Add shiny](#org466cae1)
-    3.  [Encrypted sign in](#orgf2539a2)
-    4.  [Entrypoint](#org862e7ec)
-    5.  [nginx conf](#org2fe4034)
-    6.  [Additional Packages](#orgf096f3a)
-    7.  [PAM helper](#org212102a)
-    8.  [User settings](#org12e4501)
-    9.  [Userconf](#org7ac114e)
-    10. [Dockerfile](#orge50568f)
-    11. [Container launch](#orgc1bd7db)
-6.  [Shiny](#orge134d6a)
-    1.  [Environment and Profile](#org94f00ce)
-    2.  [app.r](#org01d6352)
-    3.  [shiny server script](#orgf4ec379)
-    4.  [packages](#org2fe1da5)
-    5.  [version](#org0804ae2)
-    6.  [Dockerfile](#orgb9f9531)
-    7.  [entrypoint](#org1866727)
-    8.  [Container launch and image build command samples](#orge6f3656)
-7.  [Rstudio Server Preview](#orgb0125e7)
-8.  [Multiple services, latest Libraries - Shiny and RStudio server](#org9ff27fc)
-    1.  [Overview](#org6c72c98)
-    2.  [Dockerfile](#org79819b5)
-        1.  [Container run command](#orga5a6b9e)
-        2.  [Userconf for rstudio](#orge5ef386)
-        3.  [Dockerfile](#org56edc87)
-9.  [Test Shiny Apps](#org9f55f4f)
-    1.  [Widget Gallery](#orgb472f12)
+.. contents::
 
-> TL;DR: The preamble section will grow to contain everything that you need to know this project and get started with using the tools.
+::
 
-> The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
+    TL;DR: The preamble section will grow to contain everything that you need to know this project and get started with using the tools.
 
+::
 
-<a id="org22f482a"></a>
+    The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a `project you can forklift <https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files>`_, that has the shiny image added as a custom tool that can be launched.
 
-# Preamble
+1 Preamble
+----------
 
-The starting point of this project was [Matt Dancho's shinyauth](https://github.com/business-science/shinyauth) docker file, which then expanded into adapting the well designed [Matrix DS tools](https://github.com/matrixds/tools) for my purpose. Their stack of docker based tools is replicated here with my customization which adds libraries and other functionality.
+The starting point of this project was `Matt Dancho's shinyauth <https://github.com/business-science/shinyauth>`_ docker file, which then expanded into adapting the well designed `Matrix DS tools <https://github.com/matrixds/tools>`_ for my purpose. Their stack of docker based tools is replicated here with my customization which adds libraries and other functionality.
 
 The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run a variety of datascience projects, with different development and production environments. In particular, I want to be able to develop and deploy dashboards like shiny or streamlit.io quickly and with ease.
 
 This Readme consists of the entire documentation and source code, maintained in a single Org mode document which is used to regenerate and manage the entire source code. i.e Literate Programming in all it's splendor and warts.
 
-> Why not just use the MatrixDS stack directly and add the missing packages as layers?
->
-> Fair question and quite possible. It may seem childish, but I wanted to build these images by hand as my set of tools, even if the tools were largely similar to the MatrixDS stack. From whatever I've learned of Docker - the MatrixDS stack is quite efficient and the cascading + common dependency layer makes sense to use. There may be other methods, but this certainly appeared technically sensible.
+::
+
+    Why not just use the MatrixDS stack directly and add the missing packages as layers?
+
+    Fair question and quite possible. It may seem childish, but I wanted to build these images by hand as my set of tools, even if the tools were largely similar to the MatrixDS stack. From whatever I've learned of Docker - the MatrixDS stack is quite efficient and the cascading + common dependency layer makes sense to use. There may be other methods, but this certainly appeared technically sensible.
 
 The main containers to be aware of, and also hosted on dockerhub are :
 
-1.  [shrysr/asmith](https://hub.docker.com/repository/docker/shrysr/asmith)
-2.  [shrysr/rbase](https://hub.docker.com/repository/docker/shrysr/rbase)
-3.  [shrysr/rstudio](https://hub.docker.com/repository/docker/shrysr/rstudio)
-4.  [shrysr/shiny](https://hub.docker.com/repository/docker/shrysr/shiny)
-5.  One of the earlier versions created is at shrysr/datasciencer, however, this has been superceded by the above images, and may grow into something different.
+1. `shrysr/asmith <https://hub.docker.com/repository/docker/shrysr/asmith>`_
+
+2. `shrysr/rbase <https://hub.docker.com/repository/docker/shrysr/rbase>`_
+
+3. `shrysr/rstudio <https://hub.docker.com/repository/docker/shrysr/rstudio>`_
+
+4. `shrysr/shiny <https://hub.docker.com/repository/docker/shrysr/shiny>`_
+
+5. One of the earlier versions created is at shrysr/datasciencer, however, this has been superceded by the above images, and may grow into something different.
 
 The rbase image is built on the first asmith image. The RStudio and Shiny images are based of a common rbase dependency environment. However, additional packages can be specified for these, and it is not necessary to rebuild the rbase layer each time.
 
-For example, assuming your shiny app and project folder is `/Users/superman/my-shiny-app/`. Then a shiny server as a container can be launched as simply as:
+For example, assuming your shiny app and project folder is ``/Users/superman/my-shiny-app/``. Then a shiny server as a container can be launched as simply as:
+
+.. code:: sh
 
     docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
 
+1.1 TODO Plan
+~~~~~~~~~~~~~
 
-<a id="org04c12f0"></a>
+1.1.1 TODO List of images planned
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-## TODO Plan
+1. Development : R based
 
+   1. R Shiny server - version to be specified
 
-<a id="org9390f3a"></a>
+   2. R studio server:latest
 
-### TODO List of images planned
+   3. Tidyverse + ML + EDA packages  - version to be specified.
 
-1.  Development : R based
-    1.  R Shiny server - version to be specified
-    2.  R studio server:latest
-    3.  Tidyverse + ML + EDA packages  - version to be specified.
+2. Production for Shiny apps
 
-2.  Production for Shiny apps
-    1.  R Shiny server : the same version as corresponding development image
-    2.  Tidyverse + ML + EDA packages : the same versions corresponding to development image
+   1. R Shiny server : the same version as corresponding development image
 
+   2. Tidyverse + ML + EDA packages : the same versions corresponding to development image
 
-<a id="org0fb6954"></a>
+1.1.2 TODO Tasks
+^^^^^^^^^^^^^^^^
 
-### TODO Tasks
+1.1.2.1 Primary [3/8]
+:::::::::::::::::::::
 
-1.  Primary <code>[3/8]</code>
+- ☐ provide specific versions of atleast the major components, like docker images, and meta-packages and other tools.
 
-    -   [ ] provide specific versions of atleast the major components, like docker images, and meta-packages and other tools.
-    -   [X] Efficient method to update system package versions.
-    -   [X] Efficient method to update R packages painlessly.
-    -   [X] Start with a minimal OS layer, like Ubuntu or even Alpine.
-    -   [ ] Create tests to ensure the docker image is working as expected. Consider techniques like Continuous Integration (CI)
-    -   [ ] Add a file with the R session, package and other relevant information to be automatically generated when a container is run and printed to a file in the working directory.
-    -   [ ] Create distinct production and development environments with clear philosophies.
-    -   [ ] Document using org mode source blocks and ESS to docker containers.
+- ☑ Efficient method to update system package versions.
 
-2.  Good to have <code>[0/2]</code>
+- ☑ Efficient method to update R packages painlessly.
 
-    -   [ ] Construct my own shiny server rather than relying on an external official image.
-    -   [ ] Evaluate integrating workflows using Drake,
+- ☑ Start with a minimal OS layer, like Ubuntu or even Alpine.
 
+- ☐ Create tests to ensure the docker image is working as expected. Consider techniques like Continuous Integration (CI)
 
-<a id="orga9e3b62"></a>
+- ☐ Add a file with the R session, package and other relevant information to be automatically generated when a container is run and printed to a file in the working directory.
 
-# Notes
+- ☐ Create distinct production and development environments with clear philosophies.
 
-This is a collection of notes and lessons learned on different aspects of the project. [My website](https://shreyas.ragavan.co/docs/docker-notes/) contains some general docker related notes on various aspects and command references.
+- ☐ Document using org mode source blocks and ESS to docker containers.
 
+1.1.2.2 Good to have [0/2]
+::::::::::::::::::::::::::
 
-<a id="org3138bbb"></a>
+- ☐ Construct my own shiny server rather than relying on an external official image.
 
-## Tools and methodology
+- ☐ Evaluate integrating workflows using Drake,
+
+2 Notes
+-------
+
+This is a collection of notes and lessons learned on different aspects of the project. `My website <https://shreyas.ragavan.co/docs/docker-notes/>`_ contains some general docker related notes on various aspects and command references.
+
+2.1 Tools and methodology
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 I am currently creating dockerfiles via source code blocks inserted into Org mode documents. i.e a single Readme.org is where I will edit all the dockerfiles in this repository, which are then tangled into the dockerfiles automatically.
 
@@ -136,22 +112,24 @@ The Org mode format can be leveraged to use literate programming techniques of r
 
 Since each template is under it's own Org heading, the specific heading can even be exported as an org file which can be externally tangled into these source files without needing the installation of Emacs. This makes the possibilities rather interesting. Down the line, further optimisations will be made
 
-Beyond this, tools like [docker-tramp](https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf) can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
+Beyond this, tools like `docker-tramp <https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf>`_ can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
-
-<a id="orgcd5144a"></a>
-
-## Launching the docker container
+2.2 Launching the docker container
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These are some variations of snippets used for connecting to the container placed here for ready reference. Individual snippets are placed along with the documentation of each docker container, and will be incorporated into the readme's eventually.
 
-1.  Launch a shiny container
+1. Launch a shiny container
+
+.. code:: sh
 
     docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
 
--   [ ] incorporate the container launch instructions into individual docker repo readme.
+- ☐ incorporate the container launch instructions into individual docker repo readme.
 
--   [ ] Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
+- ☐ Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
+
+.. code:: sh
 
     #+/bin/bash
     docker container run -Pit -d --rm  -p 3838:3838 -p 8787:8787 \
@@ -159,43 +137,43 @@ These are some variations of snippets used for connecting to the container place
     -v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
     shrysr/datasciencer:test
 
+2.3 Status Log
+~~~~~~~~~~~~~~
 
-<a id="org1135ced"></a>
+- [2020-01-08 Wed]  : Basic MatrixDS tools have been replicated like the Asmith, rbase and shiny layers. Relatively minor package additions have been made to the asmith and rbase layers. The Rstudio layer still needs some work.
 
-## Status Log
-
--   <span class="timestamp-wrapper"><span class="timestamp">[2020-01-08 Wed] </span></span> : Basic MatrixDS tools have been replicated like the Asmith, rbase and shiny layers. Relatively minor package additions have been made to the asmith and rbase layers. The Rstudio layer still needs some work.
-
--   <span class="timestamp-wrapper"><span class="timestamp">[2020-01-07 Tue] </span></span> : Further efforts will be based off the Matrix DS images. Essentially, there will be a r-base image with all the package installations which will feed the other tools and containers. This ensures that all the containers rely on the same dependencies. Subsequently, only the mountpoint becomes important. This approach is better because it enables smaller containers with single critical processes rather than multiple processes.
-
--   <span class="timestamp-wrapper"><span class="timestamp">[2020-01-03 Fri] </span></span> : This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the [image on dockerhub](https://hub.docker.com/repository/docker/shrysr/datasciencer).
+- [2020-01-07 Tue]  : Further efforts will be based off the Matrix DS images. Essentially, there will be a r-base image with all the package installations which will feed the other tools and containers. This ensures that all the containers rely on the same dependencies. Subsequently, only the mountpoint becomes important. This approach is better because it enables smaller containers with single critical processes rather than multiple processes.
 
 
-<a id="orgd6621b1"></a>
+- [2020-01-03 Fri]  : This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the `image on dockerhub <https://hub.docker.com/repository/docker/shrysr/datasciencer>`_.
 
-## General Notes
+2.4 General Notes
+~~~~~~~~~~~~~~~~~
 
--   Using the `:latest` tag for docker images is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. The goal is to have  reliable, working setup.
-    -   However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
+- Using the ``:latest`` tag for docker images is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. The goal is to have  reliable, working setup.
 
--   Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, this is certainly useful for subsequent builds with minor changes. It saves the effort required to commit a new image and push it to dockerhub.
+  - However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
 
--   the [Data Science School's docker image](https://hub.docker.com/r/datascienceschool/rpython) is useful as a comprehensive reference.
+- Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, this is certainly useful for subsequent builds with minor changes. It saves the effort required to commit a new image and push it to dockerhub.
 
--   Dockerhub has a setting wherein the image can be reconstructed if the base image is updated. This is relevant for all the images in this repo, and has been set appropriately. This is just in case one forgets to push local image updates to dockerhub.
+- the `Data Science School's docker image <https://hub.docker.com/r/datascienceschool/rpython>`_ is useful as a comprehensive reference.
 
--   A combination of local and remote development will be required to efficiently use the resources available with Docker. Since building and pushing images is expensive - some of this work can be offset to Dockerhub, and get images built based on git commits to the source Dockerfiles. For larger and more processor intensive image construction, like that of the rbase image - it is better to construct locally and then push the image to dockerhub. In any case, all the dependent images will be necessary to launch a container.
+- Dockerhub has a setting wherein the image can be reconstructed if the base image is updated. This is relevant for all the images in this repo, and has been set appropriately. This is just in case one forgets to push local image updates to dockerhub.
 
--   [ ] Clearing empty images from the list:
+- A combination of local and remote development will be required to efficiently use the resources available with Docker. Since building and pushing images is expensive - some of this work can be offset to Dockerhub, and get images built based on git commits to the source Dockerfiles. For larger and more processor intensive image construction, like that of the rbase image - it is better to construct locally and then push the image to dockerhub. In any case, all the dependent images will be necessary to launch a container.
 
+- ☐ Clearing empty images from the list:
 
-<a id="org9576ba1"></a>
+.. _59B3418B-E0F3-4146-A368-3FE5BDEA2F2F:
 
-# DONE ASmith
+3 DONE ASmith
+-------------
 
 This is the very first layer. This layer adds several OS packages and starts with a specific version of Ubuntu (v18.04). Currently, it is largely left the same except for adding the package dtrx, which is useful to quickly zip and unzip files.
 
 This layer does not take very long to build, however, if it is - then all the other subsequent layers will probably need to be rebuilt.
+
+.. code:: dockerfile
 
     FROM ubuntu:18.04
 
@@ -341,10 +319,10 @@ This layer does not take very long to build, however, if it is - then all the ot
     RUN apt-get clean \
       && rm -rf /var/lib/apt/lists/*
 
+.. _:
 
-<a id="org30d56fe"></a>
-
-# DONE rbase
+4 DONE rbase
+------------
 
 This layer contains all the basic R packages required for datascience and ML. A bunch of packages were added to the already extensive default list of packages in MatrixDS's docker file.
 
@@ -354,12 +332,14 @@ This layer takes a *tremendously long time to build*. A couple of hours on a Mac
 
 Note: As such the dockerfile indicates that the packages are called in the last 2 layers only. It may be possible that subsequent image builds do not take as much time as I imagine.
 
--   [ ] It may be easier to find a way to keep the additional packages specified in the rstudio and shiny package list to be in sync.
+- ☐ It may be easier to find a way to keep the additional packages specified in the rstudio and shiny package list to be in sync.
 
+.. _0DD4CDF0-87A3-4E3D-BDCF-39B2EB7DEF00:
 
-<a id="orgcdb4a43"></a>
+4.1 R package list
+~~~~~~~~~~~~~~~~~~
 
-## R package list
+.. code:: R
 
     #Script for common package installation on MatrixDS docker image
     p<-c('nnet','kknn','randomForest','xgboost','tidyverse','plotly','shiny','shinydashboard',
@@ -374,10 +354,12 @@ Note: As such the dockerfile indicates that the packages are called in the last 
 
     install.packages(p,dependencies = TRUE)
 
+.. _0C5AA86C-CE86-48E5-87E3-81DB9DC508CC:
 
-<a id="orgcfec6d7"></a>
+4.2 Dockerfile
+~~~~~~~~~~~~~~
 
-## Dockerfile
+.. code:: dockerfile
 
     FROM shrysr/asmith:v1
 
@@ -422,26 +404,32 @@ Note: As such the dockerfile indicates that the packages are called in the last 
     RUN R CMD javareconf && \
         Rscript /usr/local/lib/R/packages.R
 
+.. _:
 
-<a id="org351327f"></a>
-
-# TODO Rstudio
+5 TODO Rstudio
+--------------
 
 This layer contains a specified RStudio version built on top of the rbase layer. i.e all the R packages defined in the earlier layers will be available to this web based deployment of Rstudio server.
 
+.. _E5928ED3-9589-4F09-8AFB-5420EB1EDF68:
 
-<a id="orge14eb0a"></a>
+5.1 Environment and Profile
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Environment and Profile
+.. code:: R
 
     R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/home/rstudio/.R/library
 
+.. code:: R
+
     .libPaths("/home/rstudio/.R/library")
 
+.. _C1B2AF9C-079D-4A60-A682-800B07BF584E:
 
-<a id="org466cae1"></a>
+5.2 Add shiny
+~~~~~~~~~~~~~
 
-## Add shiny
+.. code:: sh
 
     #!/usr/bin/with-contenv bash
 
@@ -476,10 +464,12 @@ This layer contains a specified RStudio version built on top of the rbase layer.
            echo "Nothing additional to add"
     fi
 
+.. _CB382EF3-9133-4865-BD8A-DE3F784FEC20:
 
-<a id="orgf2539a2"></a>
+5.3 Encrypted sign in
+~~~~~~~~~~~~~~~~~~~~~
 
-## Encrypted sign in
+.. code:: html
 
     <!DOCTYPE html>
 
@@ -561,10 +551,12 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     </body>
     </html>
 
+.. _DFC1A4E8-DD20-4F39-8617-F7D6A0ED1935:
 
-<a id="org862e7ec"></a>
+5.4 Entrypoint
+~~~~~~~~~~~~~~
 
-## Entrypoint
+.. code:: sh
 
     #!/bin/bash -e
 
@@ -581,10 +573,12 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     #start RStudio
     /init
 
+.. _FB163EC6-E138-498E-9FDD-88161A0DCA75:
 
-<a id="org2fe4034"></a>
+5.5 nginx conf
+~~~~~~~~~~~~~~
 
-## nginx conf
+.. code:: conf
 
     http {
 
@@ -607,10 +601,12 @@ This layer contains a specified RStudio version built on top of the rbase layer.
       }
     }
 
+.. _56A19BED-2367-4F25-BD55-CAB7C7AE8827:
 
-<a id="orgf096f3a"></a>
+5.6 Additional Packages
+~~~~~~~~~~~~~~~~~~~~~~~
 
-## Additional Packages
+.. code:: R
 
     #Script for common package installation on MatrixDS docker image
     p<-c('reticulate')
@@ -618,10 +614,12 @@ This layer contains a specified RStudio version built on top of the rbase layer.
 
     install.packages(p,dependencies = TRUE)
 
+.. _62D22A95-5F91-4B5F-9E6A-0F0C555C7FDE:
 
-<a id="org212102a"></a>
+5.7 PAM helper
+~~~~~~~~~~~~~~
 
-## PAM helper
+.. code:: sh
 
     #!/usr/bin/env sh
 
@@ -634,19 +632,23 @@ This layer contains a specified RStudio version built on top of the rbase layer.
 
     [ "${USER}" = "${1}" ] && [ "${PASSWORD}" = "${password}" ]
 
+.. _2A450430-BC35-461A-931F-7B6DFD3F1556:
 
-<a id="org12e4501"></a>
+5.8 User settings
+~~~~~~~~~~~~~~~~~
 
-## User settings
+.. code:: conf
 
     alwaysSaveHistory="0"
     loadRData="0"
     saveAction="0"
 
+.. _ED2C94C0-0A39-4788-A9C5-BB9E950C083F:
 
-<a id="org7ac114e"></a>
+5.9 Userconf
+~~~~~~~~~~~~
 
-## Userconf
+.. code:: sh
 
     #!/usr/bin/with-contenv bash
 
@@ -752,10 +754,12 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     echo "HTTR_LOCALHOST=$HTTR_LOCALHOST" >> /etc/R/Renviron.site
     echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
 
+.. _ADA2C687-C6E2-489D-A91E-896741ACC0B8:
 
-<a id="orge50568f"></a>
+5.10 Dockerfile
+~~~~~~~~~~~~~~~
 
-## Dockerfile
+.. code:: dockerfile
 
     FROM shrysr/rbase:v1
 
@@ -880,37 +884,43 @@ This layer contains a specified RStudio version built on top of the rbase layer.
 
     ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
+5.11 Container launch
+~~~~~~~~~~~~~~~~~~~~~
 
-<a id="orgc1bd7db"></a>
-
-## Container launch
+.. code:: sh
 
     docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker:/home/rstudio -e USER=shrysr -e PASSWORD=abcd shrysr/rstudio:v1
 
+.. _:
 
-<a id="orge134d6a"></a>
-
-# DONE Shiny
+6 DONE Shiny
+------------
 
 Overview of the process:
 
-Suppose you have a project folder within which related scripts, shiny apps, etc live. This directory is mounted as a volume to the docker container. The docker container will check for the presence of a folder called `shiny-server` and if not available, will create it. Even if the folder is available, the contents of test\_apps will be copied into the image.
+Suppose you have a project folder within which related scripts, shiny apps, etc live. This directory is mounted as a volume to the docker container. The docker container will check for the presence of a folder called ``shiny-server`` and if not available, will create it. Even if the folder is available, the contents of test\_apps will be copied into the image.
 
-Into the `shiny-server` folder, the test\_apps folder containing shiny apps for testing are copied.
+Into the ``shiny-server`` folder, the test\_apps folder containing shiny apps for testing are copied.
 
+.. _EC8967B1-EEE0-4FEE-BDDD-8903F6203B09:
 
-<a id="org94f00ce"></a>
+6.1 Environment and Profile
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Environment and Profile
+.. code:: sh
 
     R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/srv/R/library
 
+.. code:: sh
+
     .libPaths("/srv/R/library/")
 
+.. _65738717-48A1-4C34-8C8D-52F3E11BB5B3:
 
-<a id="org01d6352"></a>
+6.2 app.r
+~~~~~~~~~
 
-## app.r
+.. code:: R
 
     #
     # This is a Shiny web application on MatrixDS.
@@ -1002,12 +1012,14 @@ Into the `shiny-server` folder, the test\_apps folder containing shiny apps for 
     # Run the application
     shinyApp(ui = ui, server = server)
 
+.. _9DC7422D-B4D0-4729-A38D-6D483B357B67:
 
-<a id="orgf4ec379"></a>
-
-## shiny server script
+6.3 shiny server script
+~~~~~~~~~~~~~~~~~~~~~~~
 
 This is script to execute or run the shiny server. Apparently, it is necessary to be called via script in this fashion for the process to work, rather than the docker file itself. In a way this helps keeping the code modular. It is generally unlikely any changes would be needed here.
+
+.. code:: sh
 
     #!/bin/sh
 
@@ -1026,10 +1038,12 @@ This is script to execute or run the shiny server. Apparently, it is necessary t
         exec xtail /var/log/shiny-server/
     fi
 
+.. _DB9B5B9E-4E6F-498B-B28D-AFC4DFEEAFF1:
 
-<a id="org2fe1da5"></a>
+6.4 packages
+~~~~~~~~~~~~
 
-## packages
+.. code:: R
 
     #Script for common package installation on MatrixDS docker image
     p<-c('reticulate')
@@ -1037,21 +1051,21 @@ This is script to execute or run the shiny server. Apparently, it is necessary t
 
     install.packages(p,dependencies = TRUE)
 
+6.5 version
+~~~~~~~~~~~
 
-<a id="org0804ae2"></a>
+.. _80108F6B-1AC3-4823-9DDD-26DFB1724F4A:
 
-## version
-
-
-<a id="orgb9f9531"></a>
-
-## Dockerfile
+6.6 Dockerfile
+~~~~~~~~~~~~~~
 
 The folder test\_apps will contain shiny apps meant to test functionality. This is copied into the docker image.
 
--   [ ] <span class="timestamp-wrapper"><span class="timestamp">[2020-01-08 Wed] </span></span> During the image build, there were messages that the rmarkdown and shiny libraries could not be installed for this version of R. However, the shiny apps do display in the browser. This needs to be investigated.
+- ☐ [2020-01-08 Wed]  During the image build, there were messages that the rmarkdown and shiny libraries could not be installed for this version of R. However, the shiny apps do display in the browser. This needs to be investigated.
 
 Changes: Reduced a step and added the tree package. This makes it easier to troubleshoot.
+
+.. code:: dockerfile
 
     FROM shrysr/rbase:v1
 
@@ -1107,12 +1121,14 @@ Changes: Reduced a step and added the tree package. This makes it easier to trou
     #CMD ["sh", "/usr/bin/shiny-server.sh"]
     ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
+.. _D112EC86-4439-4118-B736-EC8A331E3928:
 
-<a id="org1866727"></a>
+6.7 entrypoint
+~~~~~~~~~~~~~~
 
-## entrypoint
+The dockerfile copied the contents of ``test_apps`` into the ``root/shiny-server/test_shiny`` directory. Now via shell script (``entrypoint.sh``), the contents from ``root/shiny-server/test_shiny`` within the container are copied in a folder called ``/srv/shiny-server`` within the container. Now the final /srv/shiny-server is matched with the specified mount volume.
 
-The dockerfile copied the contents of `test_apps` into the `root/shiny-server/test_shiny` directory. Now via shell script (`entrypoint.sh`), the contents from `root/shiny-server/test_shiny` within the container are copied in a folder called `/srv/shiny-server` within the container. Now the final /srv/shiny-server is matched with the specified mount volume.
+.. code:: sh
 
     #!/bin/bash
 
@@ -1135,85 +1151,104 @@ The dockerfile copied the contents of `test_apps` into the `root/shiny-server/te
 
     sh /usr/bin/shiny-server.sh
 
-
-<a id="orge6f3656"></a>
-
-## Container launch and image build command samples
+6.8 Container launch and image build command samples
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The local path should be the outermost project folder. Any location specified will have a folder created shiny-server within which the shiny test apps will be placed. Note that the correct tag version should be substituted.
 
+.. code:: sh
+
     docker container run -itd -p 3838:3838 -v /Users/shrysr/my_projects/sr-ds-docker/:/srv shrysr/shiny:v2
+
+
+.. code:: sh
 
     docker ps
 
+.. code:: sh
+
     docker kill wizardly_kirch
+
+.. code:: sh
 
     docker image build . -t shrysr/shiny:v2
 
+.. code:: sh
+
     docker exec -it  inspiring_grothendieck /bin/bash
 
-
-<a id="orgb0125e7"></a>
-
-# TODO Rstudio Server Preview
+7 TODO Rstudio Server Preview
+-----------------------------
 
 This layer will build the Rstudio server preview edition. It is a low priority task planned subsequent to getting the fundamental layers to work.
 
+.. _0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23:
 
-<a id="org9ff27fc"></a>
-
-# TODO Multiple services, latest Libraries - Shiny and RStudio server
+8 TODO Multiple services, latest Libraries - Shiny and RStudio server
+---------------------------------------------------------------------
 
 *This was one of the very first images created. It works, however, it will be developed into a container that launches 2 services - a Shiny server, and an Rstudio server. In general, this is not recommended. However, I think it may be useful to have available when necessary.*
 
-
-<a id="org6c72c98"></a>
-
-## Overview
+8.1 Overview
+~~~~~~~~~~~~
 
 Base image: rocker/shinyverse
 
 Beyond a list of OS libraries in the basic template, the following additional libraries are installed:
 
-1.  pandoc
-2.  pandoc-cite
-3.  dtrx
-4.  tree
+1. pandoc
+
+2. pandoc-cite
+
+3. dtrx
+
+4. tree
 
 R Libraries in addition to the base template grouped into general categories:
 
 ML
 
-1.  glmnet
-2.  Umap *(Currently on a separate layer as it has a lot of dependencies and is a large install)*
-3.  recipes
-4.  rsample
-5.  rpart.plot
-6.  caret
+1. glmnet
+
+2. Umap *(Currently on a separate layer as it has a lot of dependencies and is a large install)*
+
+3. recipes
+
+4. rsample
+
+5. rpart.plot
+
+6. caret
 
 EDA
 
-1.  inspectdf
-2.  DataExplorer
-3.  janitor
+1. inspectdf
+
+2. DataExplorer
+
+3. janitor
 
 Management
 
-1.  drake
-2.  binder
-3.  easypackages
-4.  remotes
-5.  From github:  karthik/holepunch
+1. drake
 
+2. binder
 
-<a id="org79819b5"></a>
+3. easypackages
 
-## Dockerfile
+4. remotes
 
+5. From github:  karthik/holepunch
 
-<a id="orga5a6b9e"></a>
+.. _4F6FDA93-F5E2-407A-88BE-F0796BC93935:
 
-### Container run command
+8.2 Dockerfile
+~~~~~~~~~~~~~~
+
+8.2.1 Container run command
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: sh
 
     #/bin/bash
     docker container run -it --rm  -p 3838:3838 -p 8787:8787 \
@@ -1221,12 +1256,14 @@ Management
     -v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
     shrysr/rstudio:v1
 
+.. _D2A259B8-C2E8-4F99-AC82-4F80B1E38639:
 
-<a id="orge5ef386"></a>
+8.2.2 Userconf for rstudio
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-### Userconf for rstudio
+Reference: `https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/userconf.sh <https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/userconf.sh>`_
 
-Reference: <https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/userconf.sh>
+.. code:: sh
 
     #!/usr/bin/with-contenv bash
 
@@ -1332,10 +1369,12 @@ Reference: <https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/u
     echo "HTTR_LOCALHOST=$HTTR_LOCALHOST" >> /etc/R/Renviron.site
     echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
 
+.. _BD86EADA-C652-4132-BA11-DBFEE0A84DB2:
 
-<a id="org56edc87"></a>
+8.2.3 Dockerfile
+^^^^^^^^^^^^^^^^
 
-### Dockerfile
+.. code:: dockerfile
 
     FROM rocker/shiny-verse:latest
 
@@ -1519,17 +1558,19 @@ Reference: <https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/u
 
     EXPOSE 8787
 
+.. _9F2868CD-5A4C-40C9-885C-C522822967B4:
 
-<a id="org9f55f4f"></a>
-
-# Test Shiny Apps
+9 Test Shiny Apps
+-----------------
 
 A bunch of apps will be included here for the purpose of quickly testing functionality of widgets and etc. As such, the sample apps with the shiny server can also be used. Here, I would like to construct specific examples to have a look on whether all the components are working as expected. Perhaps like a test suite of apps.
 
+.. _9C26940D-010B-465B-AEA3-944B0BC0048F:
 
-<a id="orgb472f12"></a>
+9.1 Widget Gallery
+~~~~~~~~~~~~~~~~~~
 
-## Widget Gallery
+.. code:: R
 
     library(shiny)
 
