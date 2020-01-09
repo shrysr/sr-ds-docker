@@ -6,7 +6,9 @@ Docker driven datascience environment and workflow.
 
 .. contents::
 
+[![Documentation Status](`https://readthedocs.org/projects/sr-ds-docker/badge/?version=latest <https://readthedocs.org/projects/sr-ds-docker/badge/?version=latest>`_)](`https://sr-ds-docker.readthedocs.io/en/latest/?badge=latest <https://sr-ds-docker.readthedocs.io/en/latest/?badge=latest>`_)
 
+`/sr-ds-docker.readthedocs.io/en/latest/?badge=latest </sr-ds-docker.readthedocs.io/en/latest/?badge=latest>`_
 
 1 TL;DR
 -------
@@ -137,7 +139,7 @@ This is a collection of notes and lessons learned on different aspects of the pr
 3.1 Tools and methodology
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-All the source code and documentation formats are generated via source code blocks inserted into Org mode documents. i.e a single Readme.org.
+All the source code and documentation formats are generated via source code blocks inserted into Org mode documents. i.e a single Readme.org. The markdown and rst formats are generated from exporters available within Emacs, and that process can be automated.
 
 No document can be complete without a atleast a rudimentary mention of the power of using Emacs and Org mode:
 
@@ -796,7 +798,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
 
 .. code:: dockerfile
 
-    FROM shrysr/rbase:v1
+    FROM shrysr/rbase:v2
 
     LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
     	version="1.0"
@@ -1102,7 +1104,7 @@ Changes: Reduced a step and added the tree package. This makes it easier to trou
 
 .. code:: dockerfile
 
-    FROM shrysr/rbase:v1
+    FROM shrysr/rbase:v2
 
     LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
     	version="2.0"

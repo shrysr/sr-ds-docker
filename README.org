@@ -1,6 +1,10 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 #+TITLE: Docker driven datascience environment and workflow.
 
+[![Documentation Status](https://readthedocs.org/projects/sr-ds-docker/badge/?version=latest)](https://sr-ds-docker.readthedocs.io/en/latest/?badge=latest)
+
+[[file:/sr-ds-docker.readthedocs.io/en/latest/?badge=latest]]
+
 * TL;DR
 
 - The [[id:633524EA-BE13-43AA-A9A5-1B46D96307BE][Init]] section will grow to contain everything that you need to know this project and get started with using the tools.
