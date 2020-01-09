@@ -99,7 +99,7 @@ This is a collection of notes and lessons learned on different aspects of the pr
 :ID:       301FC423-6E68-4610-9C09-8D02363CFBBA
 :END:
 
-All the source code and documentation formats are generated via source code blocks inserted into Org mode documents. i.e a single Readme.org.
+All the source code and documentation formats are generated via source code blocks inserted into Org mode documents. i.e a single Readme.org. The markdown and rst formats are generated from exporters available within Emacs, and that process can be automated.
 
 No document can be complete without a atleast a rudimentary mention of the power of using Emacs and Org mode:
 
@@ -770,7 +770,7 @@ echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
 :END:
 
 #+BEGIN_SRC dockerfile
-FROM shrysr/rbase:v1
+FROM shrysr/rbase:v2
 
 LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
 	version="1.0"
@@ -1080,7 +1080,7 @@ The folder test_apps will contain shiny apps meant to test functionality. This i
 Changes: Reduced a step and added the tree package. This makes it easier to troubleshoot.
 
 #+BEGIN_SRC dockerfile :tangle ./shiny/Dockerfile
-FROM shrysr/rbase:v1
+FROM shrysr/rbase:v2
 
 LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
 	version="2.0"

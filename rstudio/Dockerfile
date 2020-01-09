@@ -1,4 +1,4 @@
-FROM shrysr/rbase:v1
+FROM shrysr/rbase:v2
 
 LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
 	version="1.0"
