@@ -29,10 +29,10 @@ RUN apt-get update \
     r-cran-rpart \
     r-cran-spatial \
     r-cran-survival
-COPY r_packages.R .
+COPY r_custom_packages.R .
 RUN R CMD javareconf \
-  && Rscript r_packages.R \
-  && rm r_packages.R
+  && Rscript r_custom_packages.R \
+  && rm r_custom_packages.R
 
 
 COPY packages.R /usr/local/lib/R/packages.R

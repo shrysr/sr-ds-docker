@@ -1,56 +1,56 @@
 
 # Table of Contents
 
-1.  [Preamble](#org22f482a)
-    1.  [Plan](#org04c12f0)
-        1.  [List of images planned](#org9390f3a)
-        2.  [Tasks](#org0fb6954)
-2.  [Notes](#orga9e3b62)
-    1.  [Tools and methodology](#org3138bbb)
-    2.  [Launching the docker container](#orgcd5144a)
-    3.  [Status Log](#org1135ced)
-    4.  [General Notes](#orgd6621b1)
-3.  [ASmith](#org9576ba1)
-4.  [rbase](#org30d56fe)
-    1.  [R package list](#orgcdb4a43)
-    2.  [Dockerfile](#orgcfec6d7)
-5.  [Rstudio](#org351327f)
-    1.  [Environment and Profile](#orge14eb0a)
-    2.  [Add shiny](#org466cae1)
-    3.  [Encrypted sign in](#orgf2539a2)
-    4.  [Entrypoint](#org862e7ec)
-    5.  [nginx conf](#org2fe4034)
-    6.  [Additional Packages](#orgf096f3a)
-    7.  [PAM helper](#org212102a)
-    8.  [User settings](#org12e4501)
-    9.  [Userconf](#org7ac114e)
-    10. [Dockerfile](#orge50568f)
-    11. [Container launch](#orgc1bd7db)
-6.  [Shiny](#orge134d6a)
-    1.  [Environment and Profile](#org94f00ce)
-    2.  [app.r](#org01d6352)
-    3.  [shiny server script](#orgf4ec379)
-    4.  [packages](#org2fe1da5)
-    5.  [version](#org0804ae2)
-    6.  [Dockerfile](#orgb9f9531)
-    7.  [entrypoint](#org1866727)
-    8.  [Container launch and image build command samples](#orge6f3656)
-7.  [Rstudio Server Preview](#orgb0125e7)
-8.  [Multiple services, latest Libraries - Shiny and RStudio server](#org9ff27fc)
-    1.  [Overview](#org6c72c98)
-    2.  [Dockerfile](#org79819b5)
-        1.  [Container run command](#orga5a6b9e)
-        2.  [Userconf for rstudio](#orge5ef386)
-        3.  [Dockerfile](#org56edc87)
-9.  [Test Shiny Apps](#org9f55f4f)
-    1.  [Widget Gallery](#orgb472f12)
+1.  [Preamble](#org389bb83)
+    1.  [Plan](#orgd014524)
+        1.  [List of images planned](#org8dd47d4)
+        2.  [Tasks](#org59159af)
+2.  [Notes](#org9a11985)
+    1.  [Tools and methodology](#org14fc147)
+    2.  [Launching the docker container](#org449c71f)
+    3.  [Status Log](#org09fd25d)
+    4.  [General Notes](#org1712278)
+3.  [ASmith](#orge122dc1)
+4.  [rbase](#org20a9925)
+    1.  [R package list](#orgcdd530a)
+    2.  [Dockerfile](#org6cc358f)
+5.  [Rstudio](#orgc456cf5)
+    1.  [Environment and Profile](#orgc0d426b)
+    2.  [Add shiny](#org1908432)
+    3.  [Encrypted sign in](#orgd1a8aab)
+    4.  [Entrypoint](#orgc2b8c80)
+    5.  [nginx conf](#org620557c)
+    6.  [Additional Packages](#org15662fa)
+    7.  [PAM helper](#org933626b)
+    8.  [User settings](#orga2661d0)
+    9.  [Userconf](#orge142dc0)
+    10. [Dockerfile](#orgf99764c)
+    11. [Container launch](#org93f1ee6)
+6.  [Shiny](#org01976c7)
+    1.  [Environment and Profile](#orga2de588)
+    2.  [app.r](#org4f3ed30)
+    3.  [shiny server script](#org394ff6c)
+    4.  [packages](#orgadc6fe2)
+    5.  [version](#org3f0ffaf)
+    6.  [Dockerfile](#org4c91398)
+    7.  [entrypoint](#org120ff73)
+    8.  [Container launch and image build command samples](#org4348537)
+7.  [Rstudio Server Preview](#org61869a9)
+8.  [Multiple services, latest Libraries - Shiny and RStudio server](#orge13121a)
+    1.  [Overview](#orga530885)
+    2.  [Dockerfile](#org2259cd7)
+        1.  [Container run command](#org7d5aabf)
+        2.  [Userconf for rstudio](#org6377b95)
+        3.  [Dockerfile](#org35a214a)
+9.  [Test Shiny Apps](#org81865cc)
+    1.  [Widget Gallery](#org071fba6)
 
 > TL;DR: The preamble section will grow to contain everything that you need to know this project and get started with using the tools.
 
-> The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
+> The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched. Alternately the documentation can be viewed as a rendered rst file on [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="org22f482a"></a>
+<a id="org389bb83"></a>
 
 # Preamble
 
@@ -79,12 +79,12 @@ For example, assuming your shiny app and project folder is `/Users/superman/my-s
     docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
 
 
-<a id="org04c12f0"></a>
+<a id="orgd014524"></a>
 
 ## TODO Plan
 
 
-<a id="org9390f3a"></a>
+<a id="org8dd47d4"></a>
 
 ### TODO List of images planned
 
@@ -98,7 +98,7 @@ For example, assuming your shiny app and project folder is `/Users/superman/my-s
     2.  Tidyverse + ML + EDA packages : the same versions corresponding to development image
 
 
-<a id="org0fb6954"></a>
+<a id="org59159af"></a>
 
 ### TODO Tasks
 
@@ -119,14 +119,14 @@ For example, assuming your shiny app and project folder is `/Users/superman/my-s
     -   [ ] Evaluate integrating workflows using Drake,
 
 
-<a id="orga9e3b62"></a>
+<a id="org9a11985"></a>
 
 # Notes
 
 This is a collection of notes and lessons learned on different aspects of the project. [My website](https://shreyas.ragavan.co/docs/docker-notes/) contains some general docker related notes on various aspects and command references.
 
 
-<a id="org3138bbb"></a>
+<a id="org14fc147"></a>
 
 ## Tools and methodology
 
@@ -139,7 +139,7 @@ Since each template is under it's own Org heading, the specific heading can even
 Beyond this, tools like [docker-tramp](https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf) can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
 
-<a id="orgcd5144a"></a>
+<a id="org449c71f"></a>
 
 ## Launching the docker container
 
@@ -160,7 +160,7 @@ These are some variations of snippets used for connecting to the container place
     shrysr/datasciencer:test
 
 
-<a id="org1135ced"></a>
+<a id="org09fd25d"></a>
 
 ## Status Log
 
@@ -171,7 +171,7 @@ These are some variations of snippets used for connecting to the container place
 -   <span class="timestamp-wrapper"><span class="timestamp">[2020-01-03 Fri] </span></span> : This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the [image on dockerhub](https://hub.docker.com/repository/docker/shrysr/datasciencer).
 
 
-<a id="orgd6621b1"></a>
+<a id="org1712278"></a>
 
 ## General Notes
 
@@ -189,7 +189,7 @@ These are some variations of snippets used for connecting to the container place
 -   [ ] Clearing empty images from the list:
 
 
-<a id="org9576ba1"></a>
+<a id="orge122dc1"></a>
 
 # DONE ASmith
 
@@ -342,7 +342,7 @@ This layer does not take very long to build, however, if it is - then all the ot
       && rm -rf /var/lib/apt/lists/*
 
 
-<a id="org30d56fe"></a>
+<a id="org20a9925"></a>
 
 # DONE rbase
 
@@ -357,7 +357,7 @@ Note: As such the dockerfile indicates that the packages are called in the last 
 -   [ ] It may be easier to find a way to keep the additional packages specified in the rstudio and shiny package list to be in sync.
 
 
-<a id="orgcdb4a43"></a>
+<a id="orgcdd530a"></a>
 
 ## R package list
 
@@ -375,7 +375,7 @@ Note: As such the dockerfile indicates that the packages are called in the last 
     install.packages(p,dependencies = TRUE)
 
 
-<a id="orgcfec6d7"></a>
+<a id="org6cc358f"></a>
 
 ## Dockerfile
 
@@ -423,14 +423,14 @@ Note: As such the dockerfile indicates that the packages are called in the last 
         Rscript /usr/local/lib/R/packages.R
 
 
-<a id="org351327f"></a>
+<a id="orgc456cf5"></a>
 
 # TODO Rstudio
 
 This layer contains a specified RStudio version built on top of the rbase layer. i.e all the R packages defined in the earlier layers will be available to this web based deployment of Rstudio server.
 
 
-<a id="orge14eb0a"></a>
+<a id="orgc0d426b"></a>
 
 ## Environment and Profile
 
@@ -439,7 +439,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     .libPaths("/home/rstudio/.R/library")
 
 
-<a id="org466cae1"></a>
+<a id="org1908432"></a>
 
 ## Add shiny
 
@@ -477,7 +477,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     fi
 
 
-<a id="orgf2539a2"></a>
+<a id="orgd1a8aab"></a>
 
 ## Encrypted sign in
 
@@ -562,7 +562,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     </html>
 
 
-<a id="org862e7ec"></a>
+<a id="orgc2b8c80"></a>
 
 ## Entrypoint
 
@@ -582,7 +582,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     /init
 
 
-<a id="org2fe4034"></a>
+<a id="org620557c"></a>
 
 ## nginx conf
 
@@ -608,7 +608,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     }
 
 
-<a id="orgf096f3a"></a>
+<a id="org15662fa"></a>
 
 ## Additional Packages
 
@@ -619,7 +619,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     install.packages(p,dependencies = TRUE)
 
 
-<a id="org212102a"></a>
+<a id="org933626b"></a>
 
 ## PAM helper
 
@@ -635,7 +635,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     [ "${USER}" = "${1}" ] && [ "${PASSWORD}" = "${password}" ]
 
 
-<a id="org12e4501"></a>
+<a id="orga2661d0"></a>
 
 ## User settings
 
@@ -644,7 +644,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     saveAction="0"
 
 
-<a id="org7ac114e"></a>
+<a id="orge142dc0"></a>
 
 ## Userconf
 
@@ -753,7 +753,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
 
 
-<a id="orge50568f"></a>
+<a id="orgf99764c"></a>
 
 ## Dockerfile
 
@@ -881,14 +881,14 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
 
-<a id="orgc1bd7db"></a>
+<a id="org93f1ee6"></a>
 
 ## Container launch
 
     docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker:/home/rstudio -e USER=shrysr -e PASSWORD=abcd shrysr/rstudio:v1
 
 
-<a id="orge134d6a"></a>
+<a id="org01976c7"></a>
 
 # DONE Shiny
 
@@ -899,7 +899,7 @@ Suppose you have a project folder within which related scripts, shiny apps, etc 
 Into the `shiny-server` folder, the test\_apps folder containing shiny apps for testing are copied.
 
 
-<a id="org94f00ce"></a>
+<a id="orga2de588"></a>
 
 ## Environment and Profile
 
@@ -908,7 +908,7 @@ Into the `shiny-server` folder, the test\_apps folder containing shiny apps for 
     .libPaths("/srv/R/library/")
 
 
-<a id="org01d6352"></a>
+<a id="org4f3ed30"></a>
 
 ## app.r
 
@@ -1003,7 +1003,7 @@ Into the `shiny-server` folder, the test\_apps folder containing shiny apps for 
     shinyApp(ui = ui, server = server)
 
 
-<a id="orgf4ec379"></a>
+<a id="org394ff6c"></a>
 
 ## shiny server script
 
@@ -1027,7 +1027,7 @@ This is script to execute or run the shiny server. Apparently, it is necessary t
     fi
 
 
-<a id="org2fe1da5"></a>
+<a id="orgadc6fe2"></a>
 
 ## packages
 
@@ -1038,12 +1038,12 @@ This is script to execute or run the shiny server. Apparently, it is necessary t
     install.packages(p,dependencies = TRUE)
 
 
-<a id="org0804ae2"></a>
+<a id="org3f0ffaf"></a>
 
 ## version
 
 
-<a id="orgb9f9531"></a>
+<a id="org4c91398"></a>
 
 ## Dockerfile
 
@@ -1108,7 +1108,7 @@ Changes: Reduced a step and added the tree package. This makes it easier to trou
     ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
 
-<a id="org1866727"></a>
+<a id="org120ff73"></a>
 
 ## entrypoint
 
@@ -1136,7 +1136,7 @@ The dockerfile copied the contents of `test_apps` into the `root/shiny-server/te
     sh /usr/bin/shiny-server.sh
 
 
-<a id="orge6f3656"></a>
+<a id="org4348537"></a>
 
 ## Container launch and image build command samples
 
@@ -1153,21 +1153,21 @@ The local path should be the outermost project folder. Any location specified wi
     docker exec -it  inspiring_grothendieck /bin/bash
 
 
-<a id="orgb0125e7"></a>
+<a id="org61869a9"></a>
 
 # TODO Rstudio Server Preview
 
 This layer will build the Rstudio server preview edition. It is a low priority task planned subsequent to getting the fundamental layers to work.
 
 
-<a id="org9ff27fc"></a>
+<a id="orge13121a"></a>
 
 # TODO Multiple services, latest Libraries - Shiny and RStudio server
 
 *This was one of the very first images created. It works, however, it will be developed into a container that launches 2 services - a Shiny server, and an Rstudio server. In general, this is not recommended. However, I think it may be useful to have available when necessary.*
 
 
-<a id="org6c72c98"></a>
+<a id="orga530885"></a>
 
 ## Overview
 
@@ -1206,12 +1206,12 @@ Management
 5.  From github:  karthik/holepunch
 
 
-<a id="org79819b5"></a>
+<a id="org2259cd7"></a>
 
 ## Dockerfile
 
 
-<a id="orga5a6b9e"></a>
+<a id="org7d5aabf"></a>
 
 ### Container run command
 
@@ -1222,7 +1222,7 @@ Management
     shrysr/rstudio:v1
 
 
-<a id="orge5ef386"></a>
+<a id="org6377b95"></a>
 
 ### Userconf for rstudio
 
@@ -1333,7 +1333,7 @@ Reference: <https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/u
     echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
 
 
-<a id="org56edc87"></a>
+<a id="org35a214a"></a>
 
 ### Dockerfile
 
@@ -1520,14 +1520,14 @@ Reference: <https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/u
     EXPOSE 8787
 
 
-<a id="org9f55f4f"></a>
+<a id="org81865cc"></a>
 
 # Test Shiny Apps
 
 A bunch of apps will be included here for the purpose of quickly testing functionality of widgets and etc. As such, the sample apps with the shiny server can also be used. Here, I would like to construct specific examples to have a look on whether all the components are working as expected. Perhaps like a test suite of apps.
 
 
-<a id="orgb472f12"></a>
+<a id="org071fba6"></a>
 
 ## Widget Gallery
 

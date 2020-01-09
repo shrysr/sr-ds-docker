@@ -12,7 +12,7 @@ Docker driven datascience environment and workflow.
 
 ::
 
-    The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a `project you can forklift <https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files>`_, that has the shiny image added as a custom tool that can be launched.
+    The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a `project you can forklift <https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files>`_, that has the shiny image added as a custom tool that can be launched. Alternately the documentation can be viewed as a rendered rst file on `readthedocs <https://sr-ds-docker.readthedocs.io/en/latest/>`_
 
 1 Preamble
 ----------

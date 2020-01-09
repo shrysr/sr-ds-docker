@@ -6,7 +6,8 @@ TL;DR: The preamble section will grow to contain everything that you need to kno
 #+END_QUOTE
 
 #+BEGIN_QUOTE
-The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [[https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files][project you can forklift]], that has the shiny image added as a custom tool that can be launched.
+- The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [[https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files][project you can forklift]], that has the shiny image added as a custom tool that can be launched.
+- One alternate method to read the documentation is via [[https://sr-ds-docker.readthedocs.io/en/latest/][readthedocs]]
 #+END_QUOTE
 
 
@@ -16,7 +17,7 @@ The starting point of this project was [[https://github.com/business-science/shi
 
 The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run a variety of datascience projects, with different development and production environments. In particular, I want to be able to develop and deploy dashboards like shiny or streamlit.io quickly and with ease.
 
-This Readme consists of the entire documentation and source code, maintained in a single Org mode document which is used to regenerate and manage the entire source code. i.e Literate Programming in all it's splendor and warts.
+This Readme consists of the entire documentation and source code, maintained in a single Org mode document which is used to regenerate and manage the entire source code and the exports to markdown and rst. i.e Literate Programming in all it's splendor and warts.
 
 #+BEGIN_QUOTE
 Why not just use the MatrixDS stack directly and add the missing packages as layers?
@@ -81,7 +82,7 @@ Since each template is under it's own Org heading, the specific heading can even
 
 Beyond this, tools like [[https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf][docker-tramp]] can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
-** Launching the docker container
+** TODO Launching the docker container
 
 These are some variations of snippets used for connecting to the container placed here for ready reference. Individual snippets are placed along with the documentation of each docker container, and will be incorporated into the readme's eventually.
 
@@ -306,7 +307,7 @@ Note: As such the dockerfile indicates that the packages are called in the last 
 
 - [ ] It may be easier to find a way to keep the additional packages specified in the rstudio and shiny package list to be in sync.
 
-** R package list
+** R package list - BASE
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./rbase/packages.R
 :ID:       0DD4CDF0-87A3-4E3D-BDCF-39B2EB7DEF00
@@ -325,6 +326,22 @@ p<-c('nnet','kknn','randomForest','xgboost','tidyverse','plotly','shiny','shinyd
 
 
 install.packages(p,dependencies = TRUE)
+
+#+END_SRC
+
+** R Package list - CUSTOM
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./rbase/r_custom_packages.R
+:ID:       2EBA46F1-48F2-417F-8D68-4BD8B39FAA7F
+:END:
+
+#+BEGIN_SRC R
+#Script for common package installation on MatrixDS docker image
+PKGS <- c(
+     "tidyverse"
+)
+
+install.packages(PKGS, dependencies = TRUE)
 
 #+END_SRC
 
@@ -366,10 +383,10 @@ RUN apt-get update \
     r-cran-rpart \
     r-cran-spatial \
     r-cran-survival
-COPY r_packages.R .
+COPY r_custom_packages.R .
 RUN R CMD javareconf \
-  && Rscript r_packages.R \
-  && rm r_packages.R
+  && Rscript r_custom_packages.R \
+  && rm r_custom_packages.R
 
 
 COPY packages.R /usr/local/lib/R/packages.R
