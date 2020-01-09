@@ -132,6 +132,9 @@ This layer does not take very long to build, however, if it is - then all the ot
 #+BEGIN_SRC dockerfile
 FROM ubuntu:18.04
 
+LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
+	version="1.0"
+
 USER root
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -320,6 +323,9 @@ install.packages(p,dependencies = TRUE)
 
 #+BEGIN_SRC dockerfile
 FROM shrysr/asmith:v1
+
+LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
+	version="1.0"
 
 #install some helper python packages
 RUN pip install sympy numpy
@@ -724,6 +730,9 @@ echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
 #+BEGIN_SRC dockerfile
 FROM shrysr/rbase:v1
 
+LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
+	version="1.0"
+
 COPY packages.R /usr/local/lib/R/packages.R
 
 #install R packages
@@ -1031,6 +1040,9 @@ Changes: Reduced a step and added the tree package. This makes it easier to trou
 #+BEGIN_SRC dockerfile :tangle ./shiny/Dockerfile
 FROM shrysr/rbase:v1
 
+LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
+	version="2.0"
+
 COPY packages.R /usr/local/lib/R/packages.R
 
 #install R packages
@@ -1194,7 +1206,7 @@ docker exec -it  inspiring_grothendieck /bin/bash
 
 This layer will build the Rstudio server preview edition. It is a low priority task planned subsequent to getting the fundamental layers to work.
 
-* Latest Libraries - Shiny and RStudio server
+* TODO Multiple services, latest Libraries - Shiny and RStudio server
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./all_inclusive_latest/Dockerfile
 :ID:       0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23
@@ -1364,8 +1376,7 @@ echo "HTTR_LOCALHOST=$HTTR_LOCALHOST" >> /etc/R/Renviron.site
 echo "HTTR_PORT=$HTTR_PORT" >> /etc/R/Renviron.site
 #+END_SRC
 
-
-*** Dockerfile contents
+*** Dockerfile
 :PROPERTIES:
 :ID:       BD86EADA-C652-4132-BA11-DBFEE0A84DB2
 :END:

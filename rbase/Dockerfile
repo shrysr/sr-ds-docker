@@ -1,5 +1,8 @@
 FROM shrysr/asmith:v1
 
+LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
+	version="1.0"
+
 #install some helper python packages
 RUN pip install sympy numpy
 

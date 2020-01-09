@@ -1,5 +1,8 @@
 FROM ubuntu:18.04
 
+LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
+	version="1.0"
+
 USER root
 
 ENV DEBIAN_FRONTEND noninteractive

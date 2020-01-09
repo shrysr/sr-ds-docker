@@ -1,5 +1,8 @@
 FROM shrysr/rbase:v1
 
+LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
+	version="1.0"
+
 COPY packages.R /usr/local/lib/R/packages.R
 
 #install R packages
