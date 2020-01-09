@@ -7,6 +7,8 @@ The starting point of this project was [[https://github.com/business-science/shi
 
 The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run a variety of datascience projects, with different development and production environments. In particular, I want to be able to develop and deploy dashboards like shiny or streamlit.io quickly and with ease.
 
+This Readme consists of the entire documentation and source code in a single Org mode document.
+
 #+BEGIN_QUOTE
 Why not just use the MatrixDS stack directly and add the missing packages as layers?
 
@@ -18,8 +20,15 @@ These containers are hosted on dockerhub as :
 2. [[https://hub.docker.com/repository/docker/shrysr/rbase][shrysr/rbase]]
 3. [[https://hub.docker.com/repository/docker/shrysr/rstudio][shrysr/rstudio]]
 4. [[https://hub.docker.com/repository/docker/shrysr/shiny][shrysr/shiny]]
+5. One of the earlier versions created is at shrysr/datasciencer, however, this has been superceded by the above images.
 
-One of the earlier versions created is at shrysr/datasciencer
+The rbase image is built on the first asmith image. The RStudio and Shiny images are based of a common rbase dependency environment. However, additional packages can be specified for these.
+
+For example, assuming your shiny app and project folder is =/Users/superman/my-shiny-app/=. Then a shiny server as a container can be launched as simply as:
+
+#+BEGIN_SRC sh
+docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
+#+END_SRC
 
 ** TODO Plan
 
@@ -51,33 +60,31 @@ One of the earlier versions created is at shrysr/datasciencer
 - [ ] Evaluate integrating workflows using Drake,
 
 * Notes
-/There is also a bunch of general docker related notes and references [[https://shreyas.ragavan.co/docs/docker-notes/][on my website]]./
+[[Https://shreyas.ragavan.co/docs/docker-notes/][My website]] contains some general docker related notes on various aspects and command references
 
 ** Tools and methodology
 
 I am currently creating dockerfiles via source code blocks inserted into Org mode documents. i.e a single Readme.org is where I will edit all the dockerfiles in this repository, which are then tangled into the dockerfiles automatically.
 
-The Org mode format can be leveraged to record comments and notes about each dockerfile and setup within the readme document itself thus creating a literate environment.
+The Org mode format can be leveraged to use literate programming techniques of recording comments and notes about each dockerfile and setup within the readme document itself.
 
 Since each template is under it's own Org heading, the specific heading can even be exported as an org file which can be externally tangled into these source files without needing the installation of Emacs. This makes the possibilities rather interesting. Down the line, further optimisations will be made
 
 Beyond this, tools like [[https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf][docker-tramp]] can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
-** TODO Running these files
-
-The following options exist:
-
-1. Pull the latest image from docker hub : =docker pull shrysr/datasciencer= and run the container. This will reference the [[id:0DA3DB49-0DDC-4A45-AB71-F4FDE41ACE23][Adding All libraries to the Template]], wherein the latest versions of all the files will be used.
-3. Copy the contents of the dockerfile and paste into your docker file.
-4. Alternately, this repo can be cloned, and the dockerfile can be specified with the =f= flag for example =docker build . -f ~/temp/testdocker=
-
 ** Launching the docker container
 
 These are some variations of snippets used for connecting to the container placed here for ready reference. Individual snippets are placed along with the documentation of each docker container, and will be incorporated into the readme's eventually.
 
+1. Launch a shiny container
+
+#+BEGIN_SRC sh
+docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
+#+END_SRC
+
 - [ ] incorporate the container launch instructions into individual docker repo readme.
 
-/Note that the local test_app folder has to be created/
+2. [ ] Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
 
 #+BEGIN_SRC sh :tangle no :results verbatim replace
 #+/bin/bash
@@ -103,7 +110,9 @@ shrysr/datasciencer:test
 
 ** General Notes
 
-- Using the =:latest= tag is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
+- Using the =:latest= tag for docker images is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. The goal is to have  reliable, working setup.
+
+  - However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.
 
 - Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, this is certainly useful for subsequent builds with minor changes. It saves the effort required to commit a new image and push it to dockerhub.
 
@@ -843,7 +852,8 @@ docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker
 #+RESULTS:
 : 165ae30412e0d670283d1df0cef5b7e7c4da3de998c87626a8125979e5b9785e
 
-* Shiny
+* DONE Shiny
+CLOSED: [2020-01-08 Wed 22:09]
 :PROPERTIES:
 :header-args: :mkdirp yes
 :ID:
