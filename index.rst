@@ -7,17 +7,6 @@ Docker driven datascience environment and workflow.
 Readme on Readthedocs:
 
 Docker image Cloud Build Status. *Note: Sometimes images are built locally and pushed dockerhub*
-D#+BEGIN\_EXPORT html
-<a href = 'https://hub.docker.com/repository/docker/shrysr/asmith/builds'>
-<img alt="Docker Asmith Cloud Build Status" src="`https://img.shields.io/docker/cloud/build/shrysr/asmith?label=ASmith%20Image&style=flat-square <https://img.shields.io/docker/cloud/build/shrysr/asmith?label=ASmith%20Image&style=flat-square>`_">
-</a>
-#+END\_EXPORT
-
-mm#+BEGIN\_EXPORT html
-<a href = 'https://hub.docker.com/repository/docker/shrysr/rstudio/builds'>
-<img alt="Docker Cloud Build Status" src="`https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square <https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square>`_">
-</a>
-#+END\_EXPORT
 
 1 TL;DR
 -------

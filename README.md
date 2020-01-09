@@ -5,11 +5,10 @@ Readme on Readthedocs:
 </a>
 
 Docker image Cloud Build Status. *Note: Sometimes images are built locally and pushed dockerhub*
-D#+BEGIN\_EXPORT html
+
 <a href = 'https://hub.docker.com/repository/docker/shrysr/asmith/builds'>
-<img alt="Docker Asmith Cloud Build Status" src="<https://img.shields.io/docker/cloud/build/shrysr/asmith?label=ASmith%20Image&style=flat-square>">
+<img alt="Docker Asmith Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/asmith?label=ASmith%20Image&style=flat-square">
 </a>
-\#+END\_EXPORT
 
 <a href = 'https://hub.docker.com/repository/docker/shrysr/rbase/builds'>
 <img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/rbase?label=Rbase%20Image&style=flat-square">
@@ -19,21 +18,19 @@ D#+BEGIN\_EXPORT html
 <img alt="Docker Shiny Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/shiny?label=Shiny%20Image&style=flat-square">
 </a>
 
-mm#+BEGIN\_EXPORT html
 <a href = 'https://hub.docker.com/repository/docker/shrysr/rstudio/builds'>
-<img alt="Docker Cloud Build Status" src="<https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square>">
+<img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square">
 </a>
-\#+END\_EXPORT
 
 
 # TL;DR
 
--   The [Init](#org8319410) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#orgc9f47ca) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="org8319410"></a>
+<a id="orgc9f47ca"></a>
 
 # Init
 
