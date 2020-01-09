@@ -1,17 +1,16 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 #+TITLE: Docker driven datascience environment and workflow.
 
-#+BEGIN_QUOTE
-TL;DR: The preamble section will grow to contain everything that you need to know this project and get started with using the tools.
-#+END_QUOTE
+* TL;DR
 
-#+BEGIN_QUOTE
+- The [[id:633524EA-BE13-43AA-A9A5-1B46D96307BE][Init]] section will grow to contain everything that you need to know this project and get started with using the tools.
 - The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [[https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files][project you can forklift]], that has the shiny image added as a custom tool that can be launched.
-- One alternate method to read the documentation is via [[https://sr-ds-docker.readthedocs.io/en/latest/][readthedocs]]
-#+END_QUOTE
+- One alternate method currently available to read the documentation is via [[https://sr-ds-docker.readthedocs.io/en/latest/][readthedocs]]
 
-
-* Preamble
+* Init
+:PROPERTIES:
+:ID:       633524EA-BE13-43AA-A9A5-1B46D96307BE
+:END:
 
 The starting point of this project was [[https://github.com/business-science/shinyauth][Matt Dancho's shinyauth]] docker file, which then expanded into adapting the well designed [[https://github.com/matrixds/tools][Matrix DS tools]] for my purpose. Their stack of docker based tools is replicated here with my customization which adds libraries and other functionality.
 
@@ -22,7 +21,7 @@ This Readme consists of the entire documentation and source code, maintained in 
 #+BEGIN_QUOTE
 Why not just use the MatrixDS stack directly and add the missing packages as layers?
 
-Fair question and quite possible. It may seem childish, but I wanted to build these images by hand as my set of tools, even if the tools were largely similar to the MatrixDS stack. From whatever I've learned of Docker - the MatrixDS stack is quite efficient and the cascading + common dependency layer makes sense to use. There may be other methods, but this certainly appeared technically sensible.
+In a sense, that is what I did, except that I constructed my own base image instead of relying on modifying a MatrixDS image. I also wanted to build these images by hand as my set of tools, even if the tools were largely similar to the MatrixDS stack. From whatever I've learned of Docker - the MatrixDS stack is quite efficient and the cascading + common dependency layer makes sense to use. There may be other methods, but this certainly appeared technically sensible.
 #+END_QUOTE
 
 The main containers to be aware of, and also hosted on dockerhub are :
@@ -34,11 +33,33 @@ The main containers to be aware of, and also hosted on dockerhub are :
 
 The rbase image is built on the first asmith image. The RStudio and Shiny images are based of a common rbase dependency environment. However, additional packages can be specified for these, and it is not necessary to rebuild the rbase layer each time.
 
+** TODO Launching the docker containers
+
+The following snippets are examples for launching containers powered by these images. /Individual snippets are placed along with the documentation of each docker container, and will be incorporated into corresponding readme's eventually./
+
+- [ ] incorporate the container launch instructions into individual docker repo readme.
+
+*** Launch a shiny container
 For example, assuming your shiny app and project folder is =/Users/superman/my-shiny-app/=. Then a shiny server as a container can be launched as simply as:
 
 #+BEGIN_SRC sh
 docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
 #+END_SRC
+
+*** TODO Multiple ports
+
+Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
+
+#+BEGIN_SRC sh :tangle no :results verbatim replace
+#+/bin/bash
+docker container run -Pit -d --rm  -p 3838:3838 -p 8787:8787 \
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app \
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
+shrysr/datasciencer:test
+#+END_SRC
+
+#+RESULTS:
+: 347baed2d55e42bbf07508b9cdce0b15850c645fea3d137274daec61ac666ee9
 
 ** TODO Plan
 
@@ -70,49 +91,31 @@ docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shr
 - [ ] Evaluate integrating workflows using Drake,
 
 * Notes
-This is a collection of notes and lessons learned on different aspects of the project. [[https://shreyas.ragavan.co/docs/docker-notes/][My website]] contains some general docker related notes on various aspects and command references.
+This is a collection of notes and lessons learned on different aspects of the project.
+/[[https://shreyas.ragavan.co/docs/docker-notes/][My website]] contains some general docker related notes on other aspects and command references./
 
 ** Tools and methodology
+:PROPERTIES:
+:ID:       301FC423-6E68-4610-9C09-8D02363CFBBA
+:END:
 
-I am currently creating dockerfiles via source code blocks inserted into Org mode documents. i.e a single Readme.org is where I will edit all the dockerfiles in this repository, which are then tangled into the dockerfiles automatically.
+All the source code and documentation formats are generated via source code blocks inserted into Org mode documents. i.e a single Readme.org.
+
+No document can be complete without a atleast a rudimentary mention of the power of using Emacs and Org mode:
 
 The Org mode format can be leveraged to use literate programming techniques of recording comments and notes about each dockerfile and setup within the readme document itself.
 
-Since each template is under it's own Org heading, the specific heading can even be exported as an org file which can be externally tangled into these source files without needing the installation of Emacs. This makes the possibilities rather interesting. Down the line, further optimisations will be made
+For example: since each template is under it's own Org heading, the specific heading can even be exported as a separate org file, which can be externally tangled into source files without needing the installation of Emacs.
 
 Beyond this, tools like [[https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf][docker-tramp]] can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
-** TODO Launching the docker container
-
-These are some variations of snippets used for connecting to the container placed here for ready reference. Individual snippets are placed along with the documentation of each docker container, and will be incorporated into the readme's eventually.
-
-1. Launch a shiny container
-
-#+BEGIN_SRC sh
-docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
-#+END_SRC
-
-- [ ] incorporate the container launch instructions into individual docker repo readme.
-
-2. [ ] Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
-
-#+BEGIN_SRC sh :tangle no :results verbatim replace
-#+/bin/bash
-docker container run -Pit -d --rm  -p 3838:3838 -p 8787:8787 \
--v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app \
--v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
-shrysr/datasciencer:test
-#+END_SRC
-
-#+RESULTS:
-: 347baed2d55e42bbf07508b9cdce0b15850c645fea3d137274daec61ac666ee9
+[[file:img/emacs-org-mode.png]]
 
 ** Status Log
 
 - [2020-01-08 Wed] : Basic MatrixDS tools have been replicated like the Asmith, rbase and shiny layers. Relatively minor package additions have been made to the asmith and rbase layers. The Rstudio layer still needs some work.
 
 - [2020-01-07 Tue] : Further efforts will be based off the Matrix DS images. Essentially, there will be a r-base image with all the package installations which will feed the other tools and containers. This ensures that all the containers rely on the same dependencies. Subsequently, only the mountpoint becomes important. This approach is better because it enables smaller containers with single critical processes rather than multiple processes.
-
 
 - [2020-01-03 Fri] : This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the [[https://hub.docker.com/repository/docker/shrysr/datasciencer][image on dockerhub]].
 
