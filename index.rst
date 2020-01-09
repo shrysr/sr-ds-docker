@@ -6,9 +6,7 @@ Docker driven datascience environment and workflow.
 
 .. contents::
 
-[![Documentation Status](`https://readthedocs.org/projects/sr-ds-docker/badge/?version=latest <https://readthedocs.org/projects/sr-ds-docker/badge/?version=latest>`_)](`https://sr-ds-docker.readthedocs.io/en/latest/?badge=latest <https://sr-ds-docker.readthedocs.io/en/latest/?badge=latest>`_)
 
-`/sr-ds-docker.readthedocs.io/en/latest/?badge=latest </sr-ds-docker.readthedocs.io/en/latest/?badge=latest>`_
 
 1 TL;DR
 -------
@@ -147,7 +145,69 @@ The Org mode format can be leveraged to use literate programming techniques of r
 
 For example: since each template is under it's own Org heading, the specific heading can even be exported as a separate org file, which can be externally tangled into source files without needing the installation of Emacs.
 
-Beyond this, tools like `docker-tramp <https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf>`_ can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
+Beyond this, tools like `docker-tramp <https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf>`_ can be used with Emacs to have org babel source blocks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
 .. image:: img/emacs-org-mode.png
 

@@ -1,9 +1,23 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 #+TITLE: Docker driven datascience environment and workflow.
 
-[![Documentation Status](https://readthedocs.org/projects/sr-ds-docker/badge/?version=latest)](https://sr-ds-docker.readthedocs.io/en/latest/?badge=latest)
-
-[[file:/sr-ds-docker.readthedocs.io/en/latest/?badge=latest]]
+#+BEGIN_EXPORT html
+<a href='https://sr-ds-docker.readthedocs.io/en/latest/?badge=latest'>
+    <img src='https://readthedocs.org/projects/sr-ds-docker/badge/?version=latest' alt='Documentation Status' />
+</a>
+#+END_EXPORT
+#+BEGIN_EXPORT html
+<img alt="Docker Asmith Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/asmith?label=ASmith%20Image&style=flat-square">
+#+END_EXPORT
+#+BEGIN_EXPORT html
+<img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/rbase?label=Rbase%20Image&style=flat-square">
+#+END_EXPORT
+#+BEGIN_EXPORT html
+<img alt="Docker Shiny Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/shiny?label=Shiny%20Image&style=flat-square">
+#+END_EXPORT
+#+BEGIN_EXPORT html
+<img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square">
+#+END_EXPORT
 
 * TL;DR
 
@@ -111,7 +125,69 @@ The Org mode format can be leveraged to use literate programming techniques of r
 
 For example: since each template is under it's own Org heading, the specific heading can even be exported as a separate org file, which can be externally tangled into source files without needing the installation of Emacs.
 
-Beyond this, tools like [[https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf][docker-tramp]] can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
+Beyond this, tools like [[https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf][docker-tramp]] can be used with Emacs to have org babel source blocks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
 [[file:img/emacs-org-mode.png]]
 
