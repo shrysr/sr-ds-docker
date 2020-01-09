@@ -12,7 +12,9 @@ Docker driven datascience environment and workflow.
 
 ::
 
-    The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a `project you can forklift <https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files>`_, that has the shiny image added as a custom tool that can be launched. Alternately the documentation can be viewed as a rendered rst file on `readthedocs <https://sr-ds-docker.readthedocs.io/en/latest/>`_
+    - The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a `project you can forklift <https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files>`_, that has the shiny image added as a custom tool that can be launched.
+
+    - One alternate method to read the documentation is via `readthedocs <https://sr-ds-docker.readthedocs.io/en/latest/>`_
 
 1 Preamble
 ----------
@@ -21,7 +23,7 @@ The starting point of this project was `Matt Dancho's shinyauth <https://github.
 
 The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run a variety of datascience projects, with different development and production environments. In particular, I want to be able to develop and deploy dashboards like shiny or streamlit.io quickly and with ease.
 
-This Readme consists of the entire documentation and source code, maintained in a single Org mode document which is used to regenerate and manage the entire source code. i.e Literate Programming in all it's splendor and warts.
+This Readme consists of the entire documentation and source code, maintained in a single Org mode document which is used to regenerate and manage the entire source code and the exports to markdown and rst. i.e Literate Programming in all it's splendor and warts.
 
 ::
 
@@ -114,8 +116,8 @@ Since each template is under it's own Org heading, the specific heading can even
 
 Beyond this, tools like `docker-tramp <https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf>`_ can be used with Emacs to have org babel source blocks connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 
-2.2 Launching the docker container
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.2 TODO Launching the docker container
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These are some variations of snippets used for connecting to the container placed here for ready reference. Individual snippets are placed along with the documentation of each docker container, and will be incorporated into the readme's eventually.
 
@@ -336,8 +338,15 @@ Note: As such the dockerfile indicates that the packages are called in the last 
 
 .. _0DD4CDF0-87A3-4E3D-BDCF-39B2EB7DEF00:
 
-4.1 R package list
-~~~~~~~~~~~~~~~~~~
+4.1 R package list - BASE
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is a list of the basic packages being installed. These conver many commonly used libraries for data science. This layer will take a Long time to install.
+
+::
+
+    Do not install custom libraries to this layer. Install in the next layer.
+
 
 .. code:: R
 
@@ -354,9 +363,25 @@ Note: As such the dockerfile indicates that the packages are called in the last 
 
     install.packages(p,dependencies = TRUE)
 
+.. _2EBA46F1-48F2-417F-8D68-4BD8B39FAA7F:
+
+4.2 R Package list - CUSTOM
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add your custom packages to this layer. In this way, only the additional packages are installed in a new layer.
+
+.. code:: R
+
+    #Script for common package installation on MatrixDS docker image
+    PKGS <- c(
+         "tidyverse"
+    )
+
+    install.packages(PKGS, dependencies = TRUE)
+
 .. _0C5AA86C-CE86-48E5-87E3-81DB9DC508CC:
 
-4.2 Dockerfile
+4.3 Dockerfile
 ~~~~~~~~~~~~~~
 
 .. code:: dockerfile
@@ -392,17 +417,18 @@ Note: As such the dockerfile indicates that the packages are called in the last 
         r-cran-rpart \
         r-cran-spatial \
         r-cran-survival
-    COPY r_packages.R .
-    RUN R CMD javareconf \
-      && Rscript r_packages.R \
-      && rm r_packages.R
-
 
     COPY packages.R /usr/local/lib/R/packages.R
 
-    #install R packages
+    # Install Basic R packages for datascience and ML
     RUN R CMD javareconf && \
         Rscript /usr/local/lib/R/packages.R
+
+    # Install custom set of R packages. This is on a separate layer for efficient image construction
+    COPY r_custom_packages.R .
+    RUN R CMD javareconf \
+      && Rscript r_custom_packages.R \
+      && rm r_custom_packages.R
 
 .. _:
 
