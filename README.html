@@ -1,0 +1,2247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-01-14 Tue 16:21 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Docker driven datascience environment and workflow.</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Shreyas Ragavan" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Docker driven datascience environment and workflow.</h1>
+<p>
+Readme on Readthedocs:
+</p>
+<a href='https://sr-ds-docker.readthedocs.io/en/latest/?badge=latest'>
+    <img src='https://readthedocs.org/projects/sr-ds-docker/badge/?version=latest' alt='Documentation Status' />
+</a>
+
+<p>
+Docker image Cloud Build Status. <i>Note: Sometimes images are built locally and pushed dockerhub</i>
+</p>
+
+<a href = 'https://hub.docker.com/repository/docker/shrysr/asmith/builds'>
+<img alt="Docker Asmith Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/asmith?label=ASmith%20Image&style=flat-square">
+</a>
+<a href = 'https://hub.docker.com/repository/docker/shrysr/rbase/builds'>
+<img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/rbase?label=Rbase%20Image&style=flat-square">
+</a>
+<a href = 'https://hub.docker.com/repository/docker/shrysr/shiny/builds'>
+<img alt="Docker Shiny Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/shiny?label=Shiny%20Image&style=flat-square">
+</a>
+<a href = 'https://hub.docker.com/repository/docker/shrysr/rstudio/builds'>
+<img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square">
+</a>
+
+<div id="outline-container-org2f6dbc4" class="outline-2">
+<h2 id="org2f6dbc4"><span class="section-number-2">1</span> TL;DR</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>The <a href="#org0c80a39">Init</a> section will grow to contain everything that you need to know this project and get started with using the tools.</li>
+<li>The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a <a href="https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files">project you can forklift</a>, that has the shiny image added as a custom tool that can be launched.</li>
+<li>One alternate method currently available to read the documentation is via <a href="https://sr-ds-docker.readthedocs.io/en/latest/">readthedocs</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0c80a39" class="outline-2">
+<h2 id="org0c80a39"><span class="section-number-2">2</span> Init</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+The starting point of this project was <a href="https://github.com/business-science/shinyauth">Matt Dancho's shinyauth</a> docker file, which then expanded into adapting the well designed <a href="https://github.com/matrixds/tools">Matrix DS tools</a> for my purpose. Their stack of docker based tools is replicated here with my customization which adds libraries and other functionality.
+</p>
+
+<p>
+The goal is to develop a workflow based on Docker (and other tools) to create a reproducible, standard, consistent environment to run a variety of datascience projects, with different development and production environments. In particular, I want to be able to develop and deploy dashboards like shiny or streamlit.io quickly and with ease.
+</p>
+
+<p>
+This Readme consists of the entire documentation and source code, maintained in a single Org mode document which is used to regenerate and manage the entire source code and the exports to markdown and rst. i.e Literate Programming in all it's splendor and warts.
+</p>
+
+<blockquote>
+<p>
+Why not just use the MatrixDS stack directly and add the missing packages as layers?
+</p>
+
+<p>
+In a sense, that is what I did, except that I constructed my own base image instead of relying on modifying a MatrixDS image. I also wanted to build these images by hand as my set of tools, even if the tools were largely similar to the MatrixDS stack. From whatever I've learned of Docker - the MatrixDS stack is quite efficient and the cascading + common dependency layer makes sense to use. There may be other methods, but this certainly appeared technically sensible.
+</p>
+</blockquote>
+
+<p>
+The main containers to be aware of, and also hosted on dockerhub are :
+</p>
+<ol class="org-ol">
+<li><a href="https://hub.docker.com/repository/docker/shrysr/asmith">shrysr/asmith</a></li>
+<li><a href="https://hub.docker.com/repository/docker/shrysr/rbase">shrysr/rbase</a></li>
+<li><a href="https://hub.docker.com/repository/docker/shrysr/rstudio">shrysr/rstudio</a></li>
+<li><a href="https://hub.docker.com/repository/docker/shrysr/shiny">shrysr/shiny</a></li>
+<li>One of the earlier versions created is at shrysr/datasciencer, however, this has been superceded by the above images, and may grow into something different.</li>
+</ol>
+
+<p>
+The rbase image is built on the first asmith image. The RStudio and Shiny images are based of a common rbase dependency environment. However, additional packages can be specified for these, and it is not necessary to rebuild the rbase layer each time.
+</p>
+</div>
+
+<div id="outline-container-orgda00c17" class="outline-3">
+<h3 id="orgda00c17"><span class="section-number-3">2.1</span> Launching the docker containers</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+The following snippets are examples for launching containers powered by these images. <i>Individual snippets are placed along with the documentation of each docker container, and will be incorporated into corresponding readme's eventually.</i>
+</p>
+
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> incorporate the container launch instructions into individual docker repo readme.</li>
+</ul>
+</div>
+
+<div id="outline-container-org4c4f2f6" class="outline-4">
+<h4 id="org4c4f2f6"><span class="section-number-4">2.1.1</span> Launch a shiny container</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+For example, assuming your shiny app and project folder is <code>/Users/superman/my-shiny-app/</code>. Then a shiny server as a container can be launched as simply as:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgee67694" class="outline-4">
+<h4 id="orgee67694"><span class="section-number-4">2.1.2</span> Multiple ports</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">+/bin/bash</span>
+docker container run -Pit -d --rm  -p 3838:3838 -p 8787:8787 <span style="color: #008000;">\</span>
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app <span style="color: #008000;">\</span>
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ <span style="color: #008000;">\</span>
+shrysr/datasciencer:test
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaf98905" class="outline-3">
+<h3 id="orgaf98905"><span class="section-number-3">2.2</span> Plan</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-org5e5ba3b" class="outline-4">
+<h4 id="org5e5ba3b"><span class="section-number-4">2.2.1</span> List of images planned</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<ol class="org-ol">
+<li>Development : R based
+<ol class="org-ol">
+<li>R Shiny server - version to be specified</li>
+<li>R studio server:latest</li>
+<li>Tidyverse + ML + EDA packages  - version to be specified.</li>
+</ol></li>
+
+<li>Production for Shiny apps
+<ol class="org-ol">
+<li>R Shiny server : the same version as corresponding development image</li>
+<li>Tidyverse + ML + EDA packages : the same versions corresponding to development image</li>
+</ol></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org66ed60d" class="outline-4">
+<h4 id="org66ed60d"><span class="section-number-4">2.2.2</span> Tasks</h4>
+<div class="outline-text-4" id="text-2-2-2">
+</div>
+<ol class="org-ol">
+<li><a id="org52bfe71"></a>Primary <code>[3/8]</code><br />
+<div class="outline-text-5" id="text-2-2-2-1">
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> provide specific versions of atleast the major components, like docker images, and meta-packages and other tools.</li>
+<li class="on"><code>[X]</code> Efficient method to update system package versions.</li>
+<li class="on"><code>[X]</code> Efficient method to update R packages painlessly.</li>
+<li class="on"><code>[X]</code> Start with a minimal OS layer, like Ubuntu or even Alpine.</li>
+<li class="off"><code>[&#xa0;]</code> Create tests to ensure the docker image is working as expected. Consider techniques like Continuous Integration (CI)</li>
+<li class="off"><code>[&#xa0;]</code> Add a file with the R session, package and other relevant information to be automatically generated when a container is run and printed to a file in the working directory.</li>
+<li class="off"><code>[&#xa0;]</code> Create distinct production and development environments with clear philosophies.</li>
+<li class="off"><code>[&#xa0;]</code> Document using org mode source blocks and ESS to docker containers.</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgba9067b"></a>Good to have <code>[0/2]</code><br />
+<div class="outline-text-5" id="text-2-2-2-2">
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> Construct my own shiny server rather than relying on an external official image.</li>
+<li class="off"><code>[&#xa0;]</code> Evaluate integrating workflows using Drake,</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org573ae6a" class="outline-2">
+<h2 id="org573ae6a"><span class="section-number-2">3</span> Notes</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+This is a collection of notes and lessons learned on different aspects of the project.
+<i><a href="https://shreyas.ragavan.co/docs/docker-notes/">My website</a> contains some general docker related notes on other aspects and command references.</i>
+</p>
+</div>
+
+<div id="outline-container-orga420268" class="outline-3">
+<h3 id="orga420268"><span class="section-number-3">3.1</span> Tools and methodology</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+All the source code and documentation formats are generated via source code blocks inserted into Org mode documents. i.e a single Readme.org. The markdown and rst formats are generated from exporters available within Emacs, and that process can be automated.
+</p>
+
+<p>
+No document can be complete without a atleast a rudimentary mention of the power of using Emacs and Org mode:
+</p>
+
+<p>
+The Org mode format can be leveraged to use literate programming techniques of recording comments and notes about each dockerfile and setup within the readme document itself.
+</p>
+
+<p>
+For example: since each template is under it's own Org heading, the specific heading can even be exported as a separate org file, which can be externally tangled into source files without needing the installation of Emacs.
+</p>
+
+<p>
+Beyond this, tools like <a href="https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&amp;utm_medium=ios_app&amp;utm_name=iossmf">docker-tramp</a> can be used with Emacs to have org babel source blocks
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>
+connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
+</p>
+
+
+<div class="figure">
+<p><img src="img/emacs-org-mode.png" alt="emacs-org-mode.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f3562b" class="outline-3">
+<h3 id="org1f3562b"><span class="section-number-3">3.2</span> Status Log</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li><span class="timestamp-wrapper"><span class="timestamp">[2020-01-08 Wed] </span></span> : Basic MatrixDS tools have been replicated like the Asmith, rbase and shiny layers. Relatively minor package additions have been made to the asmith and rbase layers. The Rstudio layer still needs some work.</li>
+
+<li><span class="timestamp-wrapper"><span class="timestamp">[2020-01-07 Tue] </span></span> : Further efforts will be based off the Matrix DS images. Essentially, there will be a r-base image with all the package installations which will feed the other tools and containers. This ensures that all the containers rely on the same dependencies. Subsequently, only the mountpoint becomes important. This approach is better because it enables smaller containers with single critical processes rather than multiple processes.</li>
+
+<li><span class="timestamp-wrapper"><span class="timestamp">[2020-01-03 Fri] </span></span> : This dockerfile will launch a shiny server to listen at the specified port. Some additional libraries like umap, glmnet, inspectdf, DataExplorer have been added in layers. The github repo is linked to the <a href="https://hub.docker.com/repository/docker/shrysr/datasciencer">image on dockerhub</a>.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbbe679c" class="outline-3">
+<h3 id="orgbbe679c"><span class="section-number-3">3.3</span> General Notes</h3>
+<div class="outline-text-3" id="text-3-3">
+<ul class="org-ul">
+<li>Using the <code>:latest</code> tag for docker images is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. The goal is to have  reliable, working setup.
+
+<ul class="org-ul">
+<li>However, atleast one image may be worth having referencing the latest version of all the libraries. This container could be used for a test to know compatibility with the latest libraries.</li>
+</ul></li>
+
+<li>Dockerhub has a build feature wherein a github / bitbucket repo can be linked and each new  commit will trigger a build. A specific location can also be specified for the dockerfile, or a git branch name or tag. Though caching and etc are possible, the build time appears to be no better than local build time. However, this is certainly useful for subsequent builds with minor changes. It saves the effort required to commit a new image and push it to dockerhub.</li>
+
+<li>the <a href="https://hub.docker.com/r/datascienceschool/rpython">Data Science School's docker image</a> is useful as a comprehensive reference.</li>
+
+<li>Dockerhub has a setting wherein the image can be reconstructed if the base image is updated. This is relevant for all the images in this repo, and has been set appropriately. This is just in case one forgets to push local image updates to dockerhub.</li>
+
+<li>A combination of local and remote development will be required to efficiently use the resources available with Docker. Since building and pushing images is expensive - some of this work can be offset to Dockerhub, and get images built based on git commits to the source Dockerfiles. For larger and more processor intensive image construction, like that of the rbase image - it is better to construct locally and then push the image to dockerhub. In any case, all the dependent images will be necessary to launch a container.</li>
+
+<li class="off"><code>[&#xa0;]</code> Clearing empty images from the list:</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcbec9f1" class="outline-2">
+<h2 id="orgcbec9f1"><span class="section-number-2">4</span> ASmith</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+This is the very first layer. This layer adds several OS packages and starts with a specific version of Ubuntu (v18.04). Currently, it is largely left the same except for adding the package dtrx, which is useful to quickly zip and unzip files.
+</p>
+
+<p>
+This layer does not take very long to build, however, if it is - then all the other subsequent layers will probably need to be rebuilt.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-dockerfile">FROM ubuntu:18.04
+
+LABEL maintainer="Shreyas Ragavan &lt;sr@eml.cc&gt;" \
+	version="1.0"
+
+USER root
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update
+
+# Install all basic OS dependencies
+RUN apt-get update \
+  &amp;&amp; apt-get install -yq --no-install-recommends \
+    apt \
+    apt-utils \
+    bash-completion \
+    build-essential \
+    byacc \
+    bzip2 \
+    ca-certificates \
+    emacs \
+    file \
+    flex \
+    fonts-dejavu \
+    fonts-liberation \
+    fonts-texgyre \
+    g++ \
+    gcc \
+    gettext \
+    gfortran \
+    git \
+    gnupg2 \
+    gsfonts \
+    hdf5-tools \
+    icu-devtools \
+    jed \
+    lmodern \
+    locales \
+    make \
+    mesa-common-dev \
+    nano \
+    netcat \
+    openjdk-8-jdk \
+    pandoc \
+    software-properties-common \
+    sudo \
+    texlive-fonts-extra \
+    texlive-fonts-recommended \
+    texlive-generic-recommended \
+    texlive-latex-base \
+    texlive-latex-extra \
+    texlive-xetex \
+    tzdata \
+    unzip \
+    vim \
+    wget \
+    zip \
+  &amp;&amp; echo "en_US.UTF-8 UTF-8" &gt;&gt; /etc/locale.gen \
+  &amp;&amp; locale-gen en_US.utf8 \
+  &amp;&amp; /usr/sbin/update-locale LANG=en_US.UTF-8
+
+# make the "en_US.UTF-8" locale so postgres will be utf-8 enabled by default
+ENV LANG=en_US.utf8 \
+    LC_ALL=en_US.UTF-8 \
+    TERM=xterm \
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+
+# Install additional libraries
+RUN apt-get install -yq --no-install-recommends \
+    libblas-dev \
+    libcurl4 \
+    libcurl4-gnutls-dev \
+    libgdal-dev \
+    libglu1-mesa-dev \
+    libgmp3-dev \
+    libicu60 \
+    libjpeg-turbo8 \
+    libmagick++-dev \
+    libmariadb-client-lgpl-dev \
+    libmpfr-dev \
+    libmpfr-dev \
+    libncurses5-dev \
+    libnettle6 \
+    libnlopt-dev \
+    libopenblas-dev \
+    libpango1.0-0 \
+    libpangocairo-1.0-0 \
+    libpng16-16 \
+    libpq-dev \
+    libsasl2-dev \
+    libsm6 \
+    libssl-dev \
+    libtiff5 \
+    libtool \
+    libudunits2-dev \
+    libxext-dev \
+    libxml2-dev \
+    libxrender1 \
+    zlib1g-dev \
+	dtrx
+
+# Set timezone noninteractively
+RUN ln -fs /usr/share/zoneinfo/US/Pacific /etc/localtime
+
+# Python stuff
+RUN apt-get install -y --no-install-recommends \
+    python-pip \
+    python-setuptools \
+    python-wheel \
+    python-dev \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    python3-dev \
+  &amp;&amp; apt-get clean
+
+#install git, vim
+
+RUN apt-get install -y git \
+	                   vim \
+                       curl
+
+#install kaggle cli
+RUN pip install kaggle dvc tensorflow keras pandas
+
+#mongo cli
+RUN apt-get install -y mongodb-clients
+
+#mysql shell
+RUN apt-get install -y mysql-client
+
+#postgre shell
+RUN apt-get install -y postgresql-client
+
+# Add Tini
+ENV TINI_VERSION v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+
+RUN apt-get clean \
+  &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org55fbe25" class="outline-2">
+<h2 id="org55fbe25"><span class="section-number-2">5</span> rbase</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+This layer contains all the basic R packages required for datascience and ML. A bunch of packages were added to the already extensive default list of packages in MatrixDS's docker file.
+</p>
+
+<p>
+The packages are defined in an R script called packages.R.
+</p>
+
+<p>
+This layer takes a <i>tremendously long time to build</i>. A couple of hours on a Macbook Pro 2019, with 6 cores and 32 GB of RAM. One should be careful in assessing whether this layer has to be disturbed. Automated builds on Dockerhub are likely to take even longer.
+</p>
+
+<p>
+Note: As such the dockerfile indicates that the packages are called in the last 2 layers only. It may be possible that subsequent image builds do not take as much time as I imagine.
+</p>
+
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> It may be easier to find a way to keep the additional packages specified in the rstudio and shiny package list to be in sync.</li>
+</ul>
+</div>
+
+<div id="outline-container-org5c4877b" class="outline-3">
+<h3 id="org5c4877b"><span class="section-number-3">5.1</span> R package list - BASE</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+This is a list of the basic packages being installed. These conver many commonly used libraries for data science. This layer will take a Long time to install.
+</p>
+
+<blockquote>
+<p>
+Do not install custom libraries to this layer. Install in the next layer.
+</p>
+</blockquote>
+
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">Script for common package installation on MatrixDS docker image</span>
+p<span style="color: #D0372D;">&lt;-</span>c(<span style="color: #008000;">'nnet'</span>,<span style="color: #008000;">'kknn'</span>,<span style="color: #008000;">'randomForest'</span>,<span style="color: #008000;">'xgboost'</span>,<span style="color: #008000;">'tidyverse'</span>,<span style="color: #008000;">'plotly'</span>,<span style="color: #008000;">'shiny'</span>,<span style="color: #008000;">'shinydashboard'</span>,
+          <span style="color: #008000;">'devtools'</span>,<span style="color: #008000;">'FinCal'</span>,<span style="color: #008000;">'googleVis'</span>,<span style="color: #008000;">'DT'</span>, <span style="color: #008000;">'kernlab'</span>,<span style="color: #008000;">'earth'</span>,
+     <span style="color: #008000;">'htmlwidgets'</span>,<span style="color: #008000;">'rmarkdown'</span>,<span style="color: #008000;">'lubridate'</span>,<span style="color: #008000;">'leaflet'</span>,<span style="color: #008000;">'sparklyr'</span>,<span style="color: #008000;">'magrittr'</span>,<span style="color: #008000;">'openxlsx'</span>,
+     <span style="color: #008000;">'packrat'</span>,<span style="color: #008000;">'roxygen2'</span>,<span style="color: #008000;">'knitr'</span>,<span style="color: #008000;">'readr'</span>,<span style="color: #008000;">'readxl'</span>,<span style="color: #008000;">'stringr'</span>,<span style="color: #008000;">'broom'</span>,<span style="color: #008000;">'feather'</span>,
+     <span style="color: #008000;">'forcats'</span>,<span style="color: #008000;">'testthat'</span>,<span style="color: #008000;">'plumber'</span>,<span style="color: #008000;">'RCurl'</span>,<span style="color: #008000;">'rvest'</span>,<span style="color: #008000;">'mailR'</span>,<span style="color: #008000;">'nlme'</span>,<span style="color: #008000;">'foreign'</span>,<span style="color: #008000;">'lattice'</span>,
+     <span style="color: #008000;">'expm'</span>,<span style="color: #008000;">'Matrix'</span>,<span style="color: #008000;">'flexdashboard'</span>,<span style="color: #008000;">'caret'</span>,<span style="color: #008000;">'mlbench'</span>,<span style="color: #008000;">'plotROC'</span>,<span style="color: #008000;">'RJDBC'</span>,<span style="color: #008000;">'rgdal'</span>,
+     <span style="color: #008000;">'highcharter'</span>,<span style="color: #008000;">'tidyquant'</span>,<span style="color: #008000;">'timetk'</span>,<span style="color: #008000;">'quantmod'</span>,<span style="color: #008000;">'PerformanceAnalytics'</span>,<span style="color: #008000;">'scales'</span>,
+     <span style="color: #008000;">'tidymodels'</span>,<span style="color: #008000;">'C50'</span>, <span style="color: #008000;">'parsnip'</span>,<span style="color: #008000;">'rmetalog'</span>,<span style="color: #008000;">'reticulate'</span>,<span style="color: #008000;">'umap'</span>, <span style="color: #008000;">'glmnet'</span>, <span style="color: #008000;">'easypackages'</span>, <span style="color: #008000;">'drake'</span>, <span style="color: #008000;">'shinythemes'</span>, <span style="color: #008000;">'shinyjs'</span>, <span style="color: #008000;">'recipes'</span>, <span style="color: #008000;">'rsample'</span>, <span style="color: #008000;">'rpart.plot'</span>, <span style="color: #008000;">'remotes'</span>, <span style="color: #008000;">'DataExplorer'</span>, <span style="color: #008000;">'inspectdf'</span>, <span style="color: #008000;">'janitor'</span>, <span style="color: #008000;">'mongolite'</span>, <span style="color: #008000;">'jsonlite'</span>, <span style="color: #008000;">'config'</span> )
+
+
+install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcf034da" class="outline-3">
+<h3 id="orgcf034da"><span class="section-number-3">5.2</span> R Package list - CUSTOM</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+Add your custom packages to this layer. In this way, only the additional packages are installed in a new layer.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">Script for common package installation on MatrixDS docker image</span>
+PKGS <span style="color: #D0372D;">&lt;-</span> c(
+     <span style="color: #008000;">"tidyverse"</span>, <span style="color: #008000;">"mapproj"</span>, <span style="color: #008000;">"maps"</span>
+)
+
+install.packages(PKGS, dependencies = <span style="color: #6434A3;">TRUE</span>)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4c93925" class="outline-3">
+<h3 id="org4c93925"><span class="section-number-3">5.3</span> Dockerfile</h3>
+<div class="outline-text-3" id="text-5-3">
+<div class="org-src-container">
+<pre class="src src-dockerfile">FROM shrysr/asmith:v1
+
+LABEL maintainer="Shreyas Ragavan &lt;sr@eml.cc&gt;" \
+	version="1.0"
+
+#install some helper python packages
+RUN pip install sympy numpy
+
+# R Repo, see https://cran.r-project.org/bin/linux/ubuntu/README.html
+RUN echo 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' &gt;&gt; /etc/apt/sources.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+RUN add-apt-repository ppa:marutter/c2d4u3.5
+
+# R-specific packages
+RUN apt-get update \
+  &amp;&amp; apt-get install -y --no-install-recommends \
+    r-base \
+    r-base-core \
+    r-recommended \
+    r-base-dev \
+    r-cran-boot \
+    r-cran-class \
+    r-cran-cluster \
+    r-cran-codetools \
+    r-cran-foreign \
+    r-cran-kernsmooth \
+    r-cran-matrix \
+    r-cran-rjava \
+    r-cran-rpart \
+    r-cran-spatial \
+    r-cran-survival
+
+COPY packages.R /usr/local/lib/R/packages.R
+
+# Install Basic R packages for datascience and ML
+RUN R CMD javareconf &amp;&amp; \
+    Rscript /usr/local/lib/R/packages.R
+
+# Install custom set of R packages. This is on a separate layer for efficient image construction
+COPY r_custom_packages.R .
+RUN R CMD javareconf \
+  &amp;&amp; Rscript r_custom_packages.R \
+  &amp;&amp; rm r_custom_packages.R
+</pre>
+</div>
+<p>
+*
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org9e18692" class="outline-2">
+<h2 id="org9e18692"><span class="section-number-2">6</span> Rstudio</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>Note taken on <span class="timestamp-wrapper"><span class="timestamp">[2020-01-11 Sat 09:18] </span></span> <br />
+This image is not working as expected at the moment. The only change from the Matrix DS image is the rbase image source, which by itself works as expected. The shiny image based off rbase also works as expected. The workaround at the moment</li>
+</ul>
+
+<p>
+This layer contains a specified RStudio version built on top of the rbase layer. i.e all the R packages defined in the earlier layers will be available to this web based deployment of Rstudio server.
+</p>
+</div>
+
+<div id="outline-container-org0adab72" class="outline-3">
+<h3 id="org0adab72"><span class="section-number-3">6.1</span> Environment and Profile</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+<pre class="src src-R">R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/home/rstudio/.R/library
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">.libPaths(<span style="color: #008000;">"/home/rstudio/.R/library"</span>)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1de6c25" class="outline-3">
+<h3 id="org1de6c25"><span class="section-number-3">6.2</span> Add shiny</h3>
+<div class="outline-text-3" id="text-6-2">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/usr/bin/</span><span style="color: #0000FF;">with-contenv</span><span style="color: #8D8D84; font-style: italic;"> bash</span>
+
+<span style="color: #BA36A5;">ADD</span>=${<span style="color: #BA36A5;">ADD</span>:=none}
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">A script to add shiny to an rstudio-based rocker image.</span>
+
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$ADD"</span> == <span style="color: #008000;">"shiny"</span> ]; <span style="color: #0000FF;">then</span>
+  <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Adding shiny server to container..."</span>
+  apt-get update &amp;&amp; apt-get -y install <span style="color: #008000;">\</span>
+    gdebi-core <span style="color: #008000;">\</span>
+    libxt-dev &amp;&amp; <span style="color: #008000;">\</span>
+    wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION -O <span style="color: #008000;">"version.txt"</span> &amp;&amp; <span style="color: #008000;">\</span>
+    <span style="color: #BA36A5;">VERSION</span>=$(cat version.txt)  &amp;&amp; <span style="color: #008000;">\</span>
+    wget --no-verbose <span style="color: #008000;">"https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-$VERSION-amd64.deb"</span> -O ss-latest.deb &amp;&amp; <span style="color: #008000;">\</span>
+    gdebi -n ss-latest.deb &amp;&amp; <span style="color: #008000;">\</span>
+    rm -f version.txt ss-latest.deb &amp;&amp; <span style="color: #008000;">\</span>
+    install2.r -e shiny rmarkdown &amp;&amp; <span style="color: #008000;">\</span>
+    cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/ &amp;&amp; <span style="color: #008000;">\</span>
+    rm -rf /var/lib/apt/lists/* &amp;&amp; <span style="color: #008000;">\</span>
+    mkdir -p /var/log/shiny-server &amp;&amp; <span style="color: #008000;">\</span>
+    chown shiny.shiny /var/log/shiny-server &amp;&amp; <span style="color: #008000;">\</span>
+    mkdir -p /etc/services.d/shiny-server &amp;&amp; <span style="color: #008000;">\</span>
+    <span style="color: #006FE0;">cd</span> /etc/services.d/shiny-server &amp;&amp; <span style="color: #008000;">\</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">'#!/bin/bash'</span> &gt; run &amp;&amp; <span style="color: #006FE0;">echo</span> <span style="color: #008000;">'exec shiny-server &gt; /var/log/shiny-server.log'</span> &gt;&gt; run &amp;&amp; <span style="color: #008000;">\</span>
+    chmod +x run &amp;&amp; <span style="color: #008000;">\</span>
+    adduser rstudio shiny &amp;&amp; <span style="color: #008000;">\</span>
+    <span style="color: #006FE0;">cd</span> /
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #0000FF;">if</span> [ $<span style="color: #008000;">"$ADD"</span> == <span style="color: #008000;">"none"</span> ]; <span style="color: #0000FF;">then</span>
+       <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Nothing additional to add"</span>
+<span style="color: #0000FF;">fi</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f5e7af" class="outline-3">
+<h3 id="org1f5e7af"><span class="section-number-3">6.3</span> Encrypted sign in</h3>
+<div class="outline-text-3" id="text-6-3">
+<div class="org-src-container">
+<pre class="src src-html"><span style="color: #008000;">&lt;!DOCTYPE html&gt;</span>
+
+<span style="color: #8D8D84;">&lt;!--</span>
+<span style="color: #8D8D84; font-style: italic;">#</span>
+<span style="color: #8D8D84; font-style: italic;"># encrypted-sign-in.htm</span>
+<span style="color: #8D8D84; font-style: italic;">#</span>
+<span style="color: #8D8D84; font-style: italic;"># Copyright (C) 2009-17 by RStudio, Inc., MatrixDS</span>
+<span style="color: #8D8D84; font-style: italic;">#</span>
+<span style="color: #8D8D84; font-style: italic;"># This program is licensed to you under the terms of version 3 of the</span>
+<span style="color: #8D8D84; font-style: italic;"># GNU Affero General Public License. This program is distributed WITHOUT</span>
+<span style="color: #8D8D84; font-style: italic;"># ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING THOSE OF NON-INFRINGEMENT,</span>
+<span style="color: #8D8D84; font-style: italic;"># MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Please refer to the</span>
+<span style="color: #8D8D84; font-style: italic;"># AGPL (http://www.gnu.org/licenses/agpl-3.0.txt) for more details.</span>
+<span style="color: #8D8D84; font-style: italic;">#</span>
+<span style="color: #8D8D84;">--&gt;</span>
+&lt;<span style="color: #006699;">html</span>&gt;
+&lt;<span style="color: #006699;">head</span>&gt;
+&lt;<span style="color: #006699;">script</span> <span style="color: #BA36A5;">type</span>=<span style="color: #008000;">"text/javascript"</span> <span style="color: #BA36A5;">src</span>=<span style="color: #008000;">"/js/encrypt.min.js"</span>&gt;&lt;/<span style="color: #006699;">script</span>&gt;
+&lt;<span style="color: #006699;">script</span> <span style="color: #BA36A5;">type</span>=<span style="color: #008000;">"text/javascript"</span>&gt;
+function prepare() {
+
+   try {
+      var payload = "rstudio" + "\n" + "matrix";
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/auth-public-key", true);
+      xhr.onreadystatechange = function() {
+         try {
+            if (xhr.readyState == 4) {
+               if (xhr.status != 200) {
+                  var errorMessage;
+                  if (xhr.status == 0)
+                     errorMessage = "Error: Could not reach server--check your internet connection";
+                  else
+                     errorMessage = "Error: " + xhr.statusText;
+
+                  if (typeof(errorp.innerText) == 'undefined')
+                     console.log(errorMessage);
+                  else
+                     console.log(errorMessage);
+               }
+               else {
+                  var response = xhr.responseText;
+                  var chunks = response.split(':', 2);
+                  var exp = chunks[0];
+                  var mod = chunks[1];
+                  var encrypted = encrypt(payload, exp, mod);
+                  document.getElementById('persist').value = 1;
+                  document.getElementById('package').value = encrypted;
+                  document.getElementById('clientPath').value = window.location.pathname;
+                  document.realform.submit();
+               }
+            }
+         } catch (exception) {
+            console.log("Error: " + exception);
+         }
+      };
+      xhr.send(null);
+   } catch (exception) {
+      console.log("Error: " + exception);
+   }
+}
+function submitRealForm() {
+   if (prepare())
+      document.realform.submit();
+}
+&lt;/<span style="color: #006699;">script</span>&gt;
+
+&lt;/<span style="color: #006699;">head</span>&gt;
+&lt;<span style="color: #006699;">form</span> <span style="color: #BA36A5;">action</span>=<span style="color: #008000;">"auth-do-sign-in"</span> <span style="color: #BA36A5;">name</span>=<span style="color: #008000;">"realform"</span> <span style="color: #BA36A5;">method</span>=<span style="color: #008000;">"POST"</span>&gt;
+   &lt;<span style="color: #006699;">input</span> <span style="color: #BA36A5;">type</span>=<span style="color: #008000;">"hidden"</span> <span style="color: #BA36A5;">name</span>=<span style="color: #008000;">"persist"</span> <span style="color: #BA36A5;">id</span>=<span style="color: #008000;">"persist"</span> <span style="color: #BA36A5;">value</span>=<span style="color: #008000;">""</span>/&gt;
+   &lt;<span style="color: #006699;">input</span> <span style="color: #BA36A5;">type</span>=<span style="color: #008000;">"hidden"</span> <span style="color: #BA36A5;">name</span>=<span style="color: #008000;">"appUri"</span> <span style="color: #BA36A5;">value</span>=<span style="color: #008000;">""</span>/&gt;
+   &lt;<span style="color: #006699;">input</span> <span style="color: #BA36A5;">type</span>=<span style="color: #008000;">"hidden"</span> <span style="color: #BA36A5;">name</span>=<span style="color: #008000;">"clientPath"</span> <span style="color: #BA36A5;">id</span>=<span style="color: #008000;">"clientPath"</span> <span style="color: #BA36A5;">value</span>=<span style="color: #008000;">""</span>/&gt;
+   &lt;<span style="color: #006699;">input</span> <span style="color: #BA36A5;">id</span>=<span style="color: #008000;">"package"</span> <span style="color: #BA36A5;">type</span>=<span style="color: #008000;">"hidden"</span> <span style="color: #BA36A5;">name</span>=<span style="color: #008000;">"v"</span> <span style="color: #BA36A5;">value</span>=<span style="color: #008000;">""</span>/&gt;
+&lt;/<span style="color: #006699;">form</span>&gt;
+&lt;<span style="color: #006699;">script</span>&gt;
+  submitRealForm();
+&lt;/<span style="color: #006699;">script</span>&gt;
+&lt;/<span style="color: #006699;">body</span>&gt;
+&lt;/<span style="color: #006699;">html</span>&gt;
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5ca8f16" class="outline-3">
+<h3 id="org5ca8f16"><span class="section-number-3">6.4</span> Entrypoint</h3>
+<div class="outline-text-3" id="text-6-4">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/bin/</span><span style="color: #0000FF;">bash</span><span style="color: #8D8D84; font-style: italic;"> -e</span>
+
+mkdir -p /home/rstudio/.R/library
+
+cp /home/README.txt /home/rstudio/README.txt
+
+chown -R rstudio:rstudio /home/rstudio/.R
+[ -f  /home/rstudio/.Rprofile ] || <span style="color: #006FE0;">echo</span> <span style="color: #008000;">'.libPaths("/home/rstudio/.R/library")'</span> &gt; /home/rstudio/.Rprofile
+chown rstudio:rstudio /home/rstudio/.Rprofile
+[ -f  /home/rstudio/.Renvron ] || <span style="color: #006FE0;">echo</span> <span style="color: #008000;">'R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/home/rstudio/.R/library</span>
+<span style="color: #008000;">'</span> &gt; /home/rstudio/.Renvron
+chown rstudio:rstudio /home/rstudio/.Renvron
+<span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">start RStudio</span>
+/init
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org168eda8" class="outline-3">
+<h3 id="org168eda8"><span class="section-number-3">6.5</span> nginx conf</h3>
+<div class="outline-text-3" id="text-6-5">
+<div class="org-src-container">
+<pre class="src src-conf"><span style="color: #6434A3;">http</span> {
+
+  <span style="color: #6434A3;">map $http_upgrade $connection_upgrade</span> {
+      default upgrade;
+      <span style="color: #008000;">''</span>      close;
+    }
+
+  <span style="color: #6434A3;">server</span> {
+    listen 80;
+
+    <span style="color: #6434A3;">location /</span> {
+      proxy_pass http://localhost:8787;
+      proxy_redirect http://localhost:8787/ $scheme://$http_host/;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+      proxy_read_timeout 20d;
+    }
+  }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbb2f52b" class="outline-3">
+<h3 id="orgbb2f52b"><span class="section-number-3">6.6</span> Additional Packages</h3>
+<div class="outline-text-3" id="text-6-6">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">Script for common package installation on MatrixDS docker image</span>
+p<span style="color: #D0372D;">&lt;-</span>c(<span style="color: #008000;">'reticulate'</span>)
+
+
+install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5808709" class="outline-3">
+<h3 id="org5808709"><span class="section-number-3">6.7</span> PAM helper</h3>
+<div class="outline-text-3" id="text-6-7">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/usr/bin/</span><span style="color: #0000FF;">env</span><span style="color: #8D8D84; font-style: italic;"> sh</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Enforces the custom password specified in the PASSWORD environment variable</span>
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">The accepted RStudio username is the same as the USER environment variable (i.e., local user name).</span>
+
+<span style="color: #006FE0;">set</span> -o nounset
+
+<span style="color: #BA36A5;">IFS</span>=<span style="color: #008000;">''</span> read -r password
+
+[ <span style="color: #008000;">"${USER}"</span> = <span style="color: #008000;">"${1}"</span> ] &amp;&amp; [ <span style="color: #008000;">"${PASSWORD}"</span> = <span style="color: #008000;">"${password}"</span> ]
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd9af208" class="outline-3">
+<h3 id="orgd9af208"><span class="section-number-3">6.8</span> User settings</h3>
+<div class="outline-text-3" id="text-6-8">
+<div class="org-src-container">
+<pre class="src src-conf"><span style="color: #BA36A5;">alwaysSaveHistory</span>=<span style="color: #008000;">"0"</span>
+<span style="color: #BA36A5;">loadRData</span>=<span style="color: #008000;">"0"</span>
+<span style="color: #BA36A5;">saveAction</span>=<span style="color: #008000;">"0"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org851194e" class="outline-3">
+<h3 id="org851194e"><span class="section-number-3">6.9</span> Userconf</h3>
+<div class="outline-text-3" id="text-6-9">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/usr/bin/</span><span style="color: #0000FF;">with-contenv</span><span style="color: #8D8D84; font-style: italic;"> bash</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Set defaults for environmental variables in case they are undefined</span>
+<span style="color: #BA36A5;">USER</span>=${<span style="color: #BA36A5;">USER</span>:=rstudio}
+<span style="color: #BA36A5;">PASSWORD</span>=${<span style="color: #BA36A5;">PASSWORD</span>:=rstudio}
+<span style="color: #BA36A5;">USERID</span>=${<span style="color: #BA36A5;">USERID</span>:=1000}
+<span style="color: #BA36A5;">GROUPID</span>=${<span style="color: #BA36A5;">GROUPID</span>:=1000}
+<span style="color: #BA36A5;">ROOT</span>=${<span style="color: #BA36A5;">ROOT</span>:=FALSE}
+<span style="color: #BA36A5;">UMASK</span>=${<span style="color: #BA36A5;">UMASK</span>:=022}
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Make sure RStudio inherits the full path</span>
+<span style="color: #006FE0;">echo</span> <span style="color: #008000;">"PATH=${PATH}"</span> &gt;&gt; /usr/local/lib/R/etc/Renviron
+
+<span style="color: #BA36A5;">bold</span>=$(tput bold)
+<span style="color: #BA36A5;">normal</span>=$(tput sgr0)
+
+
+<span style="color: #0000FF;">if</span> [[ ${<span style="color: #BA36A5;">DISABLE_AUTH</span>,,} == <span style="color: #008000;">"true"</span> ]]
+<span style="color: #0000FF;">then</span>
+        mv /etc/rstudio/disable_auth_rserver.conf /etc/rstudio/rserver.conf
+        <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"USER=$USER"</span> &gt;&gt; /etc/environment
+<span style="color: #0000FF;">fi</span>
+
+
+
+<span style="color: #0000FF;">if</span> grep --quiet <span style="color: #008000;">"auth-none=1"</span> /etc/rstudio/rserver.conf
+<span style="color: #0000FF;">then</span>
+        <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Skipping authentication as requested"</span>
+<span style="color: #0000FF;">elif</span> [ <span style="color: #008000;">"$PASSWORD"</span> == <span style="color: #008000;">"rstudio"</span> ]
+<span style="color: #0000FF;">then</span>
+    printf <span style="color: #008000;">"\n\n"</span>
+    tput bold
+    printf <span style="color: #008000;">"\e[31mERROR\e[39m: You must set a unique PASSWORD (not 'rstudio') first! e.g. run with:\n"</span>
+    printf <span style="color: #008000;">"docker run -e PASSWORD=\e[92m&lt;YOUR_PASS&gt;\e[39m -p 8787:8787 rocker/rstudio\n"</span>
+    tput sgr0
+    printf <span style="color: #008000;">"\n\n"</span>
+    <span style="color: #0000FF;">exit</span> 1
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$USERID"</span> -lt 1000 ]
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Probably a macOS user, https://github.com/rocker-org/rocker/issues/205</span>
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"$USERID is less than 1000"</span>
+    <span style="color: #BA36A5;">check_user_id</span>=$(grep -F <span style="color: #008000;">"auth-minimum-user-id"</span> /etc/rstudio/rserver.conf)
+    <span style="color: #0000FF;">if</span> [[ ! -z $<span style="color: #BA36A5;">check_user_id</span> ]]
+    <span style="color: #0000FF;">then</span>
+      <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"minumum authorised user already exists in /etc/rstudio/rserver.conf: $check_user_id"</span>
+    <span style="color: #0000FF;">else</span>
+      <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"setting minumum authorised user to 499"</span>
+      <span style="color: #006FE0;">echo</span> auth-minimum-user-id=499 &gt;&gt; /etc/rstudio/rserver.conf
+    <span style="color: #0000FF;">fi</span>
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$USERID"</span> -ne 1000 ]
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Configure user with a different USERID if requested.</span>
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"deleting user rstudio"</span>
+    userdel rstudio
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"creating new $USER with UID $USERID"</span>
+    useradd -m $<span style="color: #BA36A5;">USER</span> -u $<span style="color: #BA36A5;">USERID</span>
+    mkdir /home/$<span style="color: #BA36A5;">USER</span>
+    chown -R $<span style="color: #BA36A5;">USER</span> /home/$<span style="color: #BA36A5;">USER</span>
+    usermod -a -G staff $<span style="color: #BA36A5;">USER</span>
+<span style="color: #0000FF;">elif</span> [ <span style="color: #008000;">"$USER"</span> != <span style="color: #008000;">"rstudio"</span> ]
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">cannot move home folder when it's a shared volume, have to copy and change permissions instead</span>
+    cp -r /home/rstudio /home/$<span style="color: #BA36A5;">USER</span>
+    <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">RENAME the user</span>
+    usermod -l $<span style="color: #BA36A5;">USER</span> -d /home/$<span style="color: #BA36A5;">USER</span> rstudio
+    groupmod -n $<span style="color: #BA36A5;">USER</span> rstudio
+    usermod -a -G staff $<span style="color: #BA36A5;">USER</span>
+    chown -R $<span style="color: #BA36A5;">USER</span>:$<span style="color: #BA36A5;">USER</span> /home/$<span style="color: #BA36A5;">USER</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"USER is now $USER"</span>
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$GROUPID"</span> -ne 1000 ]
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Configure the primary GID (whether rstudio or $USER) with a different GROUPID if requested.</span>
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Modifying primary group $(id $USER -g -n)"</span>
+    groupmod -g $<span style="color: #BA36A5;">GROUPID</span> $(id $<span style="color: #BA36A5;">USER</span> -g -n)
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Primary group ID is now custom_group $GROUPID"</span>
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Add a password to user</span>
+<span style="color: #006FE0;">echo</span> <span style="color: #008000;">"$USER:$PASSWORD"</span> | chpasswd
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Use Env flag to know if user should be added to sudoers</span>
+<span style="color: #0000FF;">if</span> [[ ${<span style="color: #BA36A5;">ROOT</span>,,} == <span style="color: #008000;">"true"</span> ]]
+  <span style="color: #0000FF;">then</span>
+    adduser $<span style="color: #BA36A5;">USER</span> sudo &amp;&amp; <span style="color: #006FE0;">echo</span> <span style="color: #008000;">'%sudo ALL=(ALL) NOPASSWD:ALL'</span> &gt;&gt; /etc/sudoers
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"$USER added to sudoers"</span>
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Change Umask value if desired</span>
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$UMASK"</span> -ne 022 ]
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"server-set-umask=false"</span> &gt;&gt; /etc/rstudio/rserver.conf
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Sys.umask(mode=$UMASK)"</span> &gt;&gt; /home/$<span style="color: #BA36A5;">USER</span>/.Rprofile
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">add these to the global environment so they are avialable to the RStudio user</span>
+<span style="color: #006FE0;">echo</span> <span style="color: #008000;">"HTTR_LOCALHOST=$HTTR_LOCALHOST"</span> &gt;&gt; /etc/R/Renviron.site
+<span style="color: #006FE0;">echo</span> <span style="color: #008000;">"HTTR_PORT=$HTTR_PORT"</span> &gt;&gt; /etc/R/Renviron.site
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2764cf7" class="outline-3">
+<h3 id="org2764cf7"><span class="section-number-3">6.10</span> Dockerfile</h3>
+<div class="outline-text-3" id="text-6-10">
+<div class="org-src-container">
+<pre class="src src-dockerfile">FROM shrysr/rbase:v2
+
+LABEL maintainer="Shreyas Ragavan &lt;sr@eml.cc&gt;" \
+	version="1.0"
+
+COPY packages.R /usr/local/lib/R/packages.R
+
+#install R packages
+RUN R CMD javareconf &amp;&amp; \
+    Rscript /usr/local/lib/R/packages.R
+
+ARG RSTUDIO_VERSION
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
+
+#Creating etc folder at /usr/local/lib/R/ location Searce
+RUN mkdir -p /usr/local/lib/R/etc
+
+## Download and install RStudio server &amp; dependencies
+## Attempts to get detect latest version, otherwise falls back to version given in $VER
+## Symlink pandoc, pandoc-citeproc so they are available system-wide
+RUN apt-get update \
+  &amp;&amp; apt-get install -y --no-install-recommends \
+#    file \
+    libapparmor1 \
+    libcurl4-openssl-dev \
+    libedit2 \
+    lsb-release \
+    psmisc \
+    libclang-dev \
+	openjdk-X-jdk \
+  &amp;&amp; wget -O libssl1.0.0.deb http://ftp.debian.org/debian/pool/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u8_amd64.deb \
+  &amp;&amp; dpkg -i libssl1.0.0.deb \
+  &amp;&amp; rm libssl1.0.0.deb \
+  &amp;&amp; RSTUDIO_LATEST=$(wget --no-check-certificate -qO- https://s3.amazonaws.com/rstudio-server/current.ver) \
+  &amp;&amp; [ -z "$RSTUDIO_VERSION" ] &amp;&amp; RSTUDIO_VERSION=$RSTUDIO_LATEST || true \
+  # hard code the latest v1.2
+  &amp;&amp; wget -q https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-1.2.1511-amd64.deb \
+  &amp;&amp; dpkg -i rstudio-server-1.2.1511-amd64.deb \
+  #use this for latest
+ # &amp;&amp; wget -q http://download2.rstudio.org/rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
+ # &amp;&amp; dpkg -i rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
+  &amp;&amp; rm rstudio-server-*-amd64.deb \
+  ## Symlink pandoc &amp; standard pandoc templates for use system-wide
+  &amp;&amp; ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc /usr/local/bin \
+  &amp;&amp; ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc-citeproc /usr/local/bin \
+  &amp;&amp; git clone https://github.com/jgm/pandoc-templates \
+  &amp;&amp; mkdir -p /opt/pandoc/templates \
+  &amp;&amp; cp -r pandoc-templates*/* /opt/pandoc/templates &amp;&amp; rm -rf pandoc-templates* \
+  &amp;&amp; mkdir /root/.pandoc &amp;&amp; ln -s /opt/pandoc/templates /root/.pandoc/templates \
+  &amp;&amp; apt-get clean \
+  &amp;&amp; rm -rf /var/lib/apt/lists/ \
+  ## RStudio wants an /etc/R, will populate from $R_HOME/etc
+  &amp;&amp; mkdir -p /etc/R \
+  ## Write config files in $R_HOME/etc
+  &amp;&amp; echo '\n\
+    \n# Configure httr to perform out-of-band authentication if HTTR_LOCALHOST \
+    \n# is not set since a redirect to localhost may not work depending upon \
+    \n# where this Docker container is running. \
+    \nif(is.na(Sys.getenv("HTTR_LOCALHOST", unset=NA))) { \
+    \n  options(httr_oob_default = TRUE) \
+    \n}' &gt;&gt; /usr/local/lib/R/etc/Rprofile.site \
+  &amp;&amp; echo "PATH=${PATH}" &gt;&gt; /usr/local/lib/R/etc/Renviron \
+  ## Need to configure non-root user for RStudio
+  &amp;&amp; useradd rstudio \
+  &amp;&amp; echo "rstudio:matrix" | chpasswd \
+	&amp;&amp; mkdir /home/rstudio \
+	&amp;&amp; chown rstudio:rstudio /home/rstudio \
+	&amp;&amp; addgroup rstudio staff \
+  ## Prevent rstudio from deciding to use /usr/bin/R if a user apt-get installs a package
+  &amp;&amp;  echo 'rsession-which-r=/usr/bin/R' &gt;&gt; /etc/rstudio/rserver.conf \
+  ## use more robust file locking to avoid errors when using shared volumes:
+#  &amp;&amp; echo 'lock-type=advisory' &gt;&gt; /etc/rstudio/file-locks \
+  ## configure git not to request password each time
+  &amp;&amp; git config --system credential.helper 'cache --timeout=3600' \
+  &amp;&amp; git config --system push.default simple \
+  ## Set up S6 init system
+  &amp;&amp; wget -P /tmp/ https://github.com/just-containers/s6-overlay/releases/download/v1.11.0.1/s6-overlay-amd64.tar.gz \
+  &amp;&amp; tar xzf /tmp/s6-overlay-amd64.tar.gz -C / \
+  &amp;&amp; mkdir -p /etc/services.d/rstudio \
+  &amp;&amp; echo '#!/usr/bin/with-contenv bash \
+          \n exec /usr/lib/rstudio-server/bin/rserver --server-daemonize 0' \
+          &gt; /etc/services.d/rstudio/run \
+  &amp;&amp; echo '#!/bin/bash \
+          \n rstudio-server stop' \
+          &gt; /etc/services.d/rstudio/finish
+
+COPY userconf.sh /etc/cont-init.d/userconf
+
+COPY pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
+
+EXPOSE 8787
+
+COPY user-settings /home/rstudio/.rstudio/monitored/user-settings/
+# No chown will cause "RStudio Initalization Error"
+# "Error occurred during the transmission"; RStudio will not load.
+RUN chown -R rstudio:rstudio /home/rstudio/.rstudio
+
+
+############ https://github.com/matrixds/tools/blob/master/rstudio/Dockerfile ##########
+
+RUN \
+  apt-get update &amp;&amp; apt-get install -y &amp;&amp; \
+  DEBIAN_FRONTEND=noninteractive apt install --no-install-recommends -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
+    default-jre default-jdk icu-devtools &amp;&amp; apt-get clean
+
+COPY entrypoint.sh /entrypoint.sh
+
+#add encrypted auth html file
+COPY encrypted-sign-in.htm /usr/lib/rstudio-server/www/templates/encrypted-sign-in.htm
+
+
+RUN   usermod -u 1100 rstudio &amp;&amp; \
+      groupmod -g 1100 rstudio &amp;&amp; \
+      chown -R rstudio:rstudio /home/rstudio &amp;&amp; \
+      chmod +x /entrypoint.sh
+
+ENV PASSWORD matrix
+ENV DISABLE_AUTH true
+ENV ROOT TRUE
+WORKDIR /home/rstudio
+COPY readme.txt /home/readme.txt
+
+ENTRYPOINT ["sh", "-c", "/entrypoint.sh &gt;&gt;/var/log/stdout.log 2&gt;&gt;/var/log/stderr.log"]
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org550216a" class="outline-3">
+<h3 id="org550216a"><span class="section-number-3">6.11</span> Container launch</h3>
+<div class="outline-text-3" id="text-6-11">
+<div class="org-src-container">
+<pre class="src src-sh">docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker/shiny-server:/home/rstudio/ shrysr/rstudio:v1
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2258517" class="outline-2">
+<h2 id="org2258517"><span class="section-number-2">7</span> Shiny</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Overview of the process:
+</p>
+
+<p>
+Suppose you have a project folder within which related scripts, shiny apps, etc live. This directory is mounted as a volume to the docker container. The docker container will check for the presence of a folder called <code>shiny-server</code> and if not available, will create it. Even if the folder is available, the contents of test_apps will be copied into the image.
+</p>
+
+<p>
+Into the <code>shiny-server</code> folder, the test_apps folder containing shiny apps for testing are copied.
+</p>
+</div>
+
+<div id="outline-container-org1b42124" class="outline-3">
+<h3 id="org1b42124"><span class="section-number-3">7.1</span> Environment and Profile</h3>
+<div class="outline-text-3" id="text-7-1">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #BA36A5;">R_LIBS</span>=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/srv/R/library
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #006699;">.libPaths</span>(<span style="color: #008000;">"/srv/R/library/"</span>)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0aa74e0" class="outline-3">
+<h3 id="org0aa74e0"><span class="section-number-3">7.2</span> app.r</h3>
+<div class="outline-text-3" id="text-7-2">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #8D8D84;">#</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">This is a Shiny web application on MatrixDS.</span>
+<span style="color: #8D8D84;">#</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Find out more about building applications with Shiny here:</span>
+<span style="color: #8D8D84;">#</span>
+<span style="color: #8D8D84;">#    </span><span style="color: #8D8D84; font-style: italic;">http://shiny.rstudio.com/</span>
+<span style="color: #8D8D84;">#</span>
+
+<span style="color: #8D8D84;">##########################################################################################</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">This points the Shiny server tool to any libraries installed with RStudio</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">that means that any library you install on your RStudio instance in this project,</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">will be available to the shiny server</span>
+<span style="color: #8D8D84;">##########################################################################################</span>
+
+.libPaths( c( .libPaths(), <span style="color: #008000;">"/srv/.R/library"</span>) )
+
+<span style="color: #8D8D84;">##########################################################################################</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Here you can call all the required libraries for your code to run</span>
+<span style="color: #8D8D84;">##########################################################################################</span>
+
+<span style="color: #D0372D;">library</span>(shiny)
+
+<span style="color: #8D8D84;">##########################################################################################</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">For deploying tools on MatrixDS, we created this production variable</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">when set to true, your shiny app will run on the shiny server tool upon clicking open</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">when set to false, your shiny app will run when you hit the "Run App" button on RStudio</span>
+<span style="color: #8D8D84;">##########################################################################################</span>
+
+production <span style="color: #D0372D;">&lt;-</span> <span style="color: #6434A3;">TRUE</span>
+
+<span style="color: #8D8D84;">##########################################################################################</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">The shiny server tool uses a different absolute path than RStudio.</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">this if statement denotes the correct path for the 2 values of the production variable</span>
+<span style="color: #8D8D84;">##########################################################################################</span>
+
+<span style="color: #0000FF;">if</span>(production == <span style="color: #6434A3;">FALSE</span>) {
+  <span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">if you using the RStudio tool</span>
+  shiny_path <span style="color: #D0372D;">&lt;-</span> <span style="color: #008000;">"~/shiny-server/"</span>
+  home_path <span style="color: #D0372D;">&lt;-</span> <span style="color: #008000;">"~/"</span>
+} <span style="color: #0000FF;">else</span> {
+  <span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">if you are using the shiny tool</span>
+  shiny_path <span style="color: #D0372D;">&lt;-</span> <span style="color: #008000;">"/srv/shiny-server/"</span>
+  home_path <span style="color: #D0372D;">&lt;-</span> <span style="color: #008000;">"/srv/"</span>
+}
+
+<span style="color: #8D8D84;">##########################################################################################</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">To call a file/artifact in your MatrixDS project use the following line of code</span>
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">this example uses the function read.csv</span>
+<span style="color: #8D8D84;">#  </span><span style="color: #8D8D84; font-style: italic;">my_csv &lt;- read.csv(paste0(home_path,"file_name.csv"))</span>
+<span style="color: #8D8D84;">##########################################################################################</span>
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Define UI for application that draws a histogram</span>
+ui <span style="color: #D0372D;">&lt;-</span> fluidPage(
+
+   <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Application title</span>
+   titlePanel(<span style="color: #008000;">"Old Faithful Geyser Data"</span>),
+
+   <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Sidebar with a slider input for number of bins</span>
+   sidebarLayout(
+      sidebarPanel(
+         sliderInput(<span style="color: #008000;">"bins"</span>,
+                     <span style="color: #008000;">"Number of bins:"</span>,
+                     min = 1,
+                     max = 50,
+                     value = 30)
+      ),
+
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Show a plot of the generated distribution</span>
+      mainPanel(
+         plotOutput(<span style="color: #008000;">"distPlot"</span>)
+      )
+   )
+)
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Define server logic required to draw a histogram</span>
+<span style="color: #006699;">server</span> <span style="color: #D0372D;">&lt;-</span> <span style="color: #0000FF;">function</span>(input, output) {
+
+   output$distPlot <span style="color: #D0372D;">&lt;-</span> renderPlot({
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">generate bins based on input$bins from ui.R</span>
+      x    <span style="color: #D0372D;">&lt;-</span> faithful[, 2]
+      bins <span style="color: #D0372D;">&lt;-</span> seq(min(x), max(x), length.out = input$bins + 1)
+
+      <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">draw the histogram with the specified number of bins</span>
+      hist(x, breaks = bins, col = <span style="color: #008000;">'darkgray'</span>, border = <span style="color: #008000;">'white'</span>)
+   })
+}
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Run the application</span>
+shinyApp(ui = ui, server = server)
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc23a102" class="outline-3">
+<h3 id="orgc23a102"><span class="section-number-3">7.3</span> shiny server script</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+This is script to execute or run the shiny server. Apparently, it is necessary to be called via script in this fashion for the process to work, rather than the docker file itself. In a way this helps keeping the code modular. It is generally unlikely any changes would be needed here.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/bin/</span><span style="color: #0000FF;">sh</span>
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Make sure the directory for individual app logs exists</span>
+mkdir -p /var/log/shiny-server
+chown shiny.shiny /var/log/shiny-server
+
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$APPLICATION_LOGS_TO_STDOUT"</span> = <span style="color: #008000;">"false"</span> ];
+<span style="color: #0000FF;">then</span>
+    <span style="color: #0000FF;">exec</span> shiny-server 2&gt;&amp;1
+<span style="color: #0000FF;">else</span>
+    <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">start shiny server in detached mode</span>
+    <span style="color: #0000FF;">exec</span> shiny-server 2&gt;&amp;1 &amp;
+
+    <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">push the "real" application logs to stdout with xtail</span>
+    <span style="color: #0000FF;">exec</span> xtail /var/log/shiny-server/
+<span style="color: #0000FF;">fi</span>
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org11a8cd3" class="outline-3">
+<h3 id="org11a8cd3"><span class="section-number-3">7.4</span> packages</h3>
+<div class="outline-text-3" id="text-7-4">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">Script for common package installation on MatrixDS docker image</span>
+p<span style="color: #D0372D;">&lt;-</span>c(<span style="color: #008000;">'reticulate'</span>)
+
+
+install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org364e65a" class="outline-3">
+<h3 id="org364e65a"><span class="section-number-3">7.5</span> version</h3>
+</div>
+<div id="outline-container-org9a9db05" class="outline-3">
+<h3 id="org9a9db05"><span class="section-number-3">7.6</span> Dockerfile</h3>
+<div class="outline-text-3" id="text-7-6">
+<p>
+The folder test_apps will contain shiny apps meant to test functionality. This is copied into the docker image.
+</p>
+
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> <span class="timestamp-wrapper"><span class="timestamp">[2020-01-08 Wed] </span></span> During the image build, there were messages that the rmarkdown and shiny libraries could not be installed for this version of R. However, the shiny apps do display in the browser. This needs to be investigated.</li>
+</ul>
+
+<p>
+Changes: Reduced a step and added the tree package. This makes it easier to troubleshoot.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-dockerfile">FROM shrysr/rbase:v2
+
+LABEL maintainer="Shreyas Ragavan &lt;sr@eml.cc&gt;" \
+	version="2.0"
+
+COPY packages.R /usr/local/lib/R/packages.R
+
+#install R packages
+RUN R CMD javareconf &amp;&amp; \
+    Rscript /usr/local/lib/R/packages.R
+
+RUN apt-get update &amp;&amp; apt-get install -y \
+    gdebi-core \
+    pandoc \
+    pandoc-citeproc \
+    libcurl4-gnutls-dev \
+    libcairo2-dev \
+    libxt-dev \
+    xtail \
+	tree
+
+COPY entrypoint.sh /entrypoint.sh
+RUN mkdir -p /root/shiny-server/  \
+	&amp;&amp;  mkdir -p /root/shiny-server/test_shiny/
+
+COPY test_apps/ /root/shiny-server/test_shiny/
+
+
+# Download and install shiny server
+RUN wget --no-verbose https://download3.rstudio.org/ubuntu-14.04/x86_64/VERSION -O "version.txt" &amp;&amp; \
+    VERSION=$(cat version.txt)  &amp;&amp; \
+    wget --no-verbose "https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb &amp;&amp; \
+    gdebi -n ss-latest.deb &amp;&amp; \
+    rm -f version.txt ss-latest.deb &amp;&amp; \
+    . /etc/environment &amp;&amp; \
+    R -e "install.packages(c('shiny', 'rmarkdown'), repos='$MRAN')" &amp;&amp; \
+    cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/
+
+RUN \
+  apt-get update &amp;&amp; apt-get install -y &amp;&amp; \
+  DEBIAN_FRONTEND=noninteractive apt install --no-install-recommends -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
+    default-jre default-jdk \
+    &amp;&amp; apt-get clean &amp;&amp; \
+  usermod -u 1100 shiny &amp;&amp; \
+  groupmod -g 1100 shiny &amp;&amp; \
+  chown -R shiny:shiny /srv &amp;&amp; \
+  chown -R shiny:shiny /srv &amp;&amp; \
+  chmod +x /entrypoint.sh
+
+
+COPY shiny-server.sh /usr/bin/shiny-server.sh
+#CMD ["sh", "/usr/bin/shiny-server.sh"]
+ENTRYPOINT ["sh", "-c", "/entrypoint.sh &gt;&gt;/var/log/stdout.log 2&gt;&gt;/var/log/stderr.log"]
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org49a3cae" class="outline-3">
+<h3 id="org49a3cae"><span class="section-number-3">7.7</span> entrypoint</h3>
+<div class="outline-text-3" id="text-7-7">
+<p>
+The dockerfile copied the contents of <code>test_apps</code> into the <code>root/shiny-server/test_shiny</code> directory. Now via shell script (<code>entrypoint.sh</code>), the contents from <code>root/shiny-server/test_shiny</code> within the container are copied in a folder called <code>/srv/shiny-server</code> within the container. Now the final /srv/shiny-server is matched with the specified mount volume.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/bin/</span><span style="color: #0000FF;">bash</span>
+
+mkdir -p /srv/shiny-server
+mkdir -p /srv/.R/library
+[ -f  /srv/.Rprofile ] || <span style="color: #006FE0;">echo</span> <span style="color: #008000;">'.libPaths("/srv/.R/library/")'</span> &gt; /srv/.Rprofile
+[ -f  /srv/.Renvron ] || <span style="color: #006FE0;">echo</span> <span style="color: #008000;">'R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/srv/.R/library</span>
+<span style="color: #008000;">'</span> &gt; /srv/.Renvron
+
+<span style="color: #0000FF;">if</span> [ ! -d <span style="color: #008000;">"/srv/shiny-server"</span> ]
+<span style="color: #0000FF;">then</span>
+  mkdir -p /srv/shiny-server
+  cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
+<span style="color: #0000FF;">else</span>
+  <span style="color: #0000FF;">if</span> [ ! <span style="color: #008000;">"$(ls -A /srv/shiny-server)"</span> ]
+   <span style="color: #0000FF;">then</span>
+     cp -r /root/shiny-server/test_shiny/ /srv/shiny-server/
+  <span style="color: #0000FF;">fi</span>
+<span style="color: #0000FF;">fi</span>
+
+sh /usr/bin/shiny-server.sh
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgda5dede" class="outline-3">
+<h3 id="orgda5dede"><span class="section-number-3">7.8</span> Container launch and image build command samples</h3>
+<div class="outline-text-3" id="text-7-8">
+<p>
+The local path should be the outermost project folder. Any location specified will have a folder created shiny-server within which the shiny test apps will be placed. Note that the correct tag version should be substituted.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">docker container run -itd --rm -p 3838:3838 -v /Users/shrysr/my_projects/sr-ds-docker/:/srv shrysr/shiny:v2
+</pre>
+</div>
+
+
+<div class="org-src-container">
+<pre class="src src-sh">docker ps
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">docker kill wizardly_kirch
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">docker image build . -t shrysr/shiny:v2
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">docker exec -it  inspiring_grothendieck /bin/bash
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga994d95" class="outline-2">
+<h2 id="orga994d95"><span class="section-number-2">8</span> Rstudio Server Preview</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+This layer will build the Rstudio server preview edition. It is a low priority task planned subsequent to getting the fundamental layers to work.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1618ae7" class="outline-2">
+<h2 id="org1618ae7"><span class="section-number-2">9</span> Multiple services, latest Libraries - Shiny and RStudio server</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+<i>This was one of the very first images created. It works, however, it will be developed into a container that launches 2 services - a Shiny server, and an Rstudio server. In general, this is not recommended. However, I think it may be useful to have available when necessary.</i>
+</p>
+</div>
+
+<div id="outline-container-orga05e761" class="outline-3">
+<h3 id="orga05e761"><span class="section-number-3">9.1</span> Overview</h3>
+<div class="outline-text-3" id="text-9-1">
+<p>
+Base image: rocker/shinyverse
+</p>
+
+<p>
+Beyond a list of OS libraries in the basic template, the following additional libraries are installed:
+</p>
+<ol class="org-ol">
+<li>pandoc</li>
+<li>pandoc-cite</li>
+<li>dtrx</li>
+<li>tree</li>
+</ol>
+
+<p>
+R Libraries in addition to the base template grouped into general categories:
+</p>
+
+<p>
+ML
+</p>
+<ol class="org-ol">
+<li>glmnet</li>
+<li>Umap <i>(Currently on a separate layer as it has a lot of dependencies and is a large install)</i></li>
+<li>recipes</li>
+<li>rsample</li>
+<li>rpart.plot</li>
+<li>caret</li>
+</ol>
+
+<p>
+EDA
+</p>
+<ol class="org-ol">
+<li>inspectdf</li>
+<li>DataExplorer</li>
+<li>janitor</li>
+</ol>
+
+<p>
+Management
+</p>
+<ol class="org-ol">
+<li>drake</li>
+<li>binder</li>
+<li>easypackages</li>
+<li>remotes</li>
+<li>From github:  karthik/holepunch</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org2f7b311" class="outline-3">
+<h3 id="org2f7b311"><span class="section-number-3">9.2</span> Dockerfile</h3>
+<div class="outline-text-3" id="text-9-2">
+</div>
+
+<div id="outline-container-org7550588" class="outline-4">
+<h4 id="org7550588"><span class="section-number-4">9.2.1</span> Container run command</h4>
+<div class="outline-text-4" id="text-9-2-1">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">/bin/bash</span>
+docker container run -it --rm  -p 3838:3838 -p 8787:8787 <span style="color: #008000;">\</span>
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app <span style="color: #008000;">\</span>
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ <span style="color: #008000;">\</span>
+shrysr/rstudio:v1
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbbf0348" class="outline-4">
+<h4 id="orgbbf0348"><span class="section-number-4">9.2.2</span> Userconf for rstudio</h4>
+<div class="outline-text-4" id="text-9-2-2">
+<p>
+Reference: <a href="https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/userconf.sh">https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/userconf.sh</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/usr/bin/</span><span style="color: #0000FF;">with-contenv</span><span style="color: #8D8D84; font-style: italic;"> bash</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Set defaults for environmental variables in case they are undefined</span>
+<span style="color: #BA36A5;">USER</span>=${<span style="color: #BA36A5;">USER</span>:=rstudio}
+<span style="color: #BA36A5;">PASSWORD</span>=${<span style="color: #BA36A5;">PASSWORD</span>:=rstudio}
+<span style="color: #BA36A5;">USERID</span>=${<span style="color: #BA36A5;">USERID</span>:=1000}
+<span style="color: #BA36A5;">GROUPID</span>=${<span style="color: #BA36A5;">GROUPID</span>:=1000}
+<span style="color: #BA36A5;">ROOT</span>=${<span style="color: #BA36A5;">ROOT</span>:=FALSE}
+<span style="color: #BA36A5;">UMASK</span>=${<span style="color: #BA36A5;">UMASK</span>:=022}
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Make sure RStudio inherits the full path</span>
+<span style="color: #006FE0;">echo</span> <span style="color: #008000;">"PATH=${PATH}"</span> &gt;&gt; /usr/local/lib/R/etc/Renviron
+
+<span style="color: #BA36A5;">bold</span>=$(tput bold)
+<span style="color: #BA36A5;">normal</span>=$(tput sgr0)
+
+
+<span style="color: #0000FF;">if</span> [[ ${<span style="color: #BA36A5;">DISABLE_AUTH</span>,,} == <span style="color: #008000;">"true"</span> ]]
+<span style="color: #0000FF;">then</span>
+        mv /etc/rstudio/disable_auth_rserver.conf /etc/rstudio/rserver.conf
+        <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"USER=$USER"</span> &gt;&gt; /etc/environment
+<span style="color: #0000FF;">fi</span>
+
+
+
+<span style="color: #0000FF;">if</span> grep --quiet <span style="color: #008000;">"auth-none=1"</span> /etc/rstudio/rserver.conf
+<span style="color: #0000FF;">then</span>
+        <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Skipping authentication as requested"</span>
+<span style="color: #0000FF;">elif</span> [ <span style="color: #008000;">"$PASSWORD"</span> == <span style="color: #008000;">"rstudio"</span> ]
+<span style="color: #0000FF;">then</span>
+    printf <span style="color: #008000;">"\n\n"</span>
+    tput bold
+    printf <span style="color: #008000;">"\e[31mERROR\e[39m: You must set a unique PASSWORD (not 'rstudio') first! e.g. run with:\n"</span>
+    printf <span style="color: #008000;">"docker run -e PASSWORD=\e[92m&lt;YOUR_PASS&gt;\e[39m -p 8787:8787 rocker/rstudio\n"</span>
+    tput sgr0
+    printf <span style="color: #008000;">"\n\n"</span>
+    <span style="color: #0000FF;">exit</span> 1
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$USERID"</span> -lt 1000 ]
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Probably a macOS user, https://github.com/rocker-org/rocker/issues/205</span>
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"$USERID is less than 1000"</span>
+    <span style="color: #BA36A5;">check_user_id</span>=$(grep -F <span style="color: #008000;">"auth-minimum-user-id"</span> /etc/rstudio/rserver.conf)
+    <span style="color: #0000FF;">if</span> [[ ! -z $<span style="color: #BA36A5;">check_user_id</span> ]]
+    <span style="color: #0000FF;">then</span>
+      <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"minumum authorised user already exists in /etc/rstudio/rserver.conf: $check_user_id"</span>
+    <span style="color: #0000FF;">else</span>
+      <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"setting minumum authorised user to 499"</span>
+      <span style="color: #006FE0;">echo</span> auth-minimum-user-id=499 &gt;&gt; /etc/rstudio/rserver.conf
+    <span style="color: #0000FF;">fi</span>
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$USERID"</span> -ne 1000 ]
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Configure user with a different USERID if requested.</span>
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"deleting user rstudio"</span>
+    userdel rstudio
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"creating new $USER with UID $USERID"</span>
+    useradd -m $<span style="color: #BA36A5;">USER</span> -u $<span style="color: #BA36A5;">USERID</span>
+    mkdir /home/$<span style="color: #BA36A5;">USER</span>
+    chown -R $<span style="color: #BA36A5;">USER</span> /home/$<span style="color: #BA36A5;">USER</span>
+    usermod -a -G staff $<span style="color: #BA36A5;">USER</span>
+<span style="color: #0000FF;">elif</span> [ <span style="color: #008000;">"$USER"</span> != <span style="color: #008000;">"rstudio"</span> ]
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">cannot move home folder when it's a shared volume, have to copy and change permissions instead</span>
+    cp -r /home/rstudio /home/$<span style="color: #BA36A5;">USER</span>
+    <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">RENAME the user</span>
+    usermod -l $<span style="color: #BA36A5;">USER</span> -d /home/$<span style="color: #BA36A5;">USER</span> rstudio
+    groupmod -n $<span style="color: #BA36A5;">USER</span> rstudio
+    usermod -a -G staff $<span style="color: #BA36A5;">USER</span>
+    chown -R $<span style="color: #BA36A5;">USER</span>:$<span style="color: #BA36A5;">USER</span> /home/$<span style="color: #BA36A5;">USER</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"USER is now $USER"</span>
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$GROUPID"</span> -ne 1000 ]
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Configure the primary GID (whether rstudio or $USER) with a different GROUPID if requested.</span>
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Modifying primary group $(id $USER -g -n)"</span>
+    groupmod -g $<span style="color: #BA36A5;">GROUPID</span> $(id $<span style="color: #BA36A5;">USER</span> -g -n)
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Primary group ID is now custom_group $GROUPID"</span>
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Add a password to user</span>
+<span style="color: #006FE0;">echo</span> <span style="color: #008000;">"$USER:$PASSWORD"</span> | chpasswd
+
+<span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Use Env flag to know if user should be added to sudoers</span>
+<span style="color: #0000FF;">if</span> [[ ${<span style="color: #BA36A5;">ROOT</span>,,} == <span style="color: #008000;">"true"</span> ]]
+  <span style="color: #0000FF;">then</span>
+    adduser $<span style="color: #BA36A5;">USER</span> sudo &amp;&amp; <span style="color: #006FE0;">echo</span> <span style="color: #008000;">'%sudo ALL=(ALL) NOPASSWD:ALL'</span> &gt;&gt; /etc/sudoers
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"$USER added to sudoers"</span>
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Change Umask value if desired</span>
+<span style="color: #0000FF;">if</span> [ <span style="color: #008000;">"$UMASK"</span> -ne 022 ]
+  <span style="color: #0000FF;">then</span>
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"server-set-umask=false"</span> &gt;&gt; /etc/rstudio/rserver.conf
+    <span style="color: #006FE0;">echo</span> <span style="color: #008000;">"Sys.umask(mode=$UMASK)"</span> &gt;&gt; /home/$<span style="color: #BA36A5;">USER</span>/.Rprofile
+<span style="color: #0000FF;">fi</span>
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">add these to the global environment so they are avialable to the RStudio user</span>
+<span style="color: #006FE0;">echo</span> <span style="color: #008000;">"HTTR_LOCALHOST=$HTTR_LOCALHOST"</span> &gt;&gt; /etc/R/Renviron.site
+<span style="color: #006FE0;">echo</span> <span style="color: #008000;">"HTTR_PORT=$HTTR_PORT"</span> &gt;&gt; /etc/R/Renviron.site
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd36d306" class="outline-4">
+<h4 id="orgd36d306"><span class="section-number-4">9.2.3</span> Dockerfile</h4>
+<div class="outline-text-4" id="text-9-2-3">
+<div class="org-src-container">
+<pre class="src src-dockerfile">FROM rocker/shiny-verse:latest
+
+LABEL maintainer="Shreyas Ragavan &lt;sr@eml.cc&gt;" \
+	version="1.0"
+
+# System update and installing a bunch of OS libraries
+RUN apt-get update -qq \
+	&amp;&amp; apt-get -y --no-install-recommends install \
+	lbzip2 \
+	libfftw3-dev \
+        libgdal-dev \
+        libgeos-dev \
+        libgsl0-dev \
+        libgl1-mesa-dev \
+        libglu1-mesa-dev \
+        libhdf4-alt-dev \
+        libhdf5-dev \
+        libjq-dev \
+        liblwgeom-dev \
+        libpq-dev \
+        libproj-dev \
+        libprotobuf-dev \
+        libnetcdf-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        libudunits2-dev \
+        netcdf-bin \
+        postgis \
+        protobuf-compiler \
+        sqlite3 \
+        tk-dev \
+        unixodbc-dev \
+        libsasl2-dev \
+        libv8-dev \
+	libsodium-dev \
+# Adding a custom list of packages from this point
+        pandoc \
+	pandoc-citeproc \
+	dtrx \
+	tree \
+	libzmq3-dev \
+# Removing temporary files generated after package changes
+	&amp;&amp; rm -rf /var/lib/apt \
+	&amp;&amp; apt-get autoclean
+
+# Installing minimum R libraries for shiny
+RUN install2.r --error --deps TRUE \
+	shinyWidgets \
+        shinythemes \
+        shinyjs
+
+# Intalling DB interfacing libraries
+RUN install2.r --error --deps TRUE \
+	mongolite \
+        jsonlite \
+        config
+
+# Tidyquant and Remotes
+RUN install2.r --error --deps TRUE \
+	tidyquant
+
+# Installing plotly
+RUN install2.r --error --deps TRUE \
+	plotly
+
+# Separating Umap to a separate layer to save time while building the image
+RUN install2.r --error --deps TRUE \
+	umap
+
+# Installing libraries for EDA
+RUN install2.r --error --deps TRUE \
+    	inspectdf \
+	DataExplorer \
+	janitor
+
+# Installing libraries for ML
+RUN install2.r --error --deps TRUE \
+	glmnet \
+	parsnip \
+	recipes \
+	rsample \
+	rpart.plot \
+	caret
+
+# Installing libraries related to reproducibility DevOps, planning, package management
+RUN install2.r --error --deps TRUE \
+	drake \
+	easypackages \
+	remotes \
+	&amp;&amp; installGithub.r karthik/holepunch
+
+# Temp layer to be integrated into OS package layer
+RUN apt-get update \
+&amp;&amp; apt-get -y --no-install-recommends install git
+
+# Adding Rstudio server preview version as an environment variable which can be changed.
+# Reference: https://github.com/datascienceschool/docker_rpython/blob/0c01b0b52834f6b3bb8a0c930a3d43899ea60ce6/02_rpython/Dockerfile#L17
+
+USER root
+ARG PANDOC_TEMPLATES_VERSION
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
+ENV PANDOC_TEMPLATES_VERSION=${PANDOC_TEMPLATES_VERSION:-2.9}
+
+ENV RSTUDIOSERVER_VERSION 1.2.5036
+ENV RSTUDIO_PREVIEW YES
+RUN \
+apt-get update \
+&amp;&amp; apt-get install psmisc \
+&amp;&amp; mkdir -p /download &amp;&amp; cd /download \
+&amp;&amp; wget https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
+# &amp;&amp; gdebi --n rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
+# &amp;&amp; rm -rf /download \
+# &amp;&amp; rm -rf /var/lib/apt \
+# &amp;&amp; apt-get autoclean \
+# &amp;&amp; rstudio-server start
+
+#$$ if {$RSTUDIO_SERVER_ON}
+# Settings for RStudio-Server
+# &amp;&amp; if [ -z "$RSTUDIO_PREVIEW" ]; \
+# 	then RSTUDIO_URL="https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb"; \
+# 	else RSTUDIO_URL="https://www.rstudio.org/download/latest/stable/server/bionic/rstudio-server-latest-amd64.deb"; fi \
+  # &amp;&amp; wget -q $RSTUDIO_URL \
+	&amp;&amp; gdebi --n rstudio-server-${RSTUDIOSERVER_VERSION}-amd64.deb \
+##  &amp;&amp; dpkg -i rstudio-server-*-amd64.deb \
+  &amp;&amp; rm rstudio-server-*-amd64.deb \
+  ## Symlink pandoc &amp; standard pandoc templates for use system-wide
+  &amp;&amp; ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc /usr/local/bin \
+  &amp;&amp; ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc-citeproc /usr/local/bin \
+  &amp;&amp; git clone --recursive --branch ${PANDOC_TEMPLATES_VERSION} https://github.com/jgm/pandoc-templates \
+  &amp;&amp; mkdir -p /opt/pandoc/templates \
+  &amp;&amp; cp -r pandoc-templates*/* /opt/pandoc/templates &amp;&amp; rm -rf pandoc-templates* \
+  &amp;&amp; mkdir /root/.pandoc &amp;&amp; ln -s /opt/pandoc/templates /root/.pandoc/templates \
+  &amp;&amp; apt-get clean \
+  &amp;&amp; rm -rf /var/lib/apt/lists/ \
+  ## RStudio wants an /etc/R, will populate from $R_HOME/etc
+  &amp;&amp; mkdir -p /etc/R \
+  ## Write config files in $R_HOME/etc
+  &amp;&amp; echo '\n\
+    \n# Configure httr to perform out-of-band authentication if HTTR_LOCALHOST \
+    \n# is not set since a redirect to localhost may not work depending upon \
+    \n# where this Docker container is running. \
+    \nif(is.na(Sys.getenv("HTTR_LOCALHOST", unset=NA))) { \
+    \n  options(httr_oob_default = TRUE) \
+    \n}' &gt;&gt; /usr/local/lib/R/etc/Rprofile.site \
+  &amp;&amp; echo "PATH=${PATH}" &gt;&gt; /usr/local/lib/R/etc/Renviron \
+  ## Need to configure non-root user for RStudio
+  &amp;&amp; useradd rstudio \
+  &amp;&amp; echo "rstudio:rstudio" | chpasswd \
+	&amp;&amp; mkdir /home/rstudio \
+	&amp;&amp; chown rstudio:rstudio /home/rstudio \
+	&amp;&amp; addgroup rstudio staff \
+  ## Prevent rstudio from deciding to use /usr/bin/R if a user apt-get installs a package
+  &amp;&amp;  echo 'rsession-which-r=/usr/local/bin/R' &gt;&gt; /etc/rstudio/rserver.conf \
+  ## use more robust file locking to avoid errors when using shared volumes:
+  &amp;&amp; echo 'lock-type=advisory' &gt;&gt; /etc/rstudio/file-locks \
+  ## configure git not to request password each time
+  &amp;&amp; git config --system credential.helper 'cache --timeout=3600' \
+  &amp;&amp; git config --system push.default simple \
+  # ## Set up S6 init system
+  # &amp;&amp; wget -P /tmp/ https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-amd64.tar.gz \
+  # &amp;&amp; tar xzf /tmp/s6-overlay-amd64.tar.gz -C / \
+  &amp;&amp; mkdir -p /etc/services.d/rstudio \
+  &amp;&amp; echo '#!/usr/bin/with-contenv bash \
+          \n## load /etc/environment vars first: \
+  		  \n for line in $( cat /etc/environment ) ; do export $line ; done \
+          \n exec /usr/lib/rstudio-server/bin/rserver --server-daemonize 0' \
+          &gt; /etc/services.d/rstudio/run \
+  &amp;&amp; echo '#!/bin/bash \
+          \n rstudio-server stop' \
+          &gt; /etc/services.d/rstudio/finish \
+  &amp;&amp; mkdir -p /home/rstudio/.rstudio/monitored/user-settings \
+  &amp;&amp; echo 'alwaysSaveHistory="0" \
+          \nloadRData="0" \
+          \nsaveAction="0"' \
+          &gt; /home/rstudio/.rstudio/monitored/user-settings/user-settings \
+  &amp;&amp; chown -R rstudio:rstudio /home/rstudio/.rstudio \
+	&amp;&amp; rstudio-server start
+
+COPY userconf.sh /etc/cont-init.d/userconf
+
+EXPOSE 8787
+
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a41fe8" class="outline-2">
+<h2 id="org1a41fe8"><span class="section-number-2">10</span> Test Shiny Apps</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+A bunch of apps will be included here for the purpose of quickly testing functionality of widgets and etc. As such, the sample apps with the shiny server can also be used. Here, I would like to construct specific examples to have a look on whether all the components are working as expected. Perhaps like a test suite of apps.
+</p>
+</div>
+
+<div id="outline-container-org2b486ae" class="outline-3">
+<h3 id="org2b486ae"><span class="section-number-3">10.1</span> Widget Gallery</h3>
+<div class="outline-text-3" id="text-10-1">
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #D0372D;">library</span>(shiny)
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Define UI</span>
+ui  <span style="color: #D0372D;">&lt;-</span> fluidPage(
+  titlePanel(<span style="color: #008000;">"Basic widget exploration"</span>),
+
+  fluidRow(
+
+    column(2,
+           h3(<span style="color: #008000;">"buttons"</span>),
+           actionButton(<span style="color: #008000;">"action007"</span>, label =<span style="color: #008000;">"Action"</span>),
+           br(),
+           br(),
+           submitButton(<span style="color: #008000;">"Submit"</span>)
+           ),
+    column(2,
+           h3(<span style="color: #008000;">"Single Checkbox"</span>),
+           checkboxInput(<span style="color: #008000;">"checkbox"</span>, <span style="color: #008000;">"Choice A"</span>, value = T)
+           ),
+    column(3,
+           checkboxGroupInput(<span style="color: #008000;">"checkGroup"</span>,
+                              h3(<span style="color: #008000;">"checkbox group"</span>),
+                              choices = list(<span style="color: #008000;">"Choice 1"</span> = 1,
+                                             <span style="color: #008000;">"Choice 2"</span> = 2,
+                                             <span style="color: #008000;">"Choice 3"</span> = 3
+                                             ),
+                              selected = 1
+                              )
+           ),
+    column(2,
+           dateInput(<span style="color: #008000;">"date"</span>,
+                     h3(<span style="color: #008000;">"date input"</span>),
+                     value = <span style="color: #008000;">""</span>
+                     )
+           )
+
+  ),
+  <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Inserting another fluid row element</span>
+  fluidRow(
+
+    column(2,
+           radioButtons(<span style="color: #008000;">"radio"</span>,
+                        h3(<span style="color: #008000;">"Radio Buttons"</span>),
+                        choices = list(<span style="color: #008000;">"choice 1"</span> = 1,
+                                       <span style="color: #008000;">"choice 2"</span> = 2,
+                                       <span style="color: #008000;">"Radio 3"</span>  = 3
+                                       ),
+                        selected =1
+                        )
+           ),
+
+    column(2,
+           selectInput(<span style="color: #008000;">"select"</span>,
+                       h3(<span style="color: #008000;">"Select box"</span>),
+                       choices = list(<span style="color: #008000;">"choice 1"</span> = 1,
+                                      <span style="color: #008000;">"choice 2"</span> = 2,
+                                      <span style="color: #008000;">"choice 3"</span> = 3
+                                      ),
+                       selected = 1
+                       )
+           ),
+    column(2,
+           sliderInput(<span style="color: #008000;">"slider1"</span>,
+                       h3(<span style="color: #008000;">"Sliders"</span>),
+                       min = 0,
+                       max = 100,
+                       value = 50
+                       ),
+
+           sliderInput(<span style="color: #008000;">"slider2"</span>,
+                       h3(<span style="color: #008000;">"Another Slider"</span>),
+                       min = 50,
+                       max = 200,
+                       value = c(60,80)
+                       )
+           ),
+    column(2,
+           selectInput(<span style="color: #008000;">"selectbox1"</span>,
+                     h3(<span style="color: #008000;">"select from drop down box"</span>),
+                     choices = list(<span style="color: #008000;">"choice 1"</span> = 22,
+                                    <span style="color: #008000;">"choice 2"</span> = 2,
+                                    <span style="color: #008000;">"choice fake 3"</span> = 33
+                                    ),
+                     selected = <span style="color: #008000;">""</span>
+                     )
+           )
+
+  ),
+  fluidRow(
+    column(3,
+           dateRangeInput(<span style="color: #008000;">"daterange"</span>,
+                          h3(<span style="color: #008000;">"Date range input"</span>)
+                          )
+           ),
+
+    column(3,
+           fileInput(<span style="color: #008000;">"fileinput"</span>,
+                     h3(<span style="color: #008000;">"Select File"</span>)
+                     )
+           ),
+
+    column(3,
+           numericInput(<span style="color: #008000;">"numinput"</span>,
+                        h3(<span style="color: #008000;">"Enter numeric value"</span>),
+                        value = 10
+                        )
+           ),
+    column(3,
+           h3(<span style="color: #008000;">"help text"</span>),
+           helpText(<span style="color: #008000;">"Hello this is line one."</span>,
+                    <span style="color: #008000;">"This is line 2..\n"</span>,
+                    <span style="color: #008000;">"This is line 3."</span>
+                    )
+           )
+  )
+)
+
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Define server logic</span>
+
+<span style="color: #006699;">server</span> <span style="color: #D0372D;">&lt;-</span> <span style="color: #0000FF;">function</span>(input, output){
+
+
+}
+
+
+
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Run the app</span>
+shinyApp(ui = ui, server = server)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Shreyas Ragavan</p>
+<p class="date">Created: 2020-01-14 Tue 16:21</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

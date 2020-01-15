@@ -443,7 +443,7 @@ Add your custom packages to this layer. In this way, only the additional package
 #+BEGIN_SRC R
 #Script for common package installation on MatrixDS docker image
 PKGS <- c(
-     "tidyverse"
+     "tidyverse", "mapproj", "maps"
 )
 
 install.packages(PKGS, dependencies = TRUE)
@@ -501,11 +501,14 @@ RUN R CMD javareconf \
   && Rscript r_custom_packages.R \
   && rm r_custom_packages.R
 #+END_SRC
+*
 * TODO Rstudio
 :PROPERTIES:
 :header-args: :mkdirp yes
 :ID:
 :END:
+- Note taken on [2020-01-11 Sat 09:18] \\
+  This image is not working as expected at the moment. The only change from the Matrix DS image is the rbase image source, which by itself works as expected. The shiny image based off rbase also works as expected. The workaround at the moment
 
 This layer contains a specified RStudio version built on top of the rbase layer. i.e all the R packages defined in the earlier layers will be available to this web based deployment of Rstudio server.
 
@@ -560,6 +563,7 @@ fi
 if [ $"$ADD" == "none" ]; then
        echo "Nothing additional to add"
 fi
+
 #+END_SRC
 
 ** Encrypted sign in
@@ -892,6 +896,7 @@ RUN apt-get update \
     lsb-release \
     psmisc \
     libclang-dev \
+	openjdk-X-jdk \
   && wget -O libssl1.0.0.deb http://ftp.debian.org/debian/pool/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u8_amd64.deb \
   && dpkg -i libssl1.0.0.deb \
   && rm libssl1.0.0.deb \
@@ -990,11 +995,11 @@ ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr
 ** Container launch
 
 #+BEGIN_SRC sh
-docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker:/home/rstudio -e USER=shrysr -e PASSWORD=abcd shrysr/rstudio:v1
+docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker/shiny-server:/home/rstudio/ shrysr/rstudio:v1
 #+END_SRC
 
 #+RESULTS:
-: 165ae30412e0d670283d1df0cef5b7e7c4da3de998c87626a8125979e5b9785e
+: a72f3aa0f635bdcc39ee78101386b89d30e9127d2e1d5cf32d51209754ea54d5
 
 * DONE Shiny
 CLOSED: [2020-01-08 Wed 22:09]
@@ -1264,11 +1269,11 @@ sh /usr/bin/shiny-server.sh
 The local path should be the outermost project folder. Any location specified will have a folder created shiny-server within which the shiny test apps will be placed. Note that the correct tag version should be substituted.
 
 #+BEGIN_SRC sh
-docker container run -itd -p 3838:3838 -v /Users/shrysr/my_projects/sr-ds-docker/:/srv shrysr/shiny:v2
+docker container run -itd --rm -p 3838:3838 -v /Users/shrysr/my_projects/sr-ds-docker/:/srv shrysr/shiny:v2
 #+END_SRC
 
 #+RESULTS:
-: 4e0377a1c8e0817208a5c32eb8e2232d44e54aa4ae02442e2585bb9a1256771e
+: 7dd733e311043dfae4180de007f5c873516f0861244971d6fababc2b521f3bff
 
 
 #+BEGIN_SRC sh :results verbatim replace
@@ -1277,7 +1282,7 @@ docker ps
 
 #+RESULTS:
 : CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
-: 4e0377a1c8e0        shrysr/shiny:v2     "sh -c '/entrypoint.…"   2 seconds ago       Up 1 second         0.0.0.0:3838->3838/tcp   focused_panini
+: 7dd733e31104        shrysr/shiny:v2     "sh -c '/entrypoint.…"   3 seconds ago       Up 3 seconds        0.0.0.0:3838->3838/tcp   optimistic_newton
 
 #+BEGIN_SRC sh
 docker kill wizardly_kirch

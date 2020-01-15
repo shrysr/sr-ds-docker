@@ -445,7 +445,7 @@ Add your custom packages to this layer. In this way, only the additional package
 
     #Script for common package installation on MatrixDS docker image
     PKGS <- c(
-         "tidyverse"
+         "tidyverse", "mapproj", "maps"
     )
 
     install.packages(PKGS, dependencies = TRUE)
@@ -501,10 +501,15 @@ Add your custom packages to this layer. In this way, only the additional package
       && Rscript r_custom_packages.R \
       && rm r_custom_packages.R
 
+\*
+
 .. _:
 
 6 Rstudio
 ---------
+
+- Note taken on [2020-01-11 Sat 09:18]
+  This image is not working as expected at the moment. The only change from the Matrix DS image is the rbase image source, which by itself works as expected. The shiny image based off rbase also works as expected. The workaround at the moment
 
 This layer contains a specified RStudio version built on top of the rbase layer. i.e all the R packages defined in the earlier layers will be available to this web based deployment of Rstudio server.
 
@@ -887,6 +892,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
         lsb-release \
         psmisc \
         libclang-dev \
+    	openjdk-X-jdk \
       && wget -O libssl1.0.0.deb http://ftp.debian.org/debian/pool/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u8_amd64.deb \
       && dpkg -i libssl1.0.0.deb \
       && rm libssl1.0.0.deb \
@@ -986,7 +992,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
 
 .. code:: sh
 
-    docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker:/home/rstudio -e USER=shrysr -e PASSWORD=abcd shrysr/rstudio:v1
+    docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker/shiny-server:/home/rstudio/ shrysr/rstudio:v1
 
 .. _:
 
@@ -1255,7 +1261,7 @@ The local path should be the outermost project folder. Any location specified wi
 
 .. code:: sh
 
-    docker container run -itd -p 3838:3838 -v /Users/shrysr/my_projects/sr-ds-docker/:/srv shrysr/shiny:v2
+    docker container run -itd --rm -p 3838:3838 -v /Users/shrysr/my_projects/sr-ds-docker/:/srv shrysr/shiny:v2
 
 
 .. code:: sh
