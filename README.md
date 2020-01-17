@@ -25,12 +25,12 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 # TL;DR
 
--   The [Init](#orgff2f7d3) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#org50cd4bd) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="orgff2f7d3"></a>
+<a id="org50cd4bd"></a>
 
 # Init
 
@@ -53,6 +53,8 @@ The main containers to be aware of, and also hosted on dockerhub are :
 5.  One of the earlier versions created is at shrysr/datasciencer, however, this has been superceded by the above images, and may grow into something different.
 
 The rbase image is built on the first asmith image. The RStudio and Shiny images are based of a common rbase dependency environment. However, additional packages can be specified for these, and it is not necessary to rebuild the rbase layer each time.
+
+![img](img/docker-driven-datascience.JPG)
 
 
 ## Launching the docker containers
@@ -131,6 +133,8 @@ The Org mode format can be leveraged to use literate programming techniques of r
 For example: since each template is under it's own Org heading, the specific heading can even be exported as a separate org file, which can be externally tangled into source files without needing the installation of Emacs.
 
 Beyond this, tools like [docker-tramp](https://github.com/emacs-pe/docker-tramp.el/blob/master/README.md?utm_source=share&utm_medium=ios_app&utm_name=iossmf) can be used with Emacs to have org babel source blocks
+
+
 
 connect directly to docker instances and have the results printed in the local buffer. This enables a standard environment for development.
 

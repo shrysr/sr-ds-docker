@@ -48,6 +48,8 @@ The main containers to be aware of, and also hosted on dockerhub are :
 
 The rbase image is built on the first asmith image. The RStudio and Shiny images are based of a common rbase dependency environment. However, additional packages can be specified for these, and it is not necessary to rebuild the rbase layer each time.
 
+.. image:: img/docker-driven-datascience.JPG
+
 2.1 Launching the docker containers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -157,7 +159,7 @@ Beyond this, tools like `docker-tramp <https://github.com/emacs-pe/docker-tramp.
 
 
 
-
+
 
 
 
