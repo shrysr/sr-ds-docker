@@ -31,13 +31,11 @@ RUN apt-get update \
     r-cran-survival
 
 COPY packages.R /usr/local/lib/R/packages.R
+COPY custom_packages.R /usr/local/lib/R/custom_packages.R
 
 # Install Basic R packages for datascience and ML
 RUN R CMD javareconf && \
     Rscript /usr/local/lib/R/packages.R
 
 # Install custom set of R packages. This is on a separate layer for efficient image construction
-COPY r_custom_packages.R .
-RUN R CMD javareconf \
-  && Rscript r_custom_packages.R \
-  && rm r_custom_packages.R
+RUN Rscript /usr/local/lib/R/custom_packages.R

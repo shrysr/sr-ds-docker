@@ -512,7 +512,7 @@ RUN Rscript /usr/local/lib/R/custom_packages.R
 :ID:       0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04
 :END:
 
-#+BEGIN_SRC YAML :tangle
+#+BEGIN_SRC YAML
 name: Docker Image CI
 
 on: [push]
