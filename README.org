@@ -508,7 +508,7 @@ RUN Rscript /usr/local/lib/R/custom_packages.R
 *
 ** YAML for CI
 :PROPERTIES:
-:header-args: :mkdirp yes :tangle ./.github/workflows/rbasetest.yml
+:header-args: :mkdirp yes :tangle ./.github/workflows/rbase.yml
 :ID:       0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04
 :END:
 
@@ -524,7 +524,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: shiny
+    - uses: sr-ds-docker/shiny
+    - name: shiny
+      run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+#+END_SRC
+
+#+BEGIN_SRC YAML :header-args: :mkdirp yes :tangle ./.github/workflows/rbase2.yml
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: shrysr/sr-ds-docker/shiny
     - name: shiny
       run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
 #+END_SRC

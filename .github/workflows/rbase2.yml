@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: shiny
+    - uses: shrysr/sr-ds-docker/shiny
     - name: shiny
       run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
