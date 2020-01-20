@@ -524,24 +524,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: sr-ds-docker/shiny
-    - name: shiny
-      run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-#+END_SRC
-
-#+BEGIN_SRC YAML :header-args: :mkdirp yes :tangle ./.github/workflows/rbase2.yml
-name: Docker Image CI
-
-on: [push]
-
-jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: shrysr/sr-ds-docker/shiny
+    - uses: sr-ds-docker/shiny@v2
     - name: shiny
       run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
 #+END_SRC
