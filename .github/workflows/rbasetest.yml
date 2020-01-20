@@ -1,0 +1,14 @@
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: shiny
+    - name: shiny
+      run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
