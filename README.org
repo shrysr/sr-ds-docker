@@ -436,7 +436,7 @@ install.packages(p,dependencies = TRUE)
 
 ** R Package list - CUSTOM
 :PROPERTIES:
-:header-args: :mkdirp yes :tangle ./rbase/r_custom_packages.R
+:header-args: :mkdirp yes :tangle ./rbase/custom_packages.R
 :ID:       2EBA46F1-48F2-417F-8D68-4BD8B39FAA7F
 :END:
 
@@ -445,10 +445,13 @@ Add your custom packages to this layer. In this way, only the additional package
 #+BEGIN_SRC R
 #Script for common package installation on MatrixDS docker image
 PKGS <- c(
-     "tidyverse", "mapproj", "maps"
+      "tidyverse", "mapproj", "maps", "genius"
 )
 
 install.packages(PKGS, dependencies = TRUE)
+devtools::install_github("tidyverse/googlesheets4", dependencies = TRUE)
+devtools::install_github("tidyverse/googletrendsR", dependencies = TRUE)
+
 
 #+END_SRC
 
@@ -492,18 +495,40 @@ RUN apt-get update \
     r-cran-survival
 
 COPY packages.R /usr/local/lib/R/packages.R
+COPY custom_packages.R /usr/local/lib/R/custom_packages.R
 
 # Install Basic R packages for datascience and ML
 RUN R CMD javareconf && \
     Rscript /usr/local/lib/R/packages.R
 
 # Install custom set of R packages. This is on a separate layer for efficient image construction
-COPY r_custom_packages.R .
-RUN R CMD javareconf \
-  && Rscript r_custom_packages.R \
-  && rm r_custom_packages.R
+RUN Rscript /usr/local/lib/R/custom_packages.R
+
 #+END_SRC
 *
+** YAML for CI
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./rbase/rbasetest.yml
+:ID:       0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04
+:END:
+
+#+BEGIN_SRC YAML :tangle
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: shiny
+      run:  docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+#+END_SRC
+
 * TODO Rstudio
 :PROPERTIES:
 :header-args: :mkdirp yes
