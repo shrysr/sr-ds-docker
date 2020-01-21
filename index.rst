@@ -248,6 +248,11 @@ This is the very first layer. This layer adds several OS packages and starts wit
 
 This layer does not take very long to build, however, if it is - then all the other subsequent layers will probably need to be rebuilt.
 
+.. _C0CAD36C-AB70-45A6-B5D0-EA0017E4ED6D:
+
+4.1 Dockerfile
+~~~~~~~~~~~~~~
+
 .. code:: dockerfile
 
     FROM ubuntu:18.04
@@ -394,6 +399,28 @@ This layer does not take very long to build, however, if it is - then all the ot
     RUN apt-get clean \
       && rm -rf /var/lib/apt/lists/*
 
+.. _2CD7A81F-1B30-4910-82BB-194CE54AC54A:
+
+4.2 ASmith YAML for CI with github
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: YAML
+
+    name: Docker Image CI
+
+    on: [push]
+
+    jobs:
+
+      build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v1
+        - name: Build Asmith
+          run: docker build asmith/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+
 .. _:
 
 5 rbase
@@ -447,10 +474,12 @@ Add your custom packages to this layer. In this way, only the additional package
 
     #Script for common package installation on MatrixDS docker image
     PKGS <- c(
-         "tidyverse", "mapproj", "maps"
+          "tidyverse", "mapproj", "maps", "genius"
     )
 
     install.packages(PKGS, dependencies = TRUE)
+    devtools::install_github("tidyverse/googlesheets4", dependencies = TRUE)
+    devtools::install_github("tidyverse/googletrendsR", dependencies = TRUE)
 
 .. _0C5AA86C-CE86-48E5-87E3-81DB9DC508CC:
 
@@ -492,18 +521,38 @@ Add your custom packages to this layer. In this way, only the additional package
         r-cran-survival
 
     COPY packages.R /usr/local/lib/R/packages.R
+    COPY custom_packages.R /usr/local/lib/R/custom_packages.R
 
     # Install Basic R packages for datascience and ML
     RUN R CMD javareconf && \
         Rscript /usr/local/lib/R/packages.R
 
     # Install custom set of R packages. This is on a separate layer for efficient image construction
-    COPY r_custom_packages.R .
-    RUN R CMD javareconf \
-      && Rscript r_custom_packages.R \
-      && rm r_custom_packages.R
+    RUN Rscript /usr/local/lib/R/custom_packages.R
 
 \*
+
+.. _0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04:
+
+5.4 rbase YAML for CI with github
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: YAML
+
+    name: Docker Image CI
+
+    on: [push]
+
+    jobs:
+
+      build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v1
+        - name: Build rbase
+          run: docker build rbase/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
 
 .. _:
 
@@ -989,7 +1038,29 @@ This layer contains a specified RStudio version built on top of the rbase layer.
 
     ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
-6.11 Container launch
+.. _0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04:
+
+6.11 Rstudio YAML for CI with github
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: YAML
+
+    name: Docker Image CI
+
+    on: [push]
+
+    jobs:
+
+      build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v1
+        - name: Build rstudio
+          run: docker build rstudio/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+
+6.12 Container launch
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: sh
@@ -1256,7 +1327,29 @@ The dockerfile copied the contents of ``test_apps`` into the ``root/shiny-server
 
     sh /usr/bin/shiny-server.sh
 
-7.8 Container launch and image build command samples
+.. _0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04:
+
+7.8 Shiny YAML for CI with github
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: YAML
+
+    name: Docker Image CI
+
+    on: [push]
+
+    jobs:
+
+      build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v1
+        - name: Build shiny
+          run: docker build shiny/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+
+7.9 Container launch and image build command samples
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The local path should be the outermost project folder. Any location specified will have a folder created shiny-server within which the shiny test apps will be placed. Note that the correct tag version should be substituted.

@@ -25,12 +25,12 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 # TL;DR
 
--   The [Init](#org50cd4bd) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#org46e1af5) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="org50cd4bd"></a>
+<a id="org46e1af5"></a>
 
 # Init
 
@@ -171,6 +171,9 @@ connect directly to docker instances and have the results printed in the local b
 This is the very first layer. This layer adds several OS packages and starts with a specific version of Ubuntu (v18.04). Currently, it is largely left the same except for adding the package dtrx, which is useful to quickly zip and unzip files.
 
 This layer does not take very long to build, however, if it is - then all the other subsequent layers will probably need to be rebuilt.
+
+
+## Dockerfile
 
     FROM ubuntu:18.04
 
@@ -317,6 +320,24 @@ This layer does not take very long to build, however, if it is - then all the ot
       && rm -rf /var/lib/apt/lists/*
 
 
+## ASmith YAML for CI with github
+
+    name: Docker Image CI
+
+    on: [push]
+
+    jobs:
+
+      build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v1
+        - name: Build Asmith
+          run: docker build asmith/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+
+
 # rbase
 
 This layer contains all the basic R packages required for datascience and ML. A bunch of packages were added to the already extensive default list of packages in MatrixDS's docker file.
@@ -356,10 +377,12 @@ Add your custom packages to this layer. In this way, only the additional package
 
     #Script for common package installation on MatrixDS docker image
     PKGS <- c(
-         "tidyverse", "mapproj", "maps"
+          "tidyverse", "mapproj", "maps", "genius"
     )
 
     install.packages(PKGS, dependencies = TRUE)
+    devtools::install_github("tidyverse/googlesheets4", dependencies = TRUE)
+    devtools::install_github("tidyverse/googletrendsR", dependencies = TRUE)
 
 
 ## Dockerfile
@@ -397,18 +420,34 @@ Add your custom packages to this layer. In this way, only the additional package
         r-cran-survival
 
     COPY packages.R /usr/local/lib/R/packages.R
+    COPY custom_packages.R /usr/local/lib/R/custom_packages.R
 
     # Install Basic R packages for datascience and ML
     RUN R CMD javareconf && \
         Rscript /usr/local/lib/R/packages.R
 
     # Install custom set of R packages. This is on a separate layer for efficient image construction
-    COPY r_custom_packages.R .
-    RUN R CMD javareconf \
-      && Rscript r_custom_packages.R \
-      && rm r_custom_packages.R
+    RUN Rscript /usr/local/lib/R/custom_packages.R
 
 \*
+
+
+## rbase YAML for CI with github
+
+    name: Docker Image CI
+
+    on: [push]
+
+    jobs:
+
+      build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v1
+        - name: Build rbase
+          run: docker build rbase/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
 
 
 # Rstudio
@@ -851,6 +890,24 @@ This layer contains a specified RStudio version built on top of the rbase layer.
     ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
 
+## Rstudio YAML for CI with github
+
+    name: Docker Image CI
+
+    on: [push]
+
+    jobs:
+
+      build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v1
+        - name: Build rstudio
+          run: docker build rstudio/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+
+
 ## Container launch
 
     docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker/shiny-server:/home/rstudio/ shrysr/rstudio:v1
@@ -1086,6 +1143,24 @@ The dockerfile copied the contents of `test_apps` into the `root/shiny-server/te
     fi
 
     sh /usr/bin/shiny-server.sh
+
+
+## Shiny YAML for CI with github
+
+    name: Docker Image CI
+
+    on: [push]
+
+    jobs:
+
+      build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v1
+        - name: Build shiny
+          run: docker build shiny/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
 
 
 ## Container launch and image build command samples

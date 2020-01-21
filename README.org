@@ -241,6 +241,11 @@ This is the very first layer. This layer adds several OS packages and starts wit
 
 This layer does not take very long to build, however, if it is - then all the other subsequent layers will probably need to be rebuilt.
 
+** Dockerfile
+:PROPERTIES:
+:ID:       C0CAD36C-AB70-45A6-B5D0-EA0017E4ED6D
+:END:
+
 #+BEGIN_SRC dockerfile
 FROM ubuntu:18.04
 
@@ -388,6 +393,30 @@ RUN apt-get clean \
 
 #+END_SRC
 
+** ASmith YAML for CI with github
+:PROPERTIES:
+:ID:       2CD7A81F-1B30-4910-82BB-194CE54AC54A
+:header-args: :mkdirp yes :tangle ./.github/workflows/asmith.yml
+:END:
+
+#+BEGIN_SRC YAML
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build Asmith
+      run: docker build asmith/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+
+#+END_SRC
+
 * DONE rbase
 CLOSED: [2020-01-08 Wed 11:00]
 :PROPERTIES:
@@ -506,7 +535,7 @@ RUN Rscript /usr/local/lib/R/custom_packages.R
 
 #+END_SRC
 *
-** YAML for CI
+** rbase YAML for CI with github
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./.github/workflows/rbase.yml
 :ID:       0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04
@@ -530,30 +559,6 @@ jobs:
 
 #+END_SRC
 
-Reference:
-
-#+BEGIN_SRC YAML :tangle no
-name: Docker Image CI
-
-on: [push]
-
-jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v1
-    - name: Build asmith
-      run: docker build . --file asmith/Dockerfile --tag my-image-name:$(date +%s)
-    - name: Build rbase
-      run: docker build . --file rbase/Dockerfile --tag my-image-name:$(date +%s)
-    - name: Build rstudio
-      run: docker build . --file rstudio/Dockerfile --tag my-image-name:$(date +%s)
-    - name: Build shiny
-      run: docker build . --file shiny/Dockerfile --tag my-image-name:$(date +%s)
-#+END_SRC
 * TODO Rstudio
 :PROPERTIES:
 :header-args: :mkdirp yes
@@ -1044,6 +1049,30 @@ COPY readme.txt /home/readme.txt
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
 
 #+END_SRC
+** Rstudio YAML for CI with github
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./.github/workflows/rstudio.yml
+:ID:       0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04
+:END:
+
+#+BEGIN_SRC YAML
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build rstudio
+      run: docker build rstudio/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+
+#+END_SRC
+
 ** Container launch
 
 #+BEGIN_SRC sh
@@ -1313,6 +1342,30 @@ else
 fi
 
 sh /usr/bin/shiny-server.sh
+
+#+END_SRC
+
+** Shiny YAML for CI with github
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./.github/workflows/shiny.yml
+:ID:       0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04
+:END:
+
+#+BEGIN_SRC YAML
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build shiny
+      run: docker build shiny/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
 
 #+END_SRC
 
