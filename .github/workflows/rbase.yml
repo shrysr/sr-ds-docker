@@ -6,9 +6,9 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: shrysr/sr-ds-docker/shiny/shiny@v2
-    - name: shiny
-      run:  docker build . --file shrysr/sr-ds-docker/shiny/Dockerfile --tag my-image-name:$(date +%s)
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: docker build . --file /shiny/Dockerfile --tag my-image-name:$(date +%s)
