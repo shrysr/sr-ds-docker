@@ -413,7 +413,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build Asmith
-      run: docker build asmith/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build asmith/. --file asmith/Dockerfile --tag my-image-name:$(date +%s)
 
 #+END_SRC
 
@@ -1069,7 +1069,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build rstudio
-      run: docker build rstudio/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build rstudio/. --file rstudio/Dockerfile --tag my-image-name:$(date +%s)
 
 #+END_SRC
 
@@ -1365,7 +1365,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build shiny
-      run: docker build shiny/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build shiny/. --file shiny/Dockerfile --tag my-image-name:$(date +%s)
 
 #+END_SRC
 

@@ -11,4 +11,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build shiny
-      run: docker build shiny/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build shiny/. --file shiny/Dockerfile --tag my-image-name:$(date +%s)

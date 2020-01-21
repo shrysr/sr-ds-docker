@@ -419,7 +419,7 @@ This layer does not take very long to build, however, if it is - then all the ot
         steps:
         - uses: actions/checkout@v1
         - name: Build Asmith
-          run: docker build asmith/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+          run: docker build asmith/. --file asmith/Dockerfile --tag my-image-name:$(date +%s)
 
 .. _:
 
@@ -1058,7 +1058,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
         steps:
         - uses: actions/checkout@v1
         - name: Build rstudio
-          run: docker build rstudio/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+          run: docker build rstudio/. --file rstudio/Dockerfile --tag my-image-name:$(date +%s)
 
 6.12 Container launch
 ~~~~~~~~~~~~~~~~~~~~~
@@ -1347,7 +1347,7 @@ The dockerfile copied the contents of ``test_apps`` into the ``root/shiny-server
         steps:
         - uses: actions/checkout@v1
         - name: Build shiny
-          run: docker build shiny/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+          run: docker build shiny/. --file shiny/Dockerfile --tag my-image-name:$(date +%s)
 
 7.9 Container launch and image build command samples
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

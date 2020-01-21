@@ -25,12 +25,12 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 # TL;DR
 
--   The [Init](#org46e1af5) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#org639d273) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="org46e1af5"></a>
+<a id="org639d273"></a>
 
 # Init
 
@@ -335,7 +335,7 @@ This layer does not take very long to build, however, if it is - then all the ot
         steps:
         - uses: actions/checkout@v1
         - name: Build Asmith
-          run: docker build asmith/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+          run: docker build asmith/. --file asmith/Dockerfile --tag my-image-name:$(date +%s)
 
 
 # rbase
@@ -905,7 +905,7 @@ This layer contains a specified RStudio version built on top of the rbase layer.
         steps:
         - uses: actions/checkout@v1
         - name: Build rstudio
-          run: docker build rstudio/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+          run: docker build rstudio/. --file rstudio/Dockerfile --tag my-image-name:$(date +%s)
 
 
 ## Container launch
@@ -1160,7 +1160,7 @@ The dockerfile copied the contents of `test_apps` into the `root/shiny-server/te
         steps:
         - uses: actions/checkout@v1
         - name: Build shiny
-          run: docker build shiny/. --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+          run: docker build shiny/. --file shiny/Dockerfile --tag my-image-name:$(date +%s)
 
 
 ## Container launch and image build command samples
