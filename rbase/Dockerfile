@@ -29,7 +29,7 @@ RUN apt-get update \
     r-cran-rpart \
     r-cran-spatial \
     r-cran-survival \
-    libsodium-devel
+    libsodium-dev
 
 COPY packages.R /usr/local/lib/R/packages.R
 COPY custom_packages.R /usr/local/lib/R/custom_packages.R
