@@ -508,7 +508,7 @@ RUN Rscript /usr/local/lib/R/custom_packages.R
 *
 ** YAML for CI
 :PROPERTIES:
-:header-args: :mkdirp yes :tangle ./.github/workflows/rbase.yml
+:header-args: :mkdirp yes :tangle ./rbase/build-all.yml
 :ID:       0A1BC308-1B29-4ACC-BA9D-8A17E9F20C04
 :END:
 
@@ -525,11 +525,35 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Build the Docker image
-      run: docker build . --file shiny/Dockerfile --tag my-image-name:$(date +%s)
+    - name: Build rbase
+      run: docker build . --file rbase/Dockerfile --tag my-image-name:$(date +%s)
 
 #+END_SRC
 
+Reference:
+
+#+BEGIN_SRC YAML :tangle no
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build asmith
+      run: docker build . --file asmith/Dockerfile --tag my-image-name:$(date +%s)
+    - name: Build rbase
+      run: docker build . --file rbase/Dockerfile --tag my-image-name:$(date +%s)
+    - name: Build rstudio
+      run: docker build . --file rstudio/Dockerfile --tag my-image-name:$(date +%s)
+    - name: Build shiny
+      run: docker build . --file shiny/Dockerfile --tag my-image-name:$(date +%s)
+#+END_SRC
 * TODO Rstudio
 :PROPERTIES:
 :header-args: :mkdirp yes
