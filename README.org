@@ -32,7 +32,11 @@ Docker image Cloud Build Status. /Note: Sometimes images are built locally and p
 </a>
 #+END_EXPORT
 
-Github Actions: [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto)
+Github Actions:
+#+BEGIN_EXPORT html
+<a href="https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&style=flat" /></a>
+#+END_EXPORT
+
 
 * TL;DR
 

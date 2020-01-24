@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-01-23 Thu 18:49 -->
+<!-- 2020-01-23 Thu 18:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Docker driven datascience environment and workflow.</title>
@@ -269,22 +269,24 @@ Docker image Cloud Build Status. <i>Note: Sometimes images are built locally and
 </a>
 
 <p>
-Github Actions: [![Build Status](<a href="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&amp;style=flat-square">https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&amp;style=flat-square</a>)](<a href="https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto">https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto</a>)
+Github Actions:
 </p>
+<a href="https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&style=flat" /></a>
 
-<div id="outline-container-org46d9942" class="outline-2">
-<h2 id="org46d9942"><span class="section-number-2">1</span> TL;DR</h2>
+
+<div id="outline-container-org3a2452a" class="outline-2">
+<h2 id="org3a2452a"><span class="section-number-2">1</span> TL;DR</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
-<li>The <a href="#org0d8df01">Init</a> section will grow to contain everything that you need to know this project and get started with using the tools.</li>
+<li>The <a href="#org3ae8b28">Init</a> section will grow to contain everything that you need to know this project and get started with using the tools.</li>
 <li>The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a <a href="https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files">project you can forklift</a>, that has the shiny image added as a custom tool that can be launched.</li>
 <li>One alternate method currently available to read the documentation is via <a href="https://sr-ds-docker.readthedocs.io/en/latest/">readthedocs</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0d8df01" class="outline-2">
-<h2 id="org0d8df01"><span class="section-number-2">2</span> Init</h2>
+<div id="outline-container-org3ae8b28" class="outline-2">
+<h2 id="org3ae8b28"><span class="section-number-2">2</span> Init</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 The starting point of this project was <a href="https://github.com/business-science/shinyauth">Matt Dancho's shinyauth</a> docker file, which then expanded into adapting the well designed <a href="https://github.com/matrixds/tools">Matrix DS tools</a> for my purpose. Their stack of docker based tools is replicated here with my customization which adds libraries and other functionality.
@@ -330,8 +332,8 @@ The rbase image is built on the first asmith image. The RStudio and Shiny images
 </div>
 </div>
 
-<div id="outline-container-org5d981b4" class="outline-3">
-<h3 id="org5d981b4"><span class="section-number-3">2.1</span> Launching the docker containers</h3>
+<div id="outline-container-org2b402c2" class="outline-3">
+<h3 id="org2b402c2"><span class="section-number-3">2.1</span> Launching the docker containers</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The following snippets are examples for launching containers powered by these images. <i>Individual snippets are placed along with the documentation of each docker container, and will be incorporated into corresponding readme's eventually.</i>
@@ -342,8 +344,8 @@ The following snippets are examples for launching containers powered by these im
 </ul>
 </div>
 
-<div id="outline-container-org23f17c6" class="outline-4">
-<h4 id="org23f17c6"><span class="section-number-4">2.1.1</span> Launch a shiny container</h4>
+<div id="outline-container-org5d593ca" class="outline-4">
+<h4 id="org5d593ca"><span class="section-number-4">2.1.1</span> Launch a shiny container</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 For example, assuming your shiny app and project folder is <code>/Users/superman/my-shiny-app/</code>. Then a shiny server as a container can be launched as simply as:
@@ -356,8 +358,8 @@ For example, assuming your shiny app and project folder is <code>/Users/superman
 </div>
 </div>
 
-<div id="outline-container-orgb1d908a" class="outline-4">
-<h4 id="orgb1d908a"><span class="section-number-4">2.1.2</span> Multiple ports</h4>
+<div id="outline-container-org14355f2" class="outline-4">
+<h4 id="org14355f2"><span class="section-number-4">2.1.2</span> Multiple ports</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
@@ -375,12 +377,12 @@ shrysr/datasciencer:test
 </div>
 </div>
 
-<div id="outline-container-orgac5916e" class="outline-3">
-<h3 id="orgac5916e"><span class="section-number-3">2.2</span> Plan</h3>
+<div id="outline-container-org0d56570" class="outline-3">
+<h3 id="org0d56570"><span class="section-number-3">2.2</span> Plan</h3>
 <div class="outline-text-3" id="text-2-2">
 </div>
-<div id="outline-container-orgab16104" class="outline-4">
-<h4 id="orgab16104"><span class="section-number-4">2.2.1</span> List of images planned</h4>
+<div id="outline-container-orgc52ec22" class="outline-4">
+<h4 id="orgc52ec22"><span class="section-number-4">2.2.1</span> List of images planned</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <ol class="org-ol">
 <li>Development : R based
@@ -399,12 +401,12 @@ shrysr/datasciencer:test
 </div>
 </div>
 
-<div id="outline-container-org8d01197" class="outline-4">
-<h4 id="org8d01197"><span class="section-number-4">2.2.2</span> Tasks</h4>
+<div id="outline-container-org8eec72b" class="outline-4">
+<h4 id="org8eec72b"><span class="section-number-4">2.2.2</span> Tasks</h4>
 <div class="outline-text-4" id="text-2-2-2">
 </div>
 <ol class="org-ol">
-<li><a id="orgaaed3cb"></a>Primary <code>[3/8]</code><br />
+<li><a id="orga80aa19"></a>Primary <code>[3/8]</code><br />
 <div class="outline-text-5" id="text-2-2-2-1">
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> provide specific versions of atleast the major components, like docker images, and meta-packages and other tools.</li>
@@ -419,7 +421,7 @@ shrysr/datasciencer:test
 </div>
 </li>
 
-<li><a id="org8e16e38"></a>Good to have <code>[0/2]</code><br />
+<li><a id="org5df223e"></a>Good to have <code>[0/2]</code><br />
 <div class="outline-text-5" id="text-2-2-2-2">
 <ul class="org-ul">
 <li class="off"><code>[&#xa0;]</code> Construct my own shiny server rather than relying on an external official image.</li>
@@ -432,19 +434,19 @@ shrysr/datasciencer:test
 </div>
 </div>
 
-<div id="outline-container-org943ff09" class="outline-2">
-<h2 id="org943ff09"><span class="section-number-2">3</span> Docker Compose</h2>
+<div id="outline-container-org7bd8791" class="outline-2">
+<h2 id="org7bd8791"><span class="section-number-2">3</span> Docker Compose</h2>
 </div>
-<div id="outline-container-org941d1e3" class="outline-2">
-<h2 id="org941d1e3"><span class="section-number-2">4</span> YAML</h2>
+<div id="outline-container-org5883797" class="outline-2">
+<h2 id="org5883797"><span class="section-number-2">4</span> YAML</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgd745d98" class="outline-3">
-<h3 id="orgd745d98"><span class="section-number-3">4.1</span> Github Workflows</h3>
+<div id="outline-container-org4ec2798" class="outline-3">
+<h3 id="org4ec2798"><span class="section-number-3">4.1</span> Github Workflows</h3>
 <div class="outline-text-3" id="text-4-1">
 </div>
-<div id="outline-container-org807df8a" class="outline-4">
-<h4 id="org807df8a"><span class="section-number-4">4.1.1</span> rbase YAML for CI with github</h4>
+<div id="outline-container-orgf818c6c" class="outline-4">
+<h4 id="orgf818c6c"><span class="section-number-4">4.1.1</span> rbase YAML for CI with github</h4>
 <div class="outline-text-4" id="text-4-1-1">
 <div class="org-src-container">
 <pre class="src src-YAML">name: Docker Image CI
@@ -467,8 +469,8 @@ jobs:
 </div>
 </div>
 
-<div id="outline-container-orgca94779" class="outline-4">
-<h4 id="orgca94779"><span class="section-number-4">4.1.2</span> Rstudio YAML for CI with github</h4>
+<div id="outline-container-org1ec0e87" class="outline-4">
+<h4 id="org1ec0e87"><span class="section-number-4">4.1.2</span> Rstudio YAML for CI with github</h4>
 <div class="outline-text-4" id="text-4-1-2">
 <div class="org-src-container">
 <pre class="src src-YAML">name: Docker Image CI
@@ -490,8 +492,8 @@ jobs:
 </div>
 </div>
 </div>
-<div id="outline-container-org6fda2cb" class="outline-4">
-<h4 id="org6fda2cb"><span class="section-number-4">4.1.3</span> Shiny YAML for CI with github</h4>
+<div id="outline-container-org98317c4" class="outline-4">
+<h4 id="org98317c4"><span class="section-number-4">4.1.3</span> Shiny YAML for CI with github</h4>
 <div class="outline-text-4" id="text-4-1-3">
 <div class="org-src-container">
 <pre class="src src-YAML">name: Docker Image CI
@@ -516,8 +518,8 @@ jobs:
 </div>
 </div>
 
-<div id="outline-container-org40bf5bf" class="outline-2">
-<h2 id="org40bf5bf"><span class="section-number-2">5</span> ASmith</h2>
+<div id="outline-container-orgc59092e" class="outline-2">
+<h2 id="orgc59092e"><span class="section-number-2">5</span> ASmith</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 This is the very first layer. This layer adds several OS packages and starts with a specific version of Ubuntu (v18.04). Currently, it is largely left the same except for adding the package dtrx, which is useful to quickly zip and unzip files.
@@ -528,8 +530,8 @@ This layer does not take very long to build, however, if it is - then all the ot
 </p>
 </div>
 
-<div id="outline-container-orgccb04cf" class="outline-3">
-<h3 id="orgccb04cf"><span class="section-number-3">5.1</span> Dockerfile</h3>
+<div id="outline-container-org360d4bd" class="outline-3">
+<h3 id="org360d4bd"><span class="section-number-3">5.1</span> Dockerfile</h3>
 <div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
 <pre class="src src-dockerfile"><span style="color: #0000FF;">FROM</span> <span style="color: #6434A3;">ubuntu:18.04</span>
@@ -681,8 +683,8 @@ This layer does not take very long to build, however, if it is - then all the ot
 </div>
 </div>
 
-<div id="outline-container-org653466b" class="outline-3">
-<h3 id="org653466b"><span class="section-number-3">5.2</span> ASmith YAML for CI with github</h3>
+<div id="outline-container-org424a45c" class="outline-3">
+<h3 id="org424a45c"><span class="section-number-3">5.2</span> ASmith YAML for CI with github</h3>
 <div class="outline-text-3" id="text-5-2">
 <div class="org-src-container">
 <pre class="src src-YAML">name: Docker Image CI
@@ -706,8 +708,8 @@ jobs:
 </div>
 </div>
 
-<div id="outline-container-org4c8be1f" class="outline-2">
-<h2 id="org4c8be1f"><span class="section-number-2">6</span> rbase</h2>
+<div id="outline-container-org70a1f0b" class="outline-2">
+<h2 id="org70a1f0b"><span class="section-number-2">6</span> rbase</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 This layer contains all the basic R packages required for datascience and ML. A bunch of packages were added to the already extensive default list of packages in MatrixDS's docker file.
@@ -730,8 +732,8 @@ Note: As such the dockerfile indicates that the packages are called in the last 
 </ul>
 </div>
 
-<div id="outline-container-org554f23b" class="outline-3">
-<h3 id="org554f23b"><span class="section-number-3">6.1</span> R package list - BASE</h3>
+<div id="outline-container-orgf588c5f" class="outline-3">
+<h3 id="orgf588c5f"><span class="section-number-3">6.1</span> R package list - BASE</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 This is a list of the basic packages being installed. These conver many commonly used libraries for data science. This layer will take a Long time to install.
@@ -763,8 +765,8 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-org0a6b2f9" class="outline-3">
-<h3 id="org0a6b2f9"><span class="section-number-3">6.2</span> R Package list - CUSTOM</h3>
+<div id="outline-container-orgbe25c7c" class="outline-3">
+<h3 id="orgbe25c7c"><span class="section-number-3">6.2</span> R Package list - CUSTOM</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 Add your custom packages to this layer. In this way, only the additional packages are installed in a new layer.
@@ -788,8 +790,8 @@ devtools::install_github(<span style="color: #008000;">"tidyverse/googletrendsR"
 </div>
 </div>
 
-<div id="outline-container-orgf06aaa6" class="outline-3">
-<h3 id="orgf06aaa6"><span class="section-number-3">6.3</span> Dockerfile</h3>
+<div id="outline-container-org6253927" class="outline-3">
+<h3 id="org6253927"><span class="section-number-3">6.3</span> Dockerfile</h3>
 <div class="outline-text-3" id="text-6-3">
 <div class="org-src-container">
 <pre class="src src-dockerfile"><span style="color: #0000FF;">FROM</span> <span style="color: #6434A3;">shrysr/asmith:v1</span>
@@ -843,8 +845,8 @@ devtools::install_github(<span style="color: #008000;">"tidyverse/googletrendsR"
 </div>
 </div>
 
-<div id="outline-container-org931ae25" class="outline-2">
-<h2 id="org931ae25"><span class="section-number-2">7</span> Shiny</h2>
+<div id="outline-container-org10509c0" class="outline-2">
+<h2 id="org10509c0"><span class="section-number-2">7</span> Shiny</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Overview of the process:
@@ -859,8 +861,8 @@ Into the <code>shiny-server</code> folder, the test_apps folder containing shiny
 </p>
 </div>
 
-<div id="outline-container-orgb0bfb1e" class="outline-3">
-<h3 id="orgb0bfb1e"><span class="section-number-3">7.1</span> Environment and Profile</h3>
+<div id="outline-container-orgfd08428" class="outline-3">
+<h3 id="orgfd08428"><span class="section-number-3">7.1</span> Environment and Profile</h3>
 <div class="outline-text-3" id="text-7-1">
 <div class="org-src-container">
 <pre class="src src-sh"><span style="color: #BA36A5;">R_LIBS</span>=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/srv/R/library
@@ -903,8 +905,8 @@ help options(<span style="color: #BA36A5;">chmhelp</span>=TRUE)
 </div>
 </div>
 
-<div id="outline-container-org8da9128" class="outline-3">
-<h3 id="org8da9128"><span class="section-number-3">7.2</span> app.r</h3>
+<div id="outline-container-org270a2fd" class="outline-3">
+<h3 id="org270a2fd"><span class="section-number-3">7.2</span> app.r</h3>
 <div class="outline-text-3" id="text-7-2">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #8D8D84;">#</span>
@@ -1002,8 +1004,8 @@ shinyApp(ui = ui, server = server)
 </div>
 </div>
 
-<div id="outline-container-orgf460e75" class="outline-3">
-<h3 id="orgf460e75"><span class="section-number-3">7.3</span> shiny server script</h3>
+<div id="outline-container-org9b91b6c" class="outline-3">
+<h3 id="org9b91b6c"><span class="section-number-3">7.3</span> shiny server script</h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 This is script to execute or run the shiny server. Apparently, it is necessary to be called via script in this fashion for the process to work, rather than the docker file itself. In a way this helps keeping the code modular. It is generally unlikely any changes would be needed here.
@@ -1032,8 +1034,8 @@ chown shiny.shiny /var/log/shiny-server
 </div>
 </div>
 
-<div id="outline-container-org38117d8" class="outline-3">
-<h3 id="org38117d8"><span class="section-number-3">7.4</span> packages</h3>
+<div id="outline-container-org5734308" class="outline-3">
+<h3 id="org5734308"><span class="section-number-3">7.4</span> packages</h3>
 <div class="outline-text-3" id="text-7-4">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">Script for common package installation on MatrixDS docker image</span>
@@ -1046,11 +1048,11 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 </div>
-<div id="outline-container-org1a6a28d" class="outline-3">
-<h3 id="org1a6a28d"><span class="section-number-3">7.5</span> version</h3>
+<div id="outline-container-orga07ab52" class="outline-3">
+<h3 id="orga07ab52"><span class="section-number-3">7.5</span> version</h3>
 </div>
-<div id="outline-container-org71d8326" class="outline-3">
-<h3 id="org71d8326"><span class="section-number-3">7.6</span> Dockerfile</h3>
+<div id="outline-container-orgda1d9da" class="outline-3">
+<h3 id="orgda1d9da"><span class="section-number-3">7.6</span> Dockerfile</h3>
 <div class="outline-text-3" id="text-7-6">
 <p>
 The folder test_apps will contain shiny apps meant to test functionality. This is copied into the docker image.
@@ -1123,8 +1125,8 @@ Changes: Reduced a step and added the tree package. This makes it easier to trou
 </div>
 </div>
 </div>
-<div id="outline-container-orgc54afd1" class="outline-3">
-<h3 id="orgc54afd1"><span class="section-number-3">7.7</span> entrypoint</h3>
+<div id="outline-container-orgf8df935" class="outline-3">
+<h3 id="orgf8df935"><span class="section-number-3">7.7</span> entrypoint</h3>
 <div class="outline-text-3" id="text-7-7">
 <p>
 The dockerfile copied the contents of <code>test_apps</code> into the <code>root/shiny-server/test_shiny</code> directory. Now via shell script (<code>entrypoint.sh</code>), the contents from <code>root/shiny-server/test_shiny</code> within the container are copied in a folder called <code>/srv/shiny-server</code> within the container. Now the final /srv/shiny-server is matched with the specified mount volume.
@@ -1157,8 +1159,8 @@ sh /usr/bin/shiny-server.sh
 </div>
 </div>
 
-<div id="outline-container-org6ccd14e" class="outline-3">
-<h3 id="org6ccd14e"><span class="section-number-3">7.8</span> Container launch and image build command samples</h3>
+<div id="outline-container-orgb56ba28" class="outline-3">
+<h3 id="orgb56ba28"><span class="section-number-3">7.8</span> Container launch and image build command samples</h3>
 <div class="outline-text-3" id="text-7-8">
 <p>
 The local path should be the outermost project folder. Any location specified will have a folder created shiny-server within which the shiny test apps will be placed. Note that the correct tag version should be substituted.
@@ -1193,8 +1195,8 @@ The local path should be the outermost project folder. Any location specified wi
 </div>
 </div>
 
-<div id="outline-container-org85f8f0a" class="outline-2">
-<h2 id="org85f8f0a"><span class="section-number-2">8</span> Rstudio</h2>
+<div id="outline-container-org9e61af5" class="outline-2">
+<h2 id="org9e61af5"><span class="section-number-2">8</span> Rstudio</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 This layer contains a specified RStudio version built on top of the rbase layer. i.e all the R packages defined in the earlier layers will be available to this web based deployment of Rstudio server.
@@ -1209,8 +1211,8 @@ By default, the authentication is bypassed, though the password can be set via t
 </ul>
 </div>
 
-<div id="outline-container-org01c2740" class="outline-3">
-<h3 id="org01c2740"><span class="section-number-3">8.1</span> Environment and Profile</h3>
+<div id="outline-container-org8ad4072" class="outline-3">
+<h3 id="org8ad4072"><span class="section-number-3">8.1</span> Environment and Profile</h3>
 <div class="outline-text-3" id="text-8-1">
 <div class="org-src-container">
 <pre class="src src-R">R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library:/home/rstudio/.R/library
@@ -1250,8 +1252,8 @@ help <span style="color: #D0372D;">options</span>(chmhelp=<span style="color: #6
 </div>
 </div>
 
-<div id="outline-container-org7029923" class="outline-3">
-<h3 id="org7029923"><span class="section-number-3">8.2</span> Add shiny</h3>
+<div id="outline-container-org34abb44" class="outline-3">
+<h3 id="org34abb44"><span class="section-number-3">8.2</span> Add shiny</h3>
 <div class="outline-text-3" id="text-8-2">
 <div class="org-src-container">
 <pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/usr/bin/</span><span style="color: #0000FF;">with-contenv</span><span style="color: #8D8D84; font-style: italic;"> bash</span>
@@ -1292,8 +1294,8 @@ help <span style="color: #D0372D;">options</span>(chmhelp=<span style="color: #6
 </div>
 </div>
 
-<div id="outline-container-org045f5a8" class="outline-3">
-<h3 id="org045f5a8"><span class="section-number-3">8.3</span> Encrypted sign in</h3>
+<div id="outline-container-org3926853" class="outline-3">
+<h3 id="org3926853"><span class="section-number-3">8.3</span> Encrypted sign in</h3>
 <div class="outline-text-3" id="text-8-3">
 <div class="org-src-container">
 <pre class="src src-html"><span style="color: #008000;">&lt;!DOCTYPE html&gt;</span>
@@ -1381,8 +1383,8 @@ function submitRealForm() {
 </div>
 </div>
 
-<div id="outline-container-org1304412" class="outline-3">
-<h3 id="org1304412"><span class="section-number-3">8.4</span> Entrypoint</h3>
+<div id="outline-container-org836a28b" class="outline-3">
+<h3 id="org836a28b"><span class="section-number-3">8.4</span> Entrypoint</h3>
 <div class="outline-text-3" id="text-8-4">
 <div class="org-src-container">
 <pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/bin/</span><span style="color: #0000FF;">bash</span><span style="color: #8D8D84; font-style: italic;"> -e</span>
@@ -1404,8 +1406,8 @@ chown rstudio:rstudio /home/rstudio/.Renvron
 </div>
 </div>
 
-<div id="outline-container-org9ed6836" class="outline-3">
-<h3 id="org9ed6836"><span class="section-number-3">8.5</span> nginx conf</h3>
+<div id="outline-container-orgb7fbec6" class="outline-3">
+<h3 id="orgb7fbec6"><span class="section-number-3">8.5</span> nginx conf</h3>
 <div class="outline-text-3" id="text-8-5">
 <div class="org-src-container">
 <pre class="src src-conf"><span style="color: #6434A3;">http</span> {
@@ -1433,8 +1435,8 @@ chown rstudio:rstudio /home/rstudio/.Renvron
 </div>
 </div>
 
-<div id="outline-container-org1e820a0" class="outline-3">
-<h3 id="org1e820a0"><span class="section-number-3">8.6</span> Additional Packages</h3>
+<div id="outline-container-org31d164a" class="outline-3">
+<h3 id="org31d164a"><span class="section-number-3">8.6</span> Additional Packages</h3>
 <div class="outline-text-3" id="text-8-6">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">Script for common package installation on MatrixDS docker image</span>
@@ -1448,8 +1450,8 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-org3e4da3f" class="outline-3">
-<h3 id="org3e4da3f"><span class="section-number-3">8.7</span> PAM helper</h3>
+<div id="outline-container-orgb7dd6a2" class="outline-3">
+<h3 id="orgb7dd6a2"><span class="section-number-3">8.7</span> PAM helper</h3>
 <div class="outline-text-3" id="text-8-7">
 <div class="org-src-container">
 <pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/usr/bin/</span><span style="color: #0000FF;">env</span><span style="color: #8D8D84; font-style: italic;"> sh</span>
@@ -1468,8 +1470,8 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-orga7e7f96" class="outline-3">
-<h3 id="orga7e7f96"><span class="section-number-3">8.8</span> User settings</h3>
+<div id="outline-container-orgdd22d3c" class="outline-3">
+<h3 id="orgdd22d3c"><span class="section-number-3">8.8</span> User settings</h3>
 <div class="outline-text-3" id="text-8-8">
 <div class="org-src-container">
 <pre class="src src-conf"><span style="color: #BA36A5;">alwaysSaveHistory</span>=<span style="color: #008000;">"0"</span>
@@ -1480,8 +1482,8 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-orgc25c949" class="outline-3">
-<h3 id="orgc25c949"><span class="section-number-3">8.9</span> Userconf</h3>
+<div id="outline-container-org2d49dc7" class="outline-3">
+<h3 id="org2d49dc7"><span class="section-number-3">8.9</span> Userconf</h3>
 <div class="outline-text-3" id="text-8-9">
 <div class="org-src-container">
 <pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">!/usr/bin/</span><span style="color: #0000FF;">with-contenv</span><span style="color: #8D8D84; font-style: italic;"> bash</span>
@@ -1593,8 +1595,8 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-org6e9c8a8" class="outline-3">
-<h3 id="org6e9c8a8"><span class="section-number-3">8.10</span> Dockerfile</h3>
+<div id="outline-container-orgdc2767f" class="outline-3">
+<h3 id="orgdc2767f"><span class="section-number-3">8.10</span> Dockerfile</h3>
 <div class="outline-text-3" id="text-8-10">
 <div class="org-src-container">
 <pre class="src src-dockerfile"><span style="color: #0000FF;">FROM</span> <span style="color: #6434A3;">shrysr/rbase:v2</span>
@@ -1717,8 +1719,8 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-org778a813" class="outline-3">
-<h3 id="org778a813"><span class="section-number-3">8.11</span> Container launch</h3>
+<div id="outline-container-org93f472c" class="outline-3">
+<h3 id="org93f472c"><span class="section-number-3">8.11</span> Container launch</h3>
 <div class="outline-text-3" id="text-8-11">
 <div class="org-src-container">
 <pre class="src src-sh">docker container run -itd -p 8787:8787 -v /Users/shrysr/my_projects/sr-ds-docker/shiny-server:/home/rstudio/ shrysr/rstudio:v1
@@ -1727,16 +1729,16 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 </div>
-<div id="outline-container-org48dbe3f" class="outline-2">
-<h2 id="org48dbe3f"><span class="section-number-2">9</span> Test Shiny Apps</h2>
+<div id="outline-container-org596cbe2" class="outline-2">
+<h2 id="org596cbe2"><span class="section-number-2">9</span> Test Shiny Apps</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 A bunch of apps will be included here for the purpose of quickly testing functionality of widgets and etc. As such, the sample apps with the shiny server can also be used. Here, I would like to construct specific examples to have a look on whether all the components are working as expected. Perhaps like a test suite of apps.
 </p>
 </div>
 
-<div id="outline-container-orgd90f552" class="outline-3">
-<h3 id="orgd90f552"><span class="section-number-3">9.1</span> Widget Gallery</h3>
+<div id="outline-container-orgcdde93d" class="outline-3">
+<h3 id="orgcdde93d"><span class="section-number-3">9.1</span> Widget Gallery</h3>
 <div class="outline-text-3" id="text-9-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #D0372D;">library</span>(shiny)
@@ -1874,8 +1876,8 @@ shinyApp(ui = ui, server = server)
 </div>
 </div>
 
-<div id="outline-container-org597e936" class="outline-2">
-<h2 id="org597e936"><span class="section-number-2">10</span> Notes</h2>
+<div id="outline-container-orgd8040ac" class="outline-2">
+<h2 id="orgd8040ac"><span class="section-number-2">10</span> Notes</h2>
 <div class="outline-text-2" id="text-10">
 <p>
 This is a collection of notes and lessons learned on different aspects of the project.
@@ -1883,8 +1885,8 @@ This is a collection of notes and lessons learned on different aspects of the pr
 </p>
 </div>
 
-<div id="outline-container-org12a060b" class="outline-3">
-<h3 id="org12a060b"><span class="section-number-3">10.1</span> Tools and methodology</h3>
+<div id="outline-container-org3dec205" class="outline-3">
+<h3 id="org3dec205"><span class="section-number-3">10.1</span> Tools and methodology</h3>
 <div class="outline-text-3" id="text-10-1">
 <p>
 All the source code and documentation formats are generated via source code blocks inserted into Org mode documents. i.e a single Readme.org. The markdown and rst formats are generated from exporters available within Emacs, and that process can be automated.
@@ -1914,8 +1916,8 @@ Beyond this, tools like <a href="https://github.com/emacs-pe/docker-tramp.el/blo
 </div>
 </div>
 
-<div id="outline-container-orgd6ed05e" class="outline-3">
-<h3 id="orgd6ed05e"><span class="section-number-3">10.2</span> Status Log</h3>
+<div id="outline-container-orgb1ff0cd" class="outline-3">
+<h3 id="orgb1ff0cd"><span class="section-number-3">10.2</span> Status Log</h3>
 <div class="outline-text-3" id="text-10-2">
 <ul class="org-ul">
 <li><span class="timestamp-wrapper"><span class="timestamp">[2020-01-21 Tue]</span></span>: Several packages have been added to rbase, which has been customised to load a layer of custom packages as the very last layer of the image. This saves build time significantly, because all the heavy packages are installed in a previous layer. The shiny server works as expected off the Asmith and rbase images.</li>
@@ -1929,8 +1931,8 @@ Beyond this, tools like <a href="https://github.com/emacs-pe/docker-tramp.el/blo
 </div>
 </div>
 
-<div id="outline-container-orgfc7c399" class="outline-3">
-<h3 id="orgfc7c399"><span class="section-number-3">10.3</span> General Notes</h3>
+<div id="outline-container-org176e7cb" class="outline-3">
+<h3 id="org176e7cb"><span class="section-number-3">10.3</span> General Notes</h3>
 <div class="outline-text-3" id="text-10-3">
 <ul class="org-ul">
 <li>Using the <code>:latest</code> tag for docker images is useful only for some some circumstances, because there seems to be no point in using docker images if specific versions of libraries and packages are not set and updated with care from time to time. The goal is to have  reliable, working setup.
@@ -1953,20 +1955,20 @@ Beyond this, tools like <a href="https://github.com/emacs-pe/docker-tramp.el/blo
 </div>
 </div>
 
-<div id="outline-container-orgb113602" class="outline-2">
-<h2 id="orgb113602"><span class="section-number-2">11</span> Archive</h2>
+<div id="outline-container-orgab8473b" class="outline-2">
+<h2 id="orgab8473b"><span class="section-number-2">11</span> Archive</h2>
 <div class="outline-text-2" id="text-11">
 </div>
-<div id="outline-container-org5b90c80" class="outline-3">
-<h3 id="org5b90c80"><span class="section-number-3">11.1</span> Rstudio Stable</h3>
+<div id="outline-container-org8df84a7" class="outline-3">
+<h3 id="org8df84a7"><span class="section-number-3">11.1</span> Rstudio Stable</h3>
 <div class="outline-text-3" id="text-11-1">
 <p>
 This is written using Gigantum's <a href="https://github.com/gigantum/base-images">docker base images</a> as a guide. It is built in a significantly different style than the other images.
 </p>
 </div>
 
-<div id="outline-container-orgc80929c" class="outline-4">
-<h4 id="orgc80929c"><span class="section-number-4">11.1.1</span> Custom R Packages</h4>
+<div id="outline-container-orgde1b530" class="outline-4">
+<h4 id="orgde1b530"><span class="section-number-4">11.1.1</span> Custom R Packages</h4>
 <div class="outline-text-4" id="text-11-1-1">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">Script for common package installation on MatrixDS docker image</span>
@@ -1980,8 +1982,8 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-org66c3aea" class="outline-4">
-<h4 id="org66c3aea"><span class="section-number-4">11.1.2</span> rserver.conf</h4>
+<div id="outline-container-orgaad11cd" class="outline-4">
+<h4 id="orgaad11cd"><span class="section-number-4">11.1.2</span> rserver.conf</h4>
 <div class="outline-text-4" id="text-11-1-2">
 <div class="org-src-container">
 <pre class="src src-conf"><span style="color: #BA36A5;">server-app-armor-enabled</span>=0
@@ -1991,8 +1993,8 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-org5507e51" class="outline-4">
-<h4 id="org5507e51"><span class="section-number-4">11.1.3</span> Dockerfile</h4>
+<div id="outline-container-orgdc09e11" class="outline-4">
+<h4 id="orgdc09e11"><span class="section-number-4">11.1.3</span> Dockerfile</h4>
 <div class="outline-text-4" id="text-11-1-3">
 <div class="org-src-container">
 <pre class="src src-dockerfile"><span style="color: #0000FF;">FROM</span> <span style="color: #6434A3;">shrysr/rbase:v2</span>
@@ -2076,16 +2078,16 @@ install.packages(p,dependencies = <span style="color: #6434A3;">TRUE</span>)
 </div>
 </div>
 
-<div id="outline-container-org52dac5d" class="outline-3">
-<h3 id="org52dac5d"><span class="section-number-3">11.2</span> Multiple services, latest Libraries - Shiny and RStudio server</h3>
+<div id="outline-container-orgb38072d" class="outline-3">
+<h3 id="orgb38072d"><span class="section-number-3">11.2</span> Multiple services, latest Libraries - Shiny and RStudio server</h3>
 <div class="outline-text-3" id="text-11-2">
 <p>
 <i>This was one of the very first images created. It works, however, it will be developed into a container that launches 2 services - a Shiny server, and an Rstudio server. In general, this is not recommended. However, I think it may be useful to have available when necessary.</i>
 </p>
 </div>
 
-<div id="outline-container-org05751c7" class="outline-4">
-<h4 id="org05751c7"><span class="section-number-4">11.2.1</span> Overview</h4>
+<div id="outline-container-org92e7e84" class="outline-4">
+<h4 id="org92e7e84"><span class="section-number-4">11.2.1</span> Overview</h4>
 <div class="outline-text-4" id="text-11-2-1">
 <p>
 Base image: rocker/shinyverse
@@ -2139,13 +2141,13 @@ Management
 </div>
 </div>
 
-<div id="outline-container-org1dd126a" class="outline-4">
-<h4 id="org1dd126a"><span class="section-number-4">11.2.2</span> Dockerfile</h4>
+<div id="outline-container-orga4c0fef" class="outline-4">
+<h4 id="orga4c0fef"><span class="section-number-4">11.2.2</span> Dockerfile</h4>
 <div class="outline-text-4" id="text-11-2-2">
 </div>
 
 <ol class="org-ol">
-<li><a id="orgf11e42d"></a>Container run command<br />
+<li><a id="org2b5786c"></a>Container run command<br />
 <div class="outline-text-5" id="text-11-2-2-1">
 <div class="org-src-container">
 <pre class="src src-sh"><span style="color: #8D8D84;">#</span><span style="color: #8D8D84; font-style: italic;">/bin/bash</span>
@@ -2158,7 +2160,7 @@ shrysr/rstudio:v1
 </div>
 </li>
 
-<li><a id="org9cb8f41"></a>Userconf for rstudio<br />
+<li><a id="org436e0ed"></a>Userconf for rstudio<br />
 <div class="outline-text-5" id="text-11-2-2-2">
 <p>
 Reference: <a href="https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/userconf.sh">https://github.com/rocker-org/rocker-versioned/blob/master/rstudio/userconf.sh</a>
@@ -2273,7 +2275,7 @@ Reference: <a href="https://github.com/rocker-org/rocker-versioned/blob/master/r
 </div>
 </li>
 
-<li><a id="org91df328"></a>Dockerfile<br />
+<li><a id="orgd9345f4"></a>Dockerfile<br />
 <div class="outline-text-5" id="text-11-2-2-3">
 <div class="org-src-container">
 <pre class="src src-dockerfile"><span style="color: #0000FF;">FROM</span> <span style="color: #6434A3;">rocker/shiny-verse:latest</span>
@@ -2469,7 +2471,7 @@ apt-get update <span style="color: #008000;">\</span>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Shreyas Ragavan</p>
-<p class="date">Created: 2020-01-23 Thu 18:49</p>
+<p class="date">Created: 2020-01-23 Thu 18:54</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
