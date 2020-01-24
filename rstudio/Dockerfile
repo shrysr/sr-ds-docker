@@ -36,7 +36,7 @@ RUN apt-get update \
   && git clone https://github.com/jgm/pandoc-templates \
   && mkdir -p /opt/pandoc/templates \
   && cp -r pandoc-templates*/* /opt/pandoc/templates && rm -rf pandoc-templates* \
-  # #&& mkdir /root/.pandoc \
+  && mkdir -p /root/.pandoc \
   && ln -Ffs /opt/pandoc/templates /root/.pandoc/templates \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/ \

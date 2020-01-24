@@ -495,8 +495,9 @@ Add your custom packages to this layer. In this way, only the additional package
     RUN R CMD javareconf && \
         Rscript /usr/local/lib/R/packages.R
 
+    # Though this has been installed upstream, apprently it has to be setup again.
     RUN apt-get update \
-    && apt-get install -y --no-install-recommends
+    && apt-get install -y --no-install-recommends libsodium-dev
 
     # Install custom set of R packages. This is on a separate layer for efficient image construction
     RUN Rscript /usr/local/lib/R/custom_packages.R
@@ -1243,8 +1244,8 @@ By default, the authentication is bypassed, though the password can be set via t
       && git clone https://github.com/jgm/pandoc-templates \
       && mkdir -p /opt/pandoc/templates \
       && cp -r pandoc-templates*/* /opt/pandoc/templates && rm -rf pandoc-templates* \
-      # #&& mkdir /root/.pandoc \
-      && ln -s /opt/pandoc/templates /root/.pandoc/templates \
+      && mkdir -p /root/.pandoc \
+      && ln -Ffs /opt/pandoc/templates /root/.pandoc/templates \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/ \
       ## RStudio wants an /etc/R, will populate from $R_HOME/etc

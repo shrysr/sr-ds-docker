@@ -27,12 +27,12 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 # TL;DR
 
--   The [Init](#orga28a313) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#orga6983b5) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="orga28a313"></a>
+<a id="orga6983b5"></a>
 
 # Init
 
@@ -1111,8 +1111,8 @@ By default, the authentication is bypassed, though the password can be set via t
       && git clone https://github.com/jgm/pandoc-templates \
       && mkdir -p /opt/pandoc/templates \
       && cp -r pandoc-templates*/* /opt/pandoc/templates && rm -rf pandoc-templates* \
-      # #&& mkdir /root/.pandoc \
-      && ln -s /opt/pandoc/templates /root/.pandoc/templates \
+      && mkdir -p /root/.pandoc \
+      && ln -Ffs /opt/pandoc/templates /root/.pandoc/templates \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/ \
       ## RStudio wants an /etc/R, will populate from $R_HOME/etc
