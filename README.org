@@ -505,8 +505,9 @@ COPY custom_packages.R /usr/local/lib/R/custom_packages.R
 RUN R CMD javareconf && \
     Rscript /usr/local/lib/R/packages.R
 
+# Though this has been installed upstream, apprently it has to be setup again.
 RUN apt-get update \
-&& apt-get install -y --no-install-recommends
+&& apt-get install -y --no-install-recommends libsodium-dev
 
 # Install custom set of R packages. This is on a separate layer for efficient image construction
 RUN Rscript /usr/local/lib/R/custom_packages.R

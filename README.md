@@ -27,12 +27,12 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 # TL;DR
 
--   The [Init](#orgd54dee1) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#orga28a313) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="orgd54dee1"></a>
+<a id="orga28a313"></a>
 
 # Init
 
@@ -445,8 +445,9 @@ Add your custom packages to this layer. In this way, only the additional package
     RUN R CMD javareconf && \
         Rscript /usr/local/lib/R/packages.R
 
+    # Though this has been installed upstream, apprently it has to be setup again.
     RUN apt-get update \
-    && apt-get install -y --no-install-recommends
+    && apt-get install -y --no-install-recommends libsodium-dev
 
     # Install custom set of R packages. This is on a separate layer for efficient image construction
     RUN Rscript /usr/local/lib/R/custom_packages.R
