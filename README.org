@@ -131,6 +131,30 @@ shrysr/datasciencer:test
 * TODO Docker Compose
 * YAML
 ** Github Workflows
+*** ASmith YAML for CI with github
+:PROPERTIES:
+:ID:       2CD7A81F-1B30-4910-82BB-194CE54AC54A
+:header-args: :mkdirp yes :tangle ./.github/workflows/asmith.yml
+:END:
+
+#+BEGIN_SRC YAML
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu:18.04
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build Asmith
+      run: docker build asmith/. --file asmith/Dockerfile --tag my-image-name:$(date +%s)
+
+#+END_SRC
+
 *** rbase YAML for CI with github
 :PROPERTIES:
 :header-args: :mkdirp yes :tangle ./.github/workflows/rbase.yml
@@ -146,7 +170,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:18.04
 
     steps:
     - uses: actions/checkout@v1
@@ -170,7 +194,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:18.04
 
     steps:
     - uses: actions/checkout@v1
@@ -193,7 +217,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:18.04
 
     steps:
     - uses: actions/checkout@v1
@@ -366,29 +390,6 @@ RUN apt-get clean \
 
 #+END_SRC
 
-** ASmith YAML for CI with github
-:PROPERTIES:
-:ID:       2CD7A81F-1B30-4910-82BB-194CE54AC54A
-:header-args: :mkdirp yes :tangle ./.github/workflows/asmith.yml
-:END:
-
-#+BEGIN_SRC YAML
-name: Docker Image CI
-
-on: [push]
-
-jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v1
-    - name: Build Asmith
-      run: docker build asmith/. --file asmith/Dockerfile --tag my-image-name:$(date +%s)
-
-#+END_SRC
 
 * DONE rbase
 CLOSED: [2020-01-08 Wed 11:00]
