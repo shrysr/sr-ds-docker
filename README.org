@@ -32,7 +32,6 @@ Docker image Cloud Build Status. /Note: Sometimes images are built locally and p
 </a>
 #+END_EXPORT
 
-Github Actions:
 #+BEGIN_EXPORT html
 <a href="https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&style=flat" /></a>
 #+END_EXPORT
@@ -278,6 +277,7 @@ RUN apt-get update \
     vim \
     wget \
     zip \
+	libsodium-dev \
   && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
   && locale-gen en_US.utf8 \
   && /usr/sbin/update-locale LANG=en_US.UTF-8
@@ -455,7 +455,7 @@ install.packages(PKGS, dependencies = TRUE)
 # These packages are sometimes not available for the current R version
 # , and therefore installed directly from github
 devtools::install_github("tidyverse/googlesheets4", dependencies = TRUE)
-devtools::install_github("tidyverse/googletrendsR", dependencies = TRUE)
+devtools::install_github("PMassicotte/gtrendsR", dependencies = TRUE)
 
 #+END_SRC
 
@@ -504,6 +504,9 @@ COPY custom_packages.R /usr/local/lib/R/custom_packages.R
 # Install Basic R packages for datascience and ML
 RUN R CMD javareconf && \
     Rscript /usr/local/lib/R/packages.R
+
+RUN apt-get update \
+&& apt-get install -y --no-install-recommends
 
 # Install custom set of R packages. This is on a separate layer for efficient image construction
 RUN Rscript /usr/local/lib/R/custom_packages.R

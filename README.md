@@ -22,19 +22,17 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 <img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/shrysr/rstudio?label=RStudio%20Image&style=flat-square">
 </a>
 
-Github Actions:
-
 <a href="https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&style=flat" /></a>
 
 
 # TL;DR
 
--   The [Init](#orgc758338) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#orgd54dee1) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="orgc758338"></a>
+<a id="orgd54dee1"></a>
 
 # Init
 
@@ -250,6 +248,7 @@ This layer does not take very long to build, however, if it is - then all the ot
         vim \
         wget \
         zip \
+    	libsodium-dev \
       && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
       && locale-gen en_US.utf8 \
       && /usr/sbin/update-locale LANG=en_US.UTF-8
@@ -402,7 +401,7 @@ Add your custom packages to this layer. In this way, only the additional package
     # These packages are sometimes not available for the current R version
     # , and therefore installed directly from github
     devtools::install_github("tidyverse/googlesheets4", dependencies = TRUE)
-    devtools::install_github("tidyverse/googletrendsR", dependencies = TRUE)
+    devtools::install_github("PMassicotte/gtrendsR", dependencies = TRUE)
 
 
 ## Dockerfile
@@ -445,6 +444,9 @@ Add your custom packages to this layer. In this way, only the additional package
     # Install Basic R packages for datascience and ML
     RUN R CMD javareconf && \
         Rscript /usr/local/lib/R/packages.R
+
+    RUN apt-get update \
+    && apt-get install -y --no-install-recommends
 
     # Install custom set of R packages. This is on a separate layer for efficient image construction
     RUN Rscript /usr/local/lib/R/custom_packages.R

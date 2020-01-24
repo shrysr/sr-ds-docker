@@ -8,8 +8,6 @@ Readme on Readthedocs:
 
 Docker image Cloud Build Status. *Note: Sometimes images are built locally and pushed dockerhub*
 
-Github Actions:
-
 1 TL;DR
 -------
 
@@ -279,6 +277,7 @@ This layer does not take very long to build, however, if it is - then all the ot
         vim \
         wget \
         zip \
+    	libsodium-dev \
       && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
       && locale-gen en_US.utf8 \
       && /usr/sbin/update-locale LANG=en_US.UTF-8
@@ -448,7 +447,7 @@ Add your custom packages to this layer. In this way, only the additional package
     # These packages are sometimes not available for the current R version
     # , and therefore installed directly from github
     devtools::install_github("tidyverse/googlesheets4", dependencies = TRUE)
-    devtools::install_github("tidyverse/googletrendsR", dependencies = TRUE)
+    devtools::install_github("PMassicotte/gtrendsR", dependencies = TRUE)
 
 .. _0C5AA86C-CE86-48E5-87E3-81DB9DC508CC:
 
@@ -495,6 +494,9 @@ Add your custom packages to this layer. In this way, only the additional package
     # Install Basic R packages for datascience and ML
     RUN R CMD javareconf && \
         Rscript /usr/local/lib/R/packages.R
+
+    RUN apt-get update \
+    && apt-get install -y --no-install-recommends
 
     # Install custom set of R packages. This is on a separate layer for efficient image construction
     RUN Rscript /usr/local/lib/R/custom_packages.R
