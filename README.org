@@ -1334,7 +1334,7 @@ RUN apt-get update \
   && echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron \
   ## Need to configure non-root user for RStudio
   # && useradd rstudio \
-  && echo "rstudio:matrix" | chpasswd \
+  && echo "rstudio:matrix" | sudo chpasswd \
 	#&& mkdir /home/rstudio \
 	&& chown rstudio:rstudio /home/rstudio \
 	&& addgroup rstudio staff \
