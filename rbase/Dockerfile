@@ -28,7 +28,8 @@ RUN apt-get update \
     r-cran-rjava \
     r-cran-rpart \
     r-cran-spatial \
-    r-cran-survival
+    r-cran-survival \
+    libsodium-dev
 
 COPY packages.R /usr/local/lib/R/packages.R
 COPY custom_packages.R /usr/local/lib/R/custom_packages.R
