@@ -32,6 +32,8 @@ Docker image Cloud Build Status. /Note: Sometimes images are built locally and p
 </a>
 #+END_EXPORT
 
+Github Actions: [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto)
+
 * TL;DR
 
 - The [[id:633524EA-BE13-43AA-A9A5-1B46D96307BE][Init]] section will grow to contain everything that you need to know this project and get started with using the tools.
