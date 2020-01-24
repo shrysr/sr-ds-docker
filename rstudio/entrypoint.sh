@@ -2,7 +2,7 @@
 
 mkdir -p /home/rstudio/.R/library
 
-cp /home/README.txt /home/rstudio/README.txt
+#cp /home/README.txt /home/rstudio/README.txt
 
 chown -R rstudio:rstudio /home/rstudio/.R
 [ -f  /home/rstudio/.Rprofile ] || echo '.libPaths("/home/rstudio/.R/library")' > /home/rstudio/.Rprofile

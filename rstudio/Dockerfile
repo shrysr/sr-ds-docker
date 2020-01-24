@@ -1,14 +1,5 @@
 FROM shrysr/rbase:v2
 
-LABEL maintainer="Shreyas Ragavan <sr@eml.cc>" \
-	version="1.0"
-
-COPY packages.R /usr/local/lib/R/packages.R
-
-#install R packages
-RUN R CMD javareconf && \
-    Rscript /usr/local/lib/R/packages.R
-
 ARG RSTUDIO_VERSION
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
@@ -27,10 +18,6 @@ RUN apt-get update \
     lsb-release \
     psmisc \
     libclang-dev \
-	openjdk-11-jdk \
-	psmisc \
-	libapparmor1 \
-	libclang-dev \
   && wget -O libssl1.0.0.deb http://ftp.debian.org/debian/pool/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u8_amd64.deb \
   && dpkg -i libssl1.0.0.deb \
   && rm libssl1.0.0.deb \
@@ -43,13 +30,14 @@ RUN apt-get update \
  # && wget -q http://download2.rstudio.org/rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
  # && dpkg -i rstudio-server-${RSTUDIO_VERSION}-amd64.deb \
   && rm rstudio-server-*-amd64.deb \
-  ## Symlink pandoc & standard pandoc templates for use system-wide
-  && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc /usr/local/bin \
-  && ln -s /usr/lib/rstudio-server/bin/pandoc/pandoc-citeproc /usr/local/bin \
+  # ## Symlink pandoc & standard pandoc templates for use system-wide
+  && ln -Ffs /usr/lib/rstudio-server/bin/pandoc/pandoc /usr/local/bin \
+  && ln -Ffs /usr/lib/rstudio-server/bin/pandoc/pandoc-citeproc /usr/local/bin \
   && git clone https://github.com/jgm/pandoc-templates \
   && mkdir -p /opt/pandoc/templates \
   && cp -r pandoc-templates*/* /opt/pandoc/templates && rm -rf pandoc-templates* \
-  && mkdir /root/.pandoc && ln -s /opt/pandoc/templates /root/.pandoc/templates \
+  # #&& mkdir /root/.pandoc \
+  && ln -s /opt/pandoc/templates /root/.pandoc/templates \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/ \
   ## RStudio wants an /etc/R, will populate from $R_HOME/etc
@@ -64,13 +52,13 @@ RUN apt-get update \
     \n}' >> /usr/local/lib/R/etc/Rprofile.site \
   && echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron \
   ## Need to configure non-root user for RStudio
-  && useradd rstudio \
+  # && useradd rstudio \
   && echo "rstudio:matrix" | chpasswd \
-	&& mkdir /home/rstudio \
+	#&& mkdir /home/rstudio \
 	&& chown rstudio:rstudio /home/rstudio \
 	&& addgroup rstudio staff \
   ## Prevent rstudio from deciding to use /usr/bin/R if a user apt-get installs a package
-  &&  echo 'rsession-which-r=/usr/bin/R' >> /etc/rstudio/rserver.conf \
+	##  &&  echo 'rsession-which-r=/usr/bin/R' >> /etc/rstudio/rserver.conf \
   ## use more robust file locking to avoid errors when using shared volumes:
 #  && echo 'lock-type=advisory' >> /etc/rstudio/file-locks \
   ## configure git not to request password each time
@@ -121,6 +109,6 @@ ENV PASSWORD matrix
 ENV DISABLE_AUTH true
 ENV ROOT TRUE
 WORKDIR /home/rstudio
-COPY readme.txt /home/readme.txt
+#COPY README.txt /home/README.txt
 
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh >>/var/log/stdout.log 2>>/var/log/stderr.log"]
