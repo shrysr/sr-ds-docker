@@ -27,12 +27,12 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 # TL;DR
 
--   The [Init](#orgcd36668) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#orgceea90a) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="orgcd36668"></a>
+<a id="orgceea90a"></a>
 
 # Init
 
@@ -1127,9 +1127,9 @@ By default, the authentication is bypassed, though the password can be set via t
         \n}' >> /usr/local/lib/R/etc/Rprofile.site \
       && echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron \
       ## Need to configure non-root user for RStudio
-      # && useradd rstudio \
+      && useradd rstudio \
       && echo "rstudio:matrix" | chpasswd \
-    	#&& mkdir /home/rstudio \
+    	&& mkdir /home/rstudio \
     	&& chown rstudio:rstudio /home/rstudio \
     	&& addgroup rstudio staff \
       ## Prevent rstudio from deciding to use /usr/bin/R if a user apt-get installs a package

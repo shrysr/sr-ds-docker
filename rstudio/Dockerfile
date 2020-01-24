@@ -52,9 +52,9 @@ RUN apt-get update \
     \n}' >> /usr/local/lib/R/etc/Rprofile.site \
   && echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron \
   ## Need to configure non-root user for RStudio
-  # && useradd rstudio \
-  && echo "rstudio:matrix" | sudo chpasswd \
-	#&& mkdir /home/rstudio \
+  && useradd rstudio \
+  && echo "rstudio:matrix" | chpasswd \
+	&& mkdir /home/rstudio \
 	&& chown rstudio:rstudio /home/rstudio \
 	&& addgroup rstudio staff \
   ## Prevent rstudio from deciding to use /usr/bin/R if a user apt-get installs a package
