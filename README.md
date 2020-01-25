@@ -24,7 +24,9 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 <a href="https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&style=flat" /></a>
 
-![Build Status](https://travis-ci.com/shrysr/sr-ds-docker.svg?branch=master)](https://travis-ci.com/shrysr/sr-ds-docker)
+[![Build Status](https://travis-ci.com/shrysr/sr-ds-docker.svg?branch=master)](https://travis-ci.com/shrysr/sr-ds-docker)
+
+[![Build Status](https://travis-ci.com/shrysr/sr-ds-docker.svg?branch=master)](https://travis-ci.com/shrysr/sr-ds-docker)
 
 
 # TL;DR
