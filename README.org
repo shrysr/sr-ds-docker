@@ -41,7 +41,27 @@ Docker image Cloud Build Status. /Note: Sometimes images are built locally and p
 
 - The [[id:633524EA-BE13-43AA-A9A5-1B46D96307BE][Init]] section will grow to contain everything that you need to know this project and get started with using the tools.
 - The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [[https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files][project you can forklift]], that has the shiny image added as a custom tool that can be launched.
+- The [[id:9DB9D719-3E50-40C1-869F-E33E536D21C5][notes]] section contains additional notes gathered while developing this project.
+- [[id:0633F65F-1D5A-4CBD-B7A1-721F10633249][Archive]] contains test and initial configurations that is essentially a sandbox for future projects. These may not be exported in the Readme.md. However these will be available in the Readme.org file
 - One alternate method currently available to read the documentation is via [[https://sr-ds-docker.readthedocs.io/en/latest/][readthedocs]]
+
+Quick Commands:
+
+Docker Images:
+
+#+BEGIN_SRC sh
+docker pull shrysr/shiny:v2
+docker pull shrysr/rstudio:v2
+#+END_SRC
+
+Docker compose to launch services:
+
+#+BEGIN_SRC sh
+docker compose up -d rstudio
+docker compose up -d shiny
+# To launch both : docker compose up -d
+#+END_SRC
+
 
 * Init
 :PROPERTIES:
@@ -61,11 +81,13 @@ In a sense, that is what I did, except that I constructed my own base image inst
 #+END_QUOTE
 
 The main containers to be aware of, and also hosted on dockerhub are :
-1. [[https://hub.docker.com/repository/docker/shrysr/asmith][shrysr/asmith]]
-2. [[https://hub.docker.com/repository/docker/shrysr/rbase][shrysr/rbase]]
-3. [[https://hub.docker.com/repository/docker/shrysr/rstudio][shrysr/rstudio]]
-4. [[https://hub.docker.com/repository/docker/shrysr/shiny][shrysr/shiny]]
+1. [[https://hub.docker.com/repository/docker/shrysr/asmith][shrysr/asmith]]:v1
+2. [[https://hub.docker.com/repository/docker/shrysr/rbase][shrysr/rbase]]:v2
+3. [[https://hub.docker.com/repository/docker/shrysr/rstudio][shrysr/rstudio]]:v2
+4. [[https://hub.docker.com/repository/docker/shrysr/shiny][shrysr/shiny]]:v2
 5. One of the earlier versions created is at shrysr/datasciencer, however, this has been superceded by the above images, and may grow into something different.
+
+Note the tags to be used with the images.
 
 The rbase image is built on the first asmith image. The RStudio and Shiny images are based of a common rbase dependency environment. However, additional packages can be specified for these, and it is not necessary to rebuild the rbase layer each time.
 
@@ -73,62 +95,59 @@ The rbase image is built on the first asmith image. The RStudio and Shiny images
 
 ** TODO Launching the docker containers
 
-The following snippets are examples for launching containers powered by these images. /Individual snippets are placed along with the documentation of each docker container, and will be incorporated into corresponding readme's eventually./
+The easiest way to launch is to use the docker-compose file.
 
-- [ ] incorporate the container launch instructions into individual docker repo readme.
-
-*** Launch a shiny container
-For example, assuming your shiny app and project folder is =/Users/superman/my-shiny-app/=. Then a shiny server as a container can be launched as simply as:
+Starting an rstudio service is as simple as:
 
 #+BEGIN_SRC sh
-docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
+docker-compose up rstudio
 #+END_SRC
 
-*** TODO Multiple ports
+Replace =rstudio= with =shiny= above to launch the shiny server.
 
-Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
+Note that the docker-compose setup involves using a fully specified project path. This is set to a generic path and the system has been tested on a Mac OS and several compute instances of Linux running Debian and Ubuntu.
 
-#+BEGIN_SRC sh :tangle no :results verbatim replace
-#+/bin/bash
-docker container run -Pit -d --rm  -p 3838:3838 -p 8787:8787 \
--v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app \
--v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
-shrysr/datasciencer:test
+* Docker Compose setup
+:PROPERTIES:
+:header-args: :mkdirp yes :tangle ./docker-compose.yml
+:ID:       8999AA93-15FE-40B4-8F6E-8E0BE2438C5B
+:END:
+
+The purpose of the docker container to is make the environment variables and other settings like volume names and ports to be conveniently configured.
+
+There are 2 services : rstudio server and a shiny server. The default up command will launch both of them. Individual services can be launched using their names.
+
+It would b a good practice to name the containers based on the project so as to be able to distinguish different containers.
+
+#+BEGIN_SRC yaml
+version: "2"
+
+services:
+  rstudio:
+    image: shrysr/rstudio:v2
+    container_name: rstudio_s
+    environment:
+      - PASSWORD=shreyas
+      - DISABLE_AUTH=false
+      - WORKDIR="/home/rstudio/"
+    restart: always
+    volumes:
+      - /Users/shrysr/docker-testing-sr/:/home/rstudio/
+    ports:
+      - "8787:8787"
+
+  shiny:
+    image: shrysr/shiny:v2
+    container_name: shiny
+    ports:
+      - "3838:3838"
+    restart: always
+    volumes:
+     - /Users/shrysr/docker-testing-sr/shiny-server/:/srv/shiny-server/
+
+
 #+END_SRC
 
-#+RESULTS:
-: 347baed2d55e42bbf07508b9cdce0b15850c645fea3d137274daec61ac666ee9
-
-** TODO Plan
-
-*** TODO List of images planned
-
-1. Development : R based
-   1. R Shiny server - version to be specified
-   2. R studio server:latest
-   3. Tidyverse + ML + EDA packages  - version to be specified.
-
-2. Production for Shiny apps
-   1. R Shiny server : the same version as corresponding development image
-   2. Tidyverse + ML + EDA packages : the same versions corresponding to development image
-
-*** TODO Tasks
-
-**** Primary [3/8]
-- [ ] provide specific versions of atleast the major components, like docker images, and meta-packages and other tools.
-- [X] Efficient method to update system package versions.
-- [X] Efficient method to update R packages painlessly.
-- [X] Start with a minimal OS layer, like Ubuntu or even Alpine.
-- [ ] Create tests to ensure the docker image is working as expected. Consider techniques like Continuous Integration (CI)
-- [ ] Add a file with the R session, package and other relevant information to be automatically generated when a container is run and printed to a file in the working directory.
-- [ ] Create distinct production and development environments with clear philosophies.
-- [ ] Document using org mode source blocks and ESS to docker containers.
-
-**** Good to have [0/2]
-- [ ] Construct my own shiny server rather than relying on an external official image.
-- [ ] Evaluate integrating workflows using Drake,
-
-* TODO Docker Compose
 * YAML
 
 ** Travis
@@ -136,6 +155,11 @@ shrysr/datasciencer:test
 :ID:       74C2B662-388B-4B2D-A958-078365000B5F
 :header-args: :mkdirp yes :tangle ./.travis.yml
 :END:
+
+This travis file uses the docker service specification to start the docker service. This can be viewed by the =systemctl start= command in the logs. The build is designed in stages, due to the cascading image dependency. However, the rstudio and shiny images can be constructed in parallel and actually do not take long.
+
+Note that the entire build does not complete on Travis at the moment because of limitations in the free tier of computing time. However, the builds do complete on Github Acions described subsequently.
+
 #+BEGIN_SRC yaml
 
 services:
@@ -153,24 +177,6 @@ jobs:
 
 #+END_SRC
 
-*** Example of using stages in Travis jobs
-An example of using stages is shown below. However, this may still constitute a single job. Since the build time of each job is restricted on the free tiers - it would be more useful to define separate jobs, run sequentially rather than a single job with stages.
-
-#+BEGIN_SRC yaml :tangle no
-services:
-  - docker
-
-jobs:
-  include:
-    - stage: asmith
-      script: docker build asmith/. -t shrysr/asmith:v1
-    - stage: rbase
-      script: docker build rbase/. -t shrysr/rbase:v2
-    - stage: rstudio-and-shiny
-      script: docker build rstudio/. -t shrysr/rstudio:v2
-      script: docker build shiny/. -t shrysr/shiny:v2
-#+END_SRC
-
 ** Github Workflows
 *** ASmith YAML for CI with github
 :PROPERTIES:
@@ -181,7 +187,13 @@ jobs:
 #+BEGIN_SRC YAML
 name: Docker Image CI
 
-on: [push]
+on:
+  push:
+    paths:
+    - '/docs/*'
+    - 'Readme.*'
+    - '*.md'
+    - '*.org'
 
 jobs:
 
@@ -205,7 +217,13 @@ jobs:
 #+BEGIN_SRC YAML
 name: Docker Image CI
 
-on: [push]
+on:
+  push:
+    paths:
+    - '/docs/*'
+    - 'Readme.*'
+    - '*.md'
+    - '*.org'
 
 jobs:
 
@@ -229,7 +247,13 @@ jobs:
 #+BEGIN_SRC YAML
 name: Docker Image CI
 
-on: [push]
+on:
+  push:
+    paths:
+    - '/docs/*'
+    - 'Readme.*'
+    - '*.md'
+    - '*.org'
 
 jobs:
 
@@ -252,7 +276,13 @@ jobs:
 #+BEGIN_SRC YAML
 name: Docker Image CI
 
-on: [push]
+on:
+  push:
+    paths:
+    - '/docs/*'
+    - 'Readme.*'
+    - '*.md'
+    - '*.org'
 
 jobs:
 
@@ -266,6 +296,7 @@ jobs:
       run: docker build shiny/. --file shiny/Dockerfile --tag my-image-name:$(date +%s)
 
 #+END_SRC
+
 
 * DONE ASmith
 CLOSED: [2020-01-08 Wed 11:00]
@@ -570,7 +601,7 @@ Suppose you have a project folder within which related scripts, shiny apps, etc 
 
 Into the =shiny-server= folder, the test_apps folder containing shiny apps for testing are copied.
 
-** Environment and Profile
+** TODO Environment and Profile
 :PROPERTIES:
 :ID:       EC8967B1-EEE0-4FEE-BDDD-8903F6203B09
 :END:
@@ -937,8 +968,6 @@ This layer contains a specified RStudio version built on top of the rbase layer.
 
 By default, the authentication is bypassed, though the password can be set via the ENV specification.
 
-- [ ] Define more variables to be made available in the docker-compose file.
-
 ** Environment and Profile
 :PROPERTIES:
 :ID:       E5928ED3-9589-4F09-8AFB-5420EB1EDF68
@@ -961,9 +990,10 @@ R_LIBS=/usr/local/lib/R/site-library:/usr/local/lib/R/library:/usr/lib/R/library
 # options(continue="+ ")
 
 # to prefer Compiled HTML
-help options(chmhelp=TRUE)
+#help options(chmhelp=TRUE)
+
 # to prefer HTML help
-# options(htmlhelp=TRUE)
+options(htmlhelp=TRUE)
 
 # General options
 options(tab.width = 4)
@@ -1591,6 +1621,9 @@ shinyApp(ui = ui, server = server)
 #+END_SRC
 
 * Notes
+:PROPERTIES:
+:ID:       9DB9D719-3E50-40C1-869F-E33E536D21C5
+:END:
 This is a collection of notes and lessons learned on different aspects of the project.
 /[[https://shreyas.ragavan.co/docs/docker-notes/][My website]] contains some general docker related notes on other aspects and command references./
 
@@ -1638,6 +1671,32 @@ Beyond this, tools like [[https://github.com/emacs-pe/docker-tramp.el/blob/maste
 - [ ] Clearing empty images from the list:
 
 * Archive
+:PROPERTIES:
+:ID:       0633F65F-1D5A-4CBD-B7A1-721F10633249
+:END:
+
+** Command snippets for launching containers
+*** Launch a shiny container
+For example, assuming your shiny app and project folder is =/Users/superman/my-shiny-app/=. Then a shiny server as a container can be launched as simply as:
+
+#+BEGIN_SRC sh
+docker container run -itd -p 3838:3838 -v /Users/superman/my-shiny-app/:/srv shrysr/shiny:v2
+#+END_SRC
+
+*** TODO Multiple ports and multiple services
+
+Example for launching a temporary shiny server with 2 ports exposed for 2 processes, and specifying the location of the apps and the logs.
+
+#+BEGIN_SRC sh :tangle no :results verbatim replace
+#+/bin/bash
+docker container run -Pit -d --rm  -p 3838:3838 -p 8787:8787 \
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/:/srv/shiny-server/test_app \
+-v /Users/shrysr/my_projects/sr-ds-docker/test_app/log/shiny-server/:/var/log/shiny-server/ \
+shrysr/datasciencer:test
+#+END_SRC
+
+#+RESULTS:
+: 347baed2d55e42bbf07508b9cdce0b15850c645fea3d137274daec61ac666ee9
 
 ** Basic Template                                                 :noexport:
 :PROPERTIES:
