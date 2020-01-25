@@ -1,6 +1,12 @@
 name: Docker Image CI
 
-on: [push]
+on:
+  push:
+    paths:
+    - '/docs/*'
+    - 'Readme.*'
+    - '*.md'
+    - '*.org'
 
 jobs:
 
