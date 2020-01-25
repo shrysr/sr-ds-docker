@@ -26,8 +26,6 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 [![Build Status](https://travis-ci.com/shrysr/sr-ds-docker.svg?branch=master)](https://travis-ci.com/shrysr/sr-ds-docker)
 
-[![Build Status](https://travis-ci.com/shrysr/sr-ds-docker.svg?branch=master)](https://travis-ci.com/shrysr/sr-ds-docker)
-
 
 # TL;DR
 
