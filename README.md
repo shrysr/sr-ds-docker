@@ -27,12 +27,12 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 # TL;DR
 
--   The [Init](#orgf0834d6) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#org9711f3a) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="orgf0834d6"></a>
+<a id="org9711f3a"></a>
 
 # Init
 
@@ -136,9 +136,26 @@ Example for launching a temporary shiny server with 2 ports exposed for 2 proces
           script: docker build asmith/. -t shrysr/asmith:v1
         - stage: rbase
           script: docker build rbase/. -t shrysr/rbase:v2
-        - stage: rstudio
+        - stage: rstudio-and-shiny
           script: docker build rstudio/. -t shrysr/rstudio:v2
-        - stage: shiny
+          script: docker build shiny/. -t shrysr/shiny:v2
+
+
+### Example of using stages in Travis jobs
+
+An example of using stages is shown below. However, this may still constitute a single job. Since the build time of each job is restricted on the free tiers - it would be more useful to define separate jobs, run sequentially rather than a single job with stages.
+
+    services:
+      - docker
+
+    jobs:
+      include:
+        - stage: asmith
+          script: docker build asmith/. -t shrysr/asmith:v1
+        - stage: rbase
+          script: docker build rbase/. -t shrysr/rbase:v2
+        - stage: rstudio-and-shiny
+          script: docker build rstudio/. -t shrysr/rstudio:v2
           script: docker build shiny/. -t shrysr/shiny:v2
 
 
