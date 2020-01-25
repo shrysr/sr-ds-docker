@@ -130,6 +130,21 @@ shrysr/datasciencer:test
 
 * TODO Docker Compose
 * YAML
+** Travis
+:PROPERTIES:
+:ID:       74C2B662-388B-4B2D-A958-078365000B5F
+:header-args: :mkdirp yes :tangle ./.travis.yml
+:END:
+#+BEGIN_SRC yaml
+
+services:
+  - docker
+
+script:
+  - docker build asmith/. -t asmith:v1
+  - docker build rbase/. -t rbase:v1
+#+END_SRC
+
 ** Github Workflows
 *** ASmith YAML for CI with github
 :PROPERTIES:

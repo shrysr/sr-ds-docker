@@ -27,12 +27,12 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 # TL;DR
 
--   The [Init](#orgceea90a) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#orgb678b15) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 
-<a id="orgceea90a"></a>
+<a id="orgb678b15"></a>
 
 # Init
 
@@ -122,6 +122,17 @@ Example for launching a temporary shiny server with 2 ports exposed for 2 proces
 
 
 # YAML
+
+
+## Travis
+
+
+    services:
+      - docker
+
+    script:
+      - docker build asmith/. -t asmith:v1
+      - docker build rbase/. -t rbase:v1
 
 
 ## Github Workflows

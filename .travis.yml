@@ -1,0 +1,6 @@
+services:
+  - docker
+
+script:
+  - docker build asmith/. -t asmith:v1
+  - docker build rbase/. -t rbase:v1
