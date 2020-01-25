@@ -24,13 +24,15 @@ Docker image Cloud Build Status. *Note: Sometimes images are built locally and p
 
 <a href="https://actions-badge.atrox.dev/shrysr/sr-ds-docker/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fshrysr%2Fsr-ds-docker%2Fbadge&style=flat" /></a>
 
+![Build Status](https://travis-ci.com/shrysr/sr-ds-docker.svg?branch=master)](https://travis-ci.com/shrysr/sr-ds-docker)
+
 
 # TL;DR
 
--   The [Init](#org26f91b4) section will grow to contain everything that you need to know this project and get started with using the tools.
+-   The [Init](#org21ddaea) section will grow to contain everything that you need to know this project and get started with using the tools.
 -   The easiest way at the moment to test-drive these containers is via the Matrix DS platform. Here is a [project you can forklift](https://community.platform.matrixds.com/community/project/5e14c54026b28df69bf39029/files), that has the shiny image added as a custom tool that can be launched.
--   The [notes](#org8ac6891) section contains additional notes gathered while developing this project.
--   [Archive](#orgac0f4fe) contains test and initial configurations that is essentially a sandbox for future projects. These may not be exported in the Readme.md. However these will be available in the Readme.org file
+-   The [notes](#orgccb4a68) section contains additional notes gathered while developing this project.
+-   [Archive](#orged89e4d) contains test and initial configurations that is essentially a sandbox for future projects. These may not be exported in the Readme.md. However these will be available in the Readme.org file
 -   One alternate method currently available to read the documentation is via [readthedocs](https://sr-ds-docker.readthedocs.io/en/latest/)
 
 Quick Commands:
@@ -47,7 +49,7 @@ Docker compose to launch services:
     # To launch both : docker compose up -d
 
 
-<a id="org26f91b4"></a>
+<a id="org21ddaea"></a>
 
 # Init
 
@@ -157,10 +159,10 @@ Note that the entire build does not complete on Travis at the moment because of 
     on:
       push:
         paths:
-        - '/docs/*'
-        - 'Readme.*'
-        - '*.md'
-        - '*.org'
+        - '!/docs/*'
+        - '!Readme.*'
+        - '!*.md'
+        - '!*.org'
 
     jobs:
 
@@ -181,10 +183,10 @@ Note that the entire build does not complete on Travis at the moment because of 
     on:
       push:
         paths:
-        - '/docs/*'
-        - 'Readme.*'
-        - '*.md'
-        - '*.org'
+        - '!/docs/*'
+        - '!Readme.*'
+        - '!*.md'
+        - '!*.org'
 
     jobs:
 
@@ -205,10 +207,10 @@ Note that the entire build does not complete on Travis at the moment because of 
     on:
       push:
         paths:
-        - '/docs/*'
-        - 'Readme.*'
-        - '*.md'
-        - '*.org'
+        - '!/docs/*'
+        - '!Readme.*'
+        - '!*.md'
+        - '!*.org'
 
     jobs:
 
@@ -229,10 +231,10 @@ Note that the entire build does not complete on Travis at the moment because of 
     on:
       push:
         paths:
-        - '/docs/*'
-        - 'Readme.*'
-        - '*.md'
-        - '*.org'
+        - '!/docs/*'
+        - '!Readme.*'
+        - '!*.md'
+        - '!*.org'
 
     jobs:
 
@@ -1378,7 +1380,7 @@ A bunch of apps will be included here for the purpose of quickly testing functio
     shinyApp(ui = ui, server = server)
 
 
-<a id="org8ac6891"></a>
+<a id="orgccb4a68"></a>
 
 # Notes
 
@@ -1428,7 +1430,7 @@ Beyond this, tools like [docker-tramp](https://github.com/emacs-pe/docker-tramp.
 -   [ ] Clearing empty images from the list:
 
 
-<a id="orgac0f4fe"></a>
+<a id="orged89e4d"></a>
 
 # Archive
 
