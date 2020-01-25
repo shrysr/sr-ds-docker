@@ -140,9 +140,17 @@ shrysr/datasciencer:test
 services:
   - docker
 
-script:
-  - docker build asmith/. -t asmith:v1
-  - docker build rbase/. -t rbase:v1
+jobs:
+  include:
+    - stage: asmith
+      script: docker build asmith/. -t shrysr/asmith:v1
+    - stage: rbase
+      script: docker build rbase/. -t shrysr/rbase:v2
+    - stage: rstudio
+      script: docker build rstudio/. -t shrysr/rstudio:v2
+    - stage: shiny
+      script: docker build shiny/. -t shrysr/shiny:v2
+
 #+END_SRC
 
 ** Github Workflows
