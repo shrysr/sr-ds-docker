@@ -1,0 +1,24 @@
+version: "2"
+
+services:
+  rstudio:
+    image: shrysr/rstudio:v2
+    container_name: rstudio_s
+    environment:
+      - PASSWORD=shreyas
+      - DISABLE_AUTH=false
+      - WORKDIR="/home/rstudio/"
+    restart: always
+    volumes:
+      - /Users/shrysr/docker-testing-sr/:/home/rstudio/
+    ports:
+      - "8787:8787"
+
+  shiny:
+    image: shrysr/shiny:v2
+    container_name: shiny
+    ports:
+      - "3838:3838"
+    restart: always
+    volumes:
+     - /Users/shrysr/docker-testing-sr/shiny-server/:/srv/shiny-server/
